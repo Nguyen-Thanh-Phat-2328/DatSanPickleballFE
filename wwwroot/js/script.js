@@ -404,76 +404,126 @@ function togglePassword(inputId) {
     }
 }
 
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    const email = formData.get('email');
-    const password = formData.get('password');
-    
-    // Simulate login process
-    showLoadingButton(event.target.querySelector('button[type="submit"]'));
-    
-    setTimeout(() => {
-        // Mock successful login
-        localStorage.setItem('user', JSON.stringify({
-            email: email,
-            name: email.split('@')[0],
-            loginTime: new Date().toISOString()
-        }));
-        
-        hideLoadingButton(event.target.querySelector('button[type="submit"]'));
-        showSuccessMessage('Đăng nhập thành công!');
-        
-        // Redirect to home after 1 second
-        setTimeout(() => {
-            showPage('home');
-            updateUserUI();
-        }, 1000);
-    }, 2000);
+
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+
+    try {
+        const response = await fetch(`https://localhost:7067/User/TenNguoiDung/${email}`, {
+            method: "GET"
+        });
+
+        if (!response.ok) throw new Error("Không kết nối được đến API");
+
+        const user = await response.json();
+
+        if (user.matKhau === password) {
+            //sessionStorage.setItem("user", JSON.stringify(user));
+            setTimeout(() => {
+                // Mock successful login
+                localStorage.setItem('user', JSON.stringify({
+                    email: email,
+                    name: user.tenNguoiDung,
+                    phone: user.soDienThoai,
+                    role: user.role,
+                    maNguoiDung: user.maNguoiDung,
+                    matKhau: user.matKhau,
+                    loginTime: new Date().toISOString()
+                }));
+
+                hideLoadingButton(event.target.querySelector('button[type="submit"]'));
+                showSuccessMessage('Đăng nhập thành công!');
+
+                // Redirect to home after 1 second
+                setTimeout(() => {
+                    showPage('home');
+                    updateUserUI();
+                }, 1000);
+            }, 1500);
+        } else {
+            alert("Sai mật khẩu");
+        }
+
+    } catch (error) {
+        console.error("Lỗi đăng nhập:", error);
+        alert("Lỗi đăng nhập: Không thể kết nối tới máy chủ.");
+    }
 }
 
-function handleRegister(event) {
+async function handleRegister(event) {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    const password = formData.get('password');
-    const confirmPassword = formData.get('confirmPassword');
-    
-    // Validate passwords match
-    if (password !== confirmPassword) {
-        showErrorMessage('Mật khẩu xác nhận không khớp!');
+
+    // Lấy dữ liệu từ các ô input
+    const ho = document.getElementById("register-firstname").value.trim();
+    const ten = document.getElementById("register-lastname").value.trim();
+    const email = document.getElementById("register-email").value.trim();
+    const soDienThoai = document.getElementById("register-phone").value.trim();
+    const matKhau = document.getElementById("register-password").value.trim();
+    const xacNhanMatKhau = document.getElementById("register-confirm-password").value.trim();
+
+    // Kiểm tra xác nhận mật khẩu
+    if (matKhau !== xacNhanMatKhau) {
+        alert("Mật khẩu xác nhận không khớp.");
         return;
     }
-    
-    // Validate password length
-    if (password.length < 6) {
-        showErrorMessage('Mật khẩu phải có ít nhất 6 ký tự!');
-        return;
+
+    // Ghép họ tên
+    const tenNguoiDung = `${ho} ${ten}`;
+
+    // Dữ liệu gửi lên server
+    const data = {
+        tenNguoiDung,
+        email,
+        soDienThoai,
+        matKhau,
+        role: "NguoiDung" // có thể thay bằng giá trị chọn được nếu có select
+    };
+
+    try {
+        const response = await fetch("https://localhost:7067/User/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.text(); // hoặc .json() nếu server trả JSON
+
+        if (response.ok) {
+            alert("Đăng ký thành công!");
+            document.querySelector("#register-form form").reset();
+            // 👉 Chuyển qua tab đăng nhập:
+            switchAuthTab('login');
+        } else {
+            alert("Đăng ký thất bại: " + result);
+        }
+    } catch (error) {
+        console.error("Lỗi khi gọi API đăng ký:", error);
+        alert("Lỗi kết nối đến máy chủ.");
     }
-    
-    // Simulate registration process
-    showLoadingButton(event.target.querySelector('button[type="submit"]'));
-    
-    setTimeout(() => {
-        // Mock successful registration
-        const userData = {
-            email: formData.get('email'),
-            name: formData.get('firstname') + ' ' + formData.get('lastname'),
-            phone: formData.get('phone'),
-            registerTime: new Date().toISOString()
-        };
-        
-        localStorage.setItem('user', JSON.stringify(userData));
-        
-        hideLoadingButton(event.target.querySelector('button[type="submit"]'));
-        showSuccessMessage('Đăng ký thành công!');
-        
-        // Redirect to home after 1 second
-        setTimeout(() => {
-            showPage('home');
-            updateUserUI();
-        }, 1000);
-    }, 2000);
 }
+function switchAuthTab(tab) {
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const loginTab = document.querySelector(".auth-tab:nth-child(1)");
+    const registerTab = document.querySelector(".auth-tab:nth-child(2)");
+
+    if (tab === "login") {
+        loginForm.classList.add("active");
+        registerForm.classList.remove("active");
+        loginTab.classList.add("active");
+        registerTab.classList.remove("active");
+    } else {
+        loginForm.classList.remove("active");
+        registerForm.classList.add("active");
+        loginTab.classList.remove("active");
+        registerTab.classList.add("active");
+    }
+}
+
 
 function loginWithGoogle() {
     showInfoMessage('Chức năng đăng nhập Google sẽ được tích hợp sau!');
@@ -596,9 +646,80 @@ function toggleUserMenu() {
 }
 
 function showProfile() {
-    toggleUserMenu(); // Close menu
-    showInfoMessage('Trang chỉnh sửa thông tin sẽ được phát triển!');
+    toggleUserMenu(); // Ẩn menu
+
+    const userData = JSON.parse(localStorage.getItem('user')); // Lấy thông tin người dùng từ localStorage
+
+    if (!userData) {
+        showInfoMessage('Không tìm thấy thông tin người dùng!');
+        return;
+    }
+
+    document.getElementById("profileId").value = userData.maNguoiDung || "";
+    document.getElementById('profileFullName').value = userData.name || '';
+    document.getElementById('profileEmail').value = userData.email || '';
+    document.getElementById('profilePhone').value = userData.phone || '';   
+
+    document.getElementById('profileModal').style.display = 'block';
 }
+
+function closeProfileModal() {
+    document.getElementById('profileModal').style.display = 'none';
+}
+
+async function saveProfile() {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    
+    const maNguoiDung = userData.maNguoiDung;
+
+    if (!maNguoiDung) {
+        alert("Không tìm thấy mã người dùng trong localStorage.");
+        return;
+    }
+
+    // Lấy dữ liệu từ các trường nhập
+    const tenNguoiDung = document.getElementById("profileFullName").value.trim();
+    const email = document.getElementById("profileEmail").value.trim();
+    const soDienThoai = document.getElementById("profilePhone").value.trim();
+
+    // Tạo object dữ liệu gửi lên
+    const updatedUser = {
+        tenNguoiDung: tenNguoiDung,
+        email: email,
+        soDienThoai: soDienThoai,
+        matKhau: userData.matKhau,   
+        role: ""       // Không đổi vai trò
+    };
+
+    try {
+        const response = await fetch(`https://localhost:7067/User/${maNguoiDung}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedUser)
+        });
+
+        if (response.ok) {
+            alert("Cập nhật thông tin thành công!");
+            localStorage.setItem('user', JSON.stringify({
+                maNguoiDung: maNguoiDung,
+                name: tenNguoiDung,
+                email: email,
+                phone: soDienThoai,
+                matKhau: userData.matKhau,
+                role: userData.role
+            }));
+            closeProfileModal(); // Đóng modal
+        } else {
+            const errorText = await response.text();
+            alert("Cập nhật thất bại: " + errorText);
+        }
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
+
 
 function showBookingHistory() {
     toggleUserMenu(); // Close menu
