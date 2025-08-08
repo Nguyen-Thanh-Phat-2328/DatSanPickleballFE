@@ -1,5 +1,7 @@
-﻿@{
-    Layout = null; // Không dùng layout nào (tức là không có header/footer luôn)
+﻿@using Frontend.DataAdmin
+@model ThongTinChungView
+@{
+    Layout = null;
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -244,90 +246,26 @@
                     <div class="courts-list">
                         <h2>Chọn sân để đặt</h2>
                         <div class="courts-grid">
-                            <div class="court-card" onclick="selectCourt(1)">
-                                <div class="court-image">
-                                    <img src="./css/img/san1.jpg?height=200&width=300" alt="Sân 1">
-                                    <div class="court-overlay">
-                                        <h3>Sân 1</h3>
-                                        <p>Sân tiêu chuẩn quốc tế</p>
-                                    </div>
-                                </div>
-                                <div class="court-details">
-                                    <div class="court-status available">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Có sẵn</span>
-                                    </div>
-                                    <button class="book-btn">Đặt sân</button>
-                                </div>
-                            </div>
 
-                            <div class="court-card" onclick="selectCourt(2)">
-                                <div class="court-image">
-                                    <img src="./css/img/san2.jpg?height=200&width=300" alt="Sân 2">
-                                    <div class="court-overlay">
-                                        <h3>Sân 2</h3>
-                                        <p>Sân có đèn chiếu sáng</p>
+                            @foreach(var c in Model.ListSan)
+                            {
+                                <div class="court-card" onclick="selectCourt(1)">
+                                    <div class="court-image">
+                                        <img src="/css/img/san1.jpg?height=200&width=300" alt="Sân 1">
+                                        <div class="court-overlay">
+                                            <h3>@c.TenSan</h3>
+                                            <p>@c.KieuSan</p>
+                                        </div>
+                                    </div>
+                                    <div class="court-details">
+                                        <div class="court-status available">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>@c.TrangThai</span>
+                                        </div>
+                                        <button class="book-btn">Đặt sân</button>
                                     </div>
                                 </div>
-                                <div class="court-details">
-                                    <div class="court-status available">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Có sẵn</span>
-                                    </div>
-                                    <button class="book-btn">Đặt sân</button>
-                                </div>
-                            </div>
-
-                            <div class="court-card" onclick="selectCourt(3)">
-                                <div class="court-image">
-                                    <img src="./css/img/san3.jpg?height=200&width=300" alt="Sân 3">
-                                    <div class="court-overlay">
-                                        <h3>Sân 3</h3>
-                                        <p>Sân VIP có mái che</p>
-                                    </div>
-                                </div>
-                                <div class="court-details">
-                                    <div class="court-status busy">
-                                        <i class="fas fa-clock"></i>
-                                        <span>Đang sử dụng</span>
-                                    </div>
-                                    <button class="book-btn">Đặt sân</button>
-                                </div>
-                            </div>
-
-                            <div class="court-card" onclick="selectCourt(4)">
-                                <div class="court-image">
-                                    <img src="./css/img/san2.jpg?height=200&width=300" alt="Sân 4">
-                                    <div class="court-overlay">
-                                        <h3>Sân 4</h3>
-                                        <p>Sân mới nhất</p>
-                                    </div>
-                                </div>
-                                <div class="court-details">
-                                    <div class="court-status available">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Có sẵn</span>
-                                    </div>
-                                    <button class="book-btn">Đặt sân</button>
-                                </div>
-                            </div>
-
-                            <div class="court-card" onclick="selectCourt(5)">
-                                <div class="court-image">
-                                    <img src="./css/img/san1.jpg?height=200&width=300" alt="Sân 4">
-                                    <div class="court-overlay">
-                                        <h3>Sân 5</h3>
-                                        <p>Sân cũ nhất</p>
-                                    </div>
-                                </div>
-                                <div class="court-details">
-                                    <div class="court-status available">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Có sẵn</span>
-                                    </div>
-                                    <button class="book-btn">Đặt sân</button>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>
