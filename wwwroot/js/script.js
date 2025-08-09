@@ -5,38 +5,38 @@ let selectedTimeSlots = [];
 let currentWeekOffset = 0;
 
 // Court data
-const courts = {
-    1: {
-        name: 'Sân 1',
-        description: 'Sân tiêu chuẩn quốc tế',
-        price: 150000,
-        image: '/placeholder.svg?height=300&width=400'
-    },
-    2: {
-        name: 'Sân 2',
-        description: 'Sân có đèn chiếu sáng',
-        price: 180000,
-        image: '/placeholder.svg?height=300&width=400'
-    },
-    3: {
-        name: 'Sân 3',
-        description: 'Sân VIP có mái che',
-        price: 200000,
-        image: '/placeholder.svg?height=300&width=400'
-    },
-    4: {
-        name: 'Sân 4',
-        description: 'Sân mới nhất',
-        price: 170000,
-        image: '/placeholder.svg?height=300&width=400'
-    },
-    5: {
-        name: 'Sân 5',
-        description: 'Sân cũ nhất',
-        price: 170000,
-        image: '/placeholder.svg?height=300&width=400'
-    }
-};
+//const courts = {
+    //1: {
+    //    name: 'Sân 1',
+    //    description: 'Sân tiêu chuẩn quốc tế',
+    //    price: 150000,
+    //    image: '/placeholder.svg?height=300&width=400'
+    //},
+    //2: {
+    //    name: 'Sân 2',
+    //    description: 'Sân có đèn chiếu sáng',
+    //    price: 180000,
+    //    image: '/placeholder.svg?height=300&width=400'
+    //},
+    //3: {
+    //    name: 'Sân 3',
+    //    description: 'Sân VIP có mái che',
+    //    price: 200000,
+    //    image: '/placeholder.svg?height=300&width=400'
+    //},
+    //4: {
+    //    name: 'Sân 4',
+    //    description: 'Sân mới nhất',
+    //    price: 170000,
+    //    image: '/placeholder.svg?height=300&width=400'
+    //},
+    //5: {
+    //    name: 'Sân 5',
+    //    description: 'Sân cũ nhất',
+    //    price: 170000,
+    //    image: '/placeholder.svg?height=300&width=400'
+    //}
+//};
 
 // Time slots
 const timeSlots = [
@@ -83,15 +83,37 @@ function showPage(pageId) {
 }
 
 // Select court and go to booking page
+//gọi api khi load trang
+let courts = {};
+let courtsList = []; // lưu dạng mảng nếu cần loop
+async function loadCourts() {
+    try {
+        const res = await fetch('https://localhost:7067/San/List');
+        if (!res.ok) throw new Error('Không thể tải danh sách sân');
+        const data = await res.json();
+        //lưu mảng gốc
+        courtsList = data;
+        courts = Object.fromEntries(data.map(court => [court.maSan, court]));
+        console.log('Courts loaded:', courts);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 function selectCourt(courtId) {
     selectedCourt = courtId;
     const court = courts[courtId];
-    
+
+    if (!court) {
+        console.error(`Không tìm thấy sân với id ${courtId}`);
+        return;
+    }
+
     // Update booking page with court info
-    document.getElementById('selected-court-title').textContent = `Đặt ${court.name}`;
-    document.getElementById('court-name').textContent = court.name;
-    document.getElementById('court-preview-img').src = court.image;
-    document.querySelector('.price').textContent = formatPrice(court.price) + '/giờ';
+    document.getElementById('selected-court-title').textContent = `Đặt ${court.tenSan}`;
+    document.getElementById('court-name').textContent = court.tenSan;
+    document.getElementById('court-preview-img').src = "data:image/png;base64," + court.hinhAnh;
+    document.querySelector('.price').textContent = formatPrice(court.gia) + '/giờ';
     
     // Generate dates and time slots
     generateDates();
@@ -100,6 +122,9 @@ function selectCourt(courtId) {
     // Show booking page
     showPage('booking');
 }
+
+// Gọi loadCourts khi trang load
+document.addEventListener('DOMContentLoaded', loadCourts);
 
 // Go back to home page
 function goBack() {
@@ -112,35 +137,78 @@ function goBack() {
 }
 
 // Generate dates for the week
-function generateDates() {
+//function generateDates() {
+//    const datesContainer = document.getElementById('dates-container');
+//    datesContainer.innerHTML = '';
+
+//    const today = new Date();
+//    const startDate = new Date(today);
+//    startDate.setDate(today.getDate() + (currentWeekOffset * 7));
+
+//    const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+//    for (let i = 0; i < 7; i++) {
+//        const date = new Date(startDate);
+//        date.setDate(startDate.getDate() + i);
+
+//        const dateItem = document.createElement('div');
+//        dateItem.className = 'date-item';
+//        dateItem.onclick = () => selectDate(date);
+
+//        const dayName = days[date.getDay()];
+//        const dateNumber = date.getDate();
+//        const month = date.getMonth() + 1;
+
+//        dateItem.innerHTML = `
+//            <div class="day">${dayName}</div>
+//            <div class="date">${dateNumber}/${month}</div>
+//        `;
+
+//        dateItem.dataset.date = formatDateForBooking(date);
+//        datesContainer.appendChild(dateItem);
+//    }
+//}
+async function generateDates() {
     const datesContainer = document.getElementById('dates-container');
     datesContainer.innerHTML = '';
-    
-    const today = new Date();
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() + (currentWeekOffset * 7));
-    
-    const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-    
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(startDate);
-        date.setDate(startDate.getDate() + i);
-        
-        const dateItem = document.createElement('div');
-        dateItem.className = 'date-item';
-        dateItem.onclick = () => selectDate(date);
-        
-        const dayName = days[date.getDay()];
-        const dateNumber = date.getDate();
-        const month = date.getMonth() + 1;
-        
-        dateItem.innerHTML = `
-            <div class="day">${dayName}</div>
-            <div class="date">${dateNumber}/${month}</div>
-        `;
-        
-        dateItem.dataset.date = formatDateForBooking(date);
-        datesContainer.appendChild(dateItem);
+
+    try {
+        // Gọi API lấy danh sách ngày
+        const res = await fetch('https://localhost:7067/LichSan/ListNgay');
+        if (!res.ok) {
+            throw new Error('Không thể lấy danh sách ngày');
+        }
+
+        // API trả về mảng ngày, ví dụ ["2025-08-08","2025-08-09",...]
+        const ngayList = await res.json();
+
+        const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+        ngayList.forEach(ngayStr => {
+            // Chuyển string thành Date
+            const date = new Date(ngayStr);
+
+            const dateItem = document.createElement('div');
+            dateItem.className = 'date-item';
+            dateItem.onclick = () => selectDate(date);
+
+            const dayName = days[date.getDay()];
+            const dateNumber = date.getDate();
+            const month = date.getMonth() + 1;
+
+            dateItem.innerHTML = `
+                <div class="day">${dayName}</div>
+                <div class="date">${dateNumber}/${month}</div>
+            `;
+
+            // Gán data-date để dùng khi booking
+            dateItem.dataset.date = formatDateForBooking(date);
+            datesContainer.appendChild(dateItem);
+        });
+
+    } catch (error) {
+        console.error('Lỗi khi lấy ngày:', error);
+        datesContainer.innerHTML = '<p>Không thể tải danh sách ngày</p>';
     }
 }
 
@@ -234,9 +302,9 @@ function updateBookingSummary() {
     
     if (selectedCourt && selectedDate && selectedTimeSlots.length > 0) {
         const court = courts[selectedCourt];
-        const totalPrice = court.price * selectedTimeSlots.length;
+        const totalPrice = court.gia * selectedTimeSlots.length;
         
-        document.getElementById('summary-court').textContent = court.name;
+        document.getElementById('summary-court').textContent = court.tenSan;
         document.getElementById('summary-date').textContent = formatDateDisplay(selectedDate);
         document.getElementById('summary-time').textContent = selectedTimeSlots.join(', ');
         document.getElementById('summary-total').textContent = formatPrice(totalPrice);
@@ -342,39 +410,78 @@ function toggleTimeSlot(timeSlot) {
 }
 
 // Generate time slots
-function generateTimeSlots() {
+//function generateTimeSlots() {
+//    const timeSlotsContainer = document.getElementById('time-slots');
+//    timeSlotsContainer.innerHTML = '';
+
+//    if (!selectedDate) {
+//        timeSlotsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666; padding: 2rem;">Vui lòng chọn ngày để xem khung giờ</p>';
+//        return;
+//    }
+
+//    const courtBookings = bookings[selectedCourt] || {};
+//    const dateBookings = courtBookings[selectedDate] || [];
+
+//    timeSlots.forEach(timeSlot => {
+//        const slotElement = document.createElement('div');
+//        slotElement.className = 'time-slot';
+//        slotElement.textContent = timeSlot;
+
+//        const isBooked = dateBookings.includes(timeSlot);
+//        const isSelected = selectedTimeSlots.includes(timeSlot);
+
+//        if (isBooked) {
+//            slotElement.classList.add('booked');
+//            // Không thêm onclick cho slot đã được đặt
+//        } else if (isSelected) {
+//            slotElement.classList.add('selected');
+//            slotElement.onclick = () => toggleTimeSlot(timeSlot); // Cho phép bỏ chọn
+//        } else {
+//            slotElement.classList.add('available');
+//            slotElement.onclick = () => toggleTimeSlot(timeSlot); // Cho phép chọn
+//        }
+
+//        timeSlotsContainer.appendChild(slotElement);
+//    });
+//}
+
+async function generateTimeSlots() {
     const timeSlotsContainer = document.getElementById('time-slots');
     timeSlotsContainer.innerHTML = '';
-    
-    if (!selectedDate) {
+
+    if (!selectedDate || !selectedCourt) {
         timeSlotsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666; padding: 2rem;">Vui lòng chọn ngày để xem khung giờ</p>';
         return;
     }
-    
-    const courtBookings = bookings[selectedCourt] || {};
-    const dateBookings = courtBookings[selectedDate] || [];
-    
-    timeSlots.forEach(timeSlot => {
-        const slotElement = document.createElement('div');
-        slotElement.className = 'time-slot';
-        slotElement.textContent = timeSlot;
-        
-        const isBooked = dateBookings.includes(timeSlot);
-        const isSelected = selectedTimeSlots.includes(timeSlot);
-        
-        if (isBooked) {
-            slotElement.classList.add('booked');
-            // Không thêm onclick cho slot đã được đặt
-        } else if (isSelected) {
-            slotElement.classList.add('selected');
-            slotElement.onclick = () => toggleTimeSlot(timeSlot); // Cho phép bỏ chọn
-        } else {
-            slotElement.classList.add('available');
-            slotElement.onclick = () => toggleTimeSlot(timeSlot); // Cho phép chọn
-        }
-        
-        timeSlotsContainer.appendChild(slotElement);
-    });
+
+    try {
+        const res = await fetch(`https://localhost:7067/LichSan/GetTimeSlots/${selectedDate}/${selectedCourt}`);
+        if (!res.ok) throw new Error("Lỗi lấy dữ liệu");
+
+        const slots = await res.json(); // [{ khungGio, trangThai }, ...]
+
+        slots.forEach(slot => {
+            const slotElement = document.createElement('div');
+            slotElement.className = 'time-slot';
+            slotElement.textContent = slot.khungGio;
+
+            if (slot.trangThai === "Đã đặt") {
+                slotElement.classList.add('booked');
+            } else if (selectedTimeSlots.includes(slot.khungGio)) {
+                slotElement.classList.add('selected');
+                slotElement.onclick = () => toggleTimeSlot(slot.khungGio);
+            } else {
+                slotElement.classList.add('available');
+                slotElement.onclick = () => toggleTimeSlot(slot.khungGio);
+            }
+
+            timeSlotsContainer.appendChild(slotElement);
+        });
+
+    } catch (error) {
+        console.error(error);
+        timeSlotsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: red; padding: 2rem;">Không thể tải khung giờ</p>';
+    }
 }
 
 // Auth functions

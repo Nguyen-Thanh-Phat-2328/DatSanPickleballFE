@@ -7,5 +7,6 @@
         public string KieuSan { get; set; }
         public string TrangThai     { get; set; }
         public string ViTri {  get; set; }
+        public string HinhAnh { get; set; }
     }
 }
