@@ -1,0 +1,639 @@
+﻿/* ===== MODAL STYLING - BAO QUANH BẢNG ===== */
+#bookingHistoryModal .modal-dialog {
+    max-width: 1400px; /* Tăng để bao quanh bảng */
+    width: 95vw; /* Sử dụng 95% màn hình */
+    margin: 1rem auto; /* Căn giữa với margin trên/dưới */
+}
+
+#bookingHistoryModal .modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    width: 100%;
+    min-width: 900px; /* Đảm bảo modal đủ rộng */
+}
+
+/* ===== MODAL HEADER ===== */
+#bookingHistoryModal .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: none;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+}
+
+    #bookingHistoryModal .modal-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        backdrop-filter: blur(10px);
+    }
+
+#bookingHistoryModal .modal-title {
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    #bookingHistoryModal .modal-title::before {
+        content: "📅";
+        font-size: 1.1rem;
+    }
+
+/* ===== MODAL BODY - KHÔNG SCROLL NGANG ===== */
+#bookingHistoryModal .modal-body {
+    padding: 1.5rem;
+    background-color: #f8fafc;
+    overflow: visible; /* Bỏ scroll ngang */
+    max-height: 70vh; /* Giới hạn chiều cao */
+    overflow-y: auto; /* Chỉ scroll dọc khi cần */
+}
+
+/* ===== TABLE STYLING - GIỮ NGUYÊN KÍCH THƯỚC ===== */
+#bookingHistoryModal .table {
+    margin: 0;
+    background-color: white;
+    border-radius: 12px;
+    font-size: 14px;
+    width: 100%; /* Sử dụng toàn bộ width modal */
+    min-width: 800px; /* Giữ nguyên min-width */
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed; /* Cố định layout để kiểm soát width */
+}
+
+    #bookingHistoryModal .table thead {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+
+        #bookingHistoryModal .table thead th {
+            border: none;
+            padding: 1rem 0.75rem; /* Giữ nguyên padding */
+            font-weight: 600;
+            color: #334155;
+            text-transform: uppercase;
+            font-size: 0.75rem; /* Giữ nguyên font-size */
+            letter-spacing: 0.05em;
+            text-align: center;
+            vertical-align: middle;
+            position: relative;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+            /* Giữ nguyên phân bổ width các cột */
+            #bookingHistoryModal .table thead th:nth-child(1) {
+                width: 10%;
+            }
+            /* Mã Booking */
+            #bookingHistoryModal .table thead th:nth-child(2) {
+                width: 15%;
+            }
+            /* Tên Sân */
+            #bookingHistoryModal .table thead th:nth-child(3) {
+                width: 12%;
+            }
+            /* Ngày */
+            #bookingHistoryModal .table thead th:nth-child(4) {
+                width: 12%;
+            }
+            /* Giờ Bắt Đầu */
+            #bookingHistoryModal .table thead th:nth-child(5) {
+                width: 12%;
+            }
+            /* Giờ Kết Thúc */
+            #bookingHistoryModal .table thead th:nth-child(6) {
+                width: 15%;
+            }
+            /* Trạng Thái */
+            #bookingHistoryModal .table thead th:nth-child(7) {
+                width: 24%;
+            }
+            /* Hành Động */
+
+            #bookingHistoryModal .table thead th:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 20%;
+                height: 60%;
+                width: 1px;
+                background-color: #cbd5e1;
+            }
+
+    #bookingHistoryModal .table tbody td {
+        padding: 1rem 0.75rem; /* Giữ nguyên padding */
+        text-align: center;
+        vertical-align: middle;
+        border-top: 1px solid #f1f5f9;
+        white-space: nowrap;
+        font-size: 13px; /* Giữ nguyên font-size */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        /* Đặc biệt cho các cột thời gian */
+        #bookingHistoryModal .table tbody td:nth-child(4),
+        #bookingHistoryModal .table tbody td:nth-child(5) {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #1e40af;
+            background-color: #f0f9ff;
+        }
+
+    #bookingHistoryModal .table tbody tr {
+        transition: all 0.2s ease-in-out;
+        height: 60px; /* Giữ nguyên height */
+    }
+
+        #bookingHistoryModal .table tbody tr:hover {
+            background-color: #f0f9ff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+            #bookingHistoryModal .table tbody tr:hover td:nth-child(4),
+            #bookingHistoryModal .table tbody tr:hover td:nth-child(5) {
+                background-color: #dbeafe;
+            }
+
+/* ===== STATUS BADGES - GIỮ NGUYÊN ===== */
+.status-badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    border: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.status-confirmed {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-color: #93c5fd;
+}
+
+.status-completed {
+    background-color: #dcfce7;
+    color: #166534;
+    border-color: #86efac;
+}
+
+.status-cancelled {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #d97706;
+    border-color: #fcd34d;
+}
+
+/* ===== BOOKING ID STYLING - GIỮ NGUYÊN ===== */
+.booking-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #6366f1;
+    background-color: #f0f9ff;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.375rem;
+    border: 1px solid #e0e7ff;
+    display: inline-block;
+    font-size: 0.8rem;
+}
+
+/* ===== TIME DISPLAY STYLING - GIỮ NGUYÊN ===== */
+.time-display {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #1e40af;
+    background-color: #f0f9ff;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.375rem;
+    border: 1px solid #bfdbfe;
+    display: inline-block;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+/* ===== BUTTONS - GIỮ NGUYÊN ===== */
+.cancel-btn, .view-btn {
+    border: none;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    justify-content: center;
+    min-width: 70px;
+    margin: 0 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.cancel-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+    .cancel-btn::before {
+        content: "🚫";
+        font-size: 0.7rem;
+    }
+
+    .cancel-btn:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+    }
+
+.view-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+    .view-btn::before {
+        content: "👁️";
+        font-size: 0.7rem;
+    }
+
+    .view-btn:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+
+/* ===== MODAL FOOTER - GIỮ NGUYÊN ===== */
+#bookingHistoryModal .modal-footer {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-top: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.booking-summary {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.booking-count {
+    color: #334155;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* ===== NÚT ĐÓNG - GIỮ NGUYÊN ===== */
+.btn-custom {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    box-shadow: 0 2px 4px rgba(107, 114, 128, 0.2);
+}
+
+    .btn-custom:hover {
+        background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(107, 114, 128, 0.3);
+        color: white;
+    }
+
+    .btn-custom::before {
+        content: "✕";
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+
+/* ===== RESPONSIVE DESIGN - KHÔNG SCROLL NGANG ===== */
+@media (max-width: 1500px) {
+    #bookingHistoryModal .modal-dialog {
+        max-width: 1300px;
+        width: 95vw;
+    }
+}
+
+@media (max-width: 1400px) {
+    #bookingHistoryModal .modal-dialog {
+        max-width: 1200px;
+        width: 95vw;
+    }
+}
+
+@media (max-width: 1200px) {
+    #bookingHistoryModal .modal-dialog {
+        max-width: 1000px;
+        width: 95vw;
+    }
+
+    #bookingHistoryModal .table {
+        font-size: 13px;
+        min-width: 700px;
+    }
+
+        #bookingHistoryModal .table thead th {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.7rem;
+        }
+
+        #bookingHistoryModal .table tbody td {
+            padding: 0.75rem 0.5rem;
+            font-size: 12px;
+        }
+}
+
+@media (max-width: 1000px) {
+    #bookingHistoryModal .modal-dialog {
+        max-width: 95vw;
+        width: 95vw;
+        margin: 0.5rem auto;
+    }
+
+    #bookingHistoryModal .modal-body {
+        padding: 1rem;
+        max-height: 60vh;
+    }
+
+    #bookingHistoryModal .table {
+        min-width: 600px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    #bookingHistoryModal .modal-dialog {
+        margin: 0.25rem auto;
+        max-width: 98vw;
+        width: 98vw;
+    }
+
+    #bookingHistoryModal .modal-body {
+        max-height: 50vh;
+        padding: 0.75rem;
+    }
+
+    .cancel-btn, .view-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.65rem;
+        min-width: 60px;
+    }
+
+    #bookingHistoryModal .table {
+        min-width: 500px;
+        font-size: 11px;
+    }
+
+        #bookingHistoryModal .table thead th {
+            padding: 0.5rem 0.3rem;
+            font-size: 0.65rem;
+        }
+
+        #bookingHistoryModal .table tbody td {
+            padding: 0.5rem 0.3rem;
+            font-size: 10px;
+        }
+}
+
+/* ===== SCROLL BAR CHỈ CHO SCROLL DỌC ===== */
+#bookingHistoryModal .modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+#bookingHistoryModal .modal-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+#bookingHistoryModal .modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+    #bookingHistoryModal .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+/* ===== LOADING ANIMATION ===== */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #64748b;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+.empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 0.75rem;
+}
+
+.empty-state-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* ===== ĐẢM BẢO HIỂN THỊ ĐẦY ĐỦ ===== */
+#bookingHistoryModal .table td,
+#bookingHistoryModal .table th {
+    box-sizing: border-box !important;
+}
+
+/* ===== CENTERING MODAL ===== */
+.modal.show .modal-dialog {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 2rem);
+}
+
+@media (max-width: 576px) {
+    .modal.show .modal-dialog {
+        min-height: calc(100vh - 1rem);
+    }
+}
+/* ===== BỘ LỌC NGÀY STYLING ===== */
+.d-flex.mb-3 {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    align-items: center;
+}
+
+/* Input date styling */
+#filterDate.form-control {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    font-family: inherit;
+    min-width: 200px;
+}
+
+    #filterDate.form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background-color: #fefefe;
+    }
+
+    #filterDate.form-control:hover {
+        border-color: #cbd5e1;
+    }
+
+    /* Custom date picker icon */
+    #filterDate.form-control::-webkit-calendar-picker-indicator {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23667eea'%3e%3cpath fill-rule='evenodd' d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z' clip-rule='evenodd'/%3e%3c/svg%3e");
+        background-size: 1.25rem;
+        cursor: pointer;
+        padding: 0.25rem;
+    }
+
+/* Button styling */
+.btn.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 120px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+    .btn.btn-primary::before {
+        content: "🔍";
+        font-size: 0.875rem;
+    }
+
+    .btn.btn-primary:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn.btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+    }
+
+    .btn.btn-primary:focus {
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        outline: none;
+    }
+
+/* Margin cho class me-2 */
+.me-2 {
+    margin-right: 1rem !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+    .d-flex.mb-3 {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 1rem;
+        padding: 1.25rem;
+    }
+
+    #filterDate.form-control {
+        min-width: auto;
+        margin-right: 0 !important;
+    }
+
+    .btn.btn-primary {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .d-flex.mb-3 {
+        padding: 1rem;
+        margin-bottom: 1rem !important;
+    }
+
+    #filterDate.form-control {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.8rem;
+    }
+
+    .btn.btn-primary {
+        padding: 0.625rem 1rem;
+        font-size: 0.8rem;
+    }
+}
