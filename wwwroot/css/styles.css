@@ -1179,3 +1179,20 @@ body {
             right: 35px;
         }
 }
+
+.toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    padding: 12px 20px;
+    background: rgba(0, 123, 255, 0.9);
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}

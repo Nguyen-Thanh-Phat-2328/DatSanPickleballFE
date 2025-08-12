@@ -4,6 +4,10 @@ let selectedDate = null;
 let selectedTimeSlots = [];
 let currentWeekOffset = 0;
 
+// Mảng lưu maKhungGio và maLichSan đã chọn
+let selectedMaKhungGio = [];
+let selectedMaLichSan = [];
+
 // Court data
 //const courts = {
     //1: {
@@ -65,6 +69,21 @@ const bookings = {
         '2024-01-09': ['11:00 - 12:00', '17:00 - 18:00']
     }
 };
+// Dữ liệu khung giờ từ database
+const khungGioList = [
+    { maKhungGio: 1, gioBatDau: "06:00", gioKetThuc: "07:00" },
+    { maKhungGio: 2, gioBatDau: "07:00", gioKetThuc: "08:00" },
+    { maKhungGio: 3, gioBatDau: "08:00", gioKetThuc: "09:00" },
+    { maKhungGio: 4, gioBatDau: "09:00", gioKetThuc: "10:00" },
+    { maKhungGio: 5, gioBatDau: "15:00", gioKetThuc: "16:00" },
+    { maKhungGio: 6, gioBatDau: "16:00", gioKetThuc: "17:00" },
+    { maKhungGio: 7, gioBatDau: "17:00", gioKetThuc: "18:00" },
+    { maKhungGio: 8, gioBatDau: "18:00", gioKetThuc: "19:00" },
+    { maKhungGio: 9, gioBatDau: "19:00", gioKetThuc: "20:00" },
+    { maKhungGio: 10, gioBatDau: "20:00", gioKetThuc: "21:00" },
+    { maKhungGio: 11, gioBatDau: "21:00", gioKetThuc: "22:00" },
+    { maKhungGio: 12, gioBatDau: "22:00", gioKetThuc: "23:00" }
+];
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
@@ -231,20 +250,34 @@ function changeWeek(direction) {
 
 // Select date
 function selectDate(date) {
+    // date ở đây là đối tượng Date từ generateDates()
     selectedDate = formatDateForBooking(date);
+
+    // Reset dữ liệu đã chọn mỗi khi đổi ngày
+    selectedMaKhungGio.length = 0;
+    selectedMaLichSan.length = 0;
+
+    // Nếu bạn dùng selectedTimeSlots (chuỗi/array để hiển thị giờ đã chọn), reset luôn
     selectedTimeSlots = [];
-    
-    // Update UI
-    document.querySelectorAll('.date-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
+
+    // Xóa trạng thái "selected" trên UI (nếu còn)
+    document.querySelectorAll('#time-slots .time-slot.selected')
+        .forEach(el => el.classList.remove('selected'));
+
+    // Cập nhật hiển thị ngày đang active
+    document.querySelectorAll('.date-item').forEach(item => item.classList.remove('active'));
     const selectedDateElement = document.querySelector(`[data-date="${selectedDate}"]`);
     if (selectedDateElement) {
         selectedDateElement.classList.add('active');
     }
-    
+
+    console.log("=== Đổi ngày sang:", selectedDate, "=> reset selectedMaKhungGio, selectedMaLichSan ===");
+    console.log("selectedMaKhungGio:", selectedMaKhungGio, " selectedMaLichSan:", selectedMaLichSan);
+
+    // Gọi lại để render khung giờ cho ngày mới
     generateTimeSlots();
+
+    // Cập nhật phần tóm tắt nếu có
     updateBookingSummary();
 }
 
@@ -316,32 +349,87 @@ function updateBookingSummary() {
 }
 
 // Confirm booking
-function confirmBooking() {
-    if (!selectedCourt || !selectedDate || selectedTimeSlots.length === 0) {
+async function confirmBooking() {
+    // kiểm tra chọn sân, ngày, giờ (tùy logic)
+    if (!selectedCourt || !selectedDate || selectedMaLichSan.length === 0) {
         alert('Vui lòng chọn đầy đủ thông tin đặt sân!');
         return;
     }
-    
-    // Generate booking code
-    const bookingCode = 'PB' + Date.now().toString().slice(-6);
-    
-    // Add to bookings (in real app, this would be sent to backend)
-    if (!bookings[selectedCourt]) {
-        bookings[selectedCourt] = {};
+
+    try {
+        // Lưu danh sách mã lịch sân vào localStorage trước khi sang VNPay
+        localStorage.setItem('maLichSanList', JSON.stringify(selectedMaLichSan));
+
+        // gọi endpoint backend tạo payment (GET hoặc POST tuỳ bạn)
+        const res = await fetch('https://localhost:7067/api/VNPay/create-payment', {
+            method: 'GET',
+            // nếu POST: body: JSON.stringify({ ... })
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            console.error('API error:', text);
+            alert('Lỗi server: ' + text);
+            return;
+        }
+
+        const data = await res.json(); // { paymentUrl: "https://sandbox..." }
+        if (!data || !data.paymentUrl) {
+            alert('Không nhận được paymentUrl từ server.');
+            return;
+        }
+
+        // redirect sang trang VNPAY
+        window.location.href = data.paymentUrl;
+    } catch (err) {
+        console.error(err);
+        alert('Lỗi kết nối tới server.');
     }
-    if (!bookings[selectedCourt][selectedDate]) {
-        bookings[selectedCourt][selectedDate] = [];
+}
+document.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+        let maLichSanList = JSON.parse(localStorage.getItem('maLichSanList')) || [];
+        const user = JSON.parse(localStorage.getItem('user'));
+        const maNguoiDung = user?.maNguoiDung;
+
+        if (!maNguoiDung || maLichSanList.length === 0) {
+            console.error("Không có dữ liệu đặt sân để tạo booking.");
+        } else {
+            try {
+                for (const item of maLichSanList) {
+                    await fetch('https://localhost:7067/api/Booking/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            maNguoiDung: Number(maNguoiDung),
+                            maLichSan: Number(item.maLichSan)
+                        })
+                    });
+                }
+
+                // Xoá dữ liệu đã dùng
+                localStorage.removeItem('maLichSanList');
+                maLichSanList = [];
+
+                // Sau khi tạo xong tất cả booking
+                showPage('home');
+                showSuccessModal();
+
+            } catch (err) {
+                console.error("Lỗi khi tạo booking:", err);
+                alert("Có lỗi khi tạo booking!");
+            }
+        }
+        // Xóa query param để tránh hiện lại khi refresh
+        window.history.replaceState({}, document.title, window.location.pathname);
     }
-    bookings[selectedCourt][selectedDate].push(...selectedTimeSlots);
-    
-    // Show success modal
-    document.getElementById('booking-code').textContent = bookingCode;
+});
+
+function showSuccessModal() {
     document.getElementById('success-modal').style.display = 'block';
-    
-    // Reset selections
-    selectedTimeSlots = [];
-    generateTimeSlots();
-    updateBookingSummary();
 }
 
 // Close modal
@@ -349,13 +437,6 @@ function closeModal() {
     document.getElementById('success-modal').style.display = 'none';
 }
 
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('success-modal');
-    if (event.target === modal) {
-        closeModal();
-    }
-}
 
 // Utility functions
 function formatDateForBooking(date) {
@@ -465,6 +546,9 @@ async function generateTimeSlots() {
             slotElement.className = 'time-slot';
             slotElement.textContent = slot.khungGio;
 
+            // Gán trạng thái vào data attribute
+            slotElement.dataset.trangthai = slot.trangThai; 
+
             if (slot.trangThai === "Đã đặt") {
                 slotElement.classList.add('booked');
             } else if (selectedTimeSlots.includes(slot.khungGio)) {
@@ -484,10 +568,77 @@ async function generateTimeSlots() {
     }
 }
 
+
+document.getElementById('time-slots').addEventListener('click', async function (e) {
+    const clickedSlot = e.target.closest('.time-slot');
+    if (!clickedSlot) return;
+
+    // Lấy trạng thái từ dataset (được set khi render slot)
+    const trangThai = clickedSlot.dataset.trangthai;
+
+    // Nếu slot đã đặt thì không cho chọn
+    if (trangThai === "Đã đặt") {
+        alert("Khung giờ này đã được đặt!");
+        return;
+    }
+
+    // Toggle trạng thái chọn
+    clickedSlot.classList.toggle('selected');
+    const isSelected = clickedSlot.classList.contains('selected');
+
+    const selectedTimeSlots = clickedSlot.textContent.trim(); // Ví dụ: "08:00 - 09:00"
+    const [start, end] = selectedTimeSlots.split(' - ').map(t => t.trim());
+
+    const khungGio = khungGioList.find(k => k.gioBatDau === start && k.gioKetThuc === end);
+    if (!khungGio) {
+        alert("Không tìm thấy khung giờ trong database!");
+        return;
+    }
+    
+    const maSan = selectedCourt;
+    const ngay = selectedDate;
+    const maKhungGio = khungGio.maKhungGio;
+
+    // Nếu vừa chọn thì thêm vào mảng, nếu bỏ chọn thì xoá khỏi mảng
+    if (isSelected) {
+        selectedMaKhungGio.push(maKhungGio);
+       
+        console.log("Đang lấy MaLichSan cho:", { maSan, ngay, maKhungGio });
+
+        try {
+            const response = await fetch(`https://localhost:7067/lichsan/get-ma-lich-san?maSan=${maSan}&ngay=${ngay}&maKhungGio=${maKhungGio}`);
+            if (!response.ok) throw new Error("Không tìm thấy lịch sân");
+
+            const data = await response.json();
+            console.log("Mã lịch sân:", data.maLichSan);
+
+            // Lưu maLichSan kèm maKhungGio
+            selectedMaLichSan.push({
+                maKhungGio: maKhungGio,
+                maLichSan: data.maLichSan
+            });
+        } catch (error) {
+            console.error(error);
+            alert("Có lỗi khi lấy mã lịch sân!");
+        }
+    } else {
+        // Bỏ chọn => xóa maKhungGio & maLichSan tương ứng
+        selectedMaKhungGio = selectedMaKhungGio.filter(id => id !== maKhungGio);
+        selectedMaLichSan = selectedMaLichSan.filter(item => item.maKhungGio !== maKhungGio);
+
+        console.log("Đã bỏ chọn maKhungGio:", maKhungGio);
+    }
+
+    console.log("Danh sách maKhungGio đã chọn:", selectedMaKhungGio);
+    console.log("Danh sách maLichSan đã chọn:", selectedMaLichSan);
+});
+
+
+
 // Auth functions
 function switchAuthTab(tab) {
     // Update tabs
-    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-tab').forEach(t =>  t.classList.remove('active'));
     document.querySelector(`[onclick="switchAuthTab('${tab}')"]`).classList.add('active');
     
     // Update forms
@@ -541,7 +692,6 @@ async function handleLogin(event) {
                 }));
 
                 hideLoadingButton(event.target.querySelector('button[type="submit"]'));
-                showSuccessMessage('Đăng nhập thành công!');
 
                 // Redirect to home after 1 second
                 setTimeout(() => {
@@ -612,22 +762,71 @@ async function handleRegister(event) {
         alert("Lỗi kết nối đến máy chủ.");
     }
 }
+async function handleForgotPassword(event) {
+    event.preventDefault(); // Ngăn load lại trang
+
+    const email = document.getElementById('forgot-email').value.trim();
+    const newPassword = document.getElementById('forgot-new-password').value;
+    const confirmNewPassword = document.getElementById('forgot-confirm-password').value;
+
+    // Kiểm tra xác nhận mật khẩu
+    if (newPassword !== confirmNewPassword) {
+        alert("Mật khẩu xác nhận không khớp!");
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://localhost:7067/User/UpdatePasswordByEmail/${email}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newPassword)
+        });
+
+        if (response.ok) {
+            alert("Đặt lại mật khẩu thành công!");
+            // Chuyển về trang đăng nhập
+            switchAuthTab('login');
+        } else {
+            const errorText = await response.text();
+            alert("Lỗi: " + errorText);
+        }
+    } catch (error) {
+        console.error("Lỗi kết nối:", error);
+        alert("Không thể kết nối đến server!");
+    }
+}
+
 function switchAuthTab(tab) {
     const loginForm = document.getElementById("login-form");
     const registerForm = document.getElementById("register-form");
+    const forgotForm = document.getElementById("forgotpassword-form");
     const loginTab = document.querySelector(".auth-tab:nth-child(1)");
     const registerTab = document.querySelector(".auth-tab:nth-child(2)");
+    const forgotTab = document.querySelector(".auth-tab:nth-child(3)");
 
     if (tab === "login") {
         loginForm.classList.add("active");
         registerForm.classList.remove("active");
+        forgotForm.classList.remove("active");
         loginTab.classList.add("active");
         registerTab.classList.remove("active");
     } else {
-        loginForm.classList.remove("active");
-        registerForm.classList.add("active");
-        loginTab.classList.remove("active");
-        registerTab.classList.add("active");
+        if (tab === "register") {
+            loginForm.classList.remove("active");
+            registerForm.classList.add("active");
+            forgotForm.classList.remove("active");
+            loginTab.classList.remove("active");
+            registerTab.classList.add("active");
+        }
+        else {
+            loginForm.classList.remove("active");
+            registerForm.classList.remove("active");
+            forgotForm.classList.add("active");
+            loginTab.classList.remove("active");
+            registerTab.classList.remove("active");
+        }
     }
 }
 
@@ -671,12 +870,42 @@ function showInfoMessage(message) {
     // Create and show info toast
     const toast = createToast(message, 'info');
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+    setTimeout(() => toast.remove(), 2000);
 }
 
 function createToast(message, type) {
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
+    toast.className = `custom-toast toast-${type}`;
+    toast.setAttribute("style", `
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) scale(1) !important;
+        z-index: 9999 !important;
+        background: rgba(50, 50, 50, 0.95) !important;
+        color: #fff !important;
+        padding: 16px 24px !important;
+        border-radius: 12px !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
+        max-width: 350px !important;
+        text-align: center !important;
+        backdrop-filter: blur(6px) !important;
+        animation: fadeInScale 0.3s ease-out forwards !important;
+    `);
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    `;
+    document.head.appendChild(style);
+
     toast.innerHTML = `
         <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
         <span>${message}</span>
@@ -827,6 +1056,9 @@ async function saveProfile() {
 function showBookingHistory() {
     toggleUserMenu(); // Đóng menu
 
+    let ngayHienTai = new Date();
+    ngayHienTai.setHours(0, 0, 0, 0); // bỏ giờ phút giây để so sánh thuần ngày
+
     const userData = JSON.parse(localStorage.getItem('user')); // Lấy thông tin người dùng từ localStorage
 
     if (!userData) {
@@ -854,7 +1086,7 @@ function showBookingHistory() {
                         <td>${b.gioKetThuc}</td>
                         <td>${b.trangThai}</td>
                         <td>
-                            ${b.trangThai === "Đã thanh toán"
+                            ${b.trangThai === "Đã thanh toán" && new Date(b.ngay).setHours(0, 0, 0, 0) >= ngayHienTai.getTime()
                         ? `<button class="cancel-btn" onclick="cancelBooking(${b.maBooking})">Hủy sân</button>`
                         : ""}
                         </td>

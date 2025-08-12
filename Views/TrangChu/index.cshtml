@@ -80,7 +80,7 @@
                                         <span class="checkmark"></span>
                                         Ghi nhớ đăng nhập
                                     </label>
-                                    <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                                    <a class="forgot-password" onclick="switchAuthTab('forgotpassword')">Quên mật khẩu?</a>
                                 </div>
 
                                 <button type="submit" class="auth-btn">
@@ -187,6 +187,58 @@
                                 </button>
                             </form>
                         </div>
+
+                        <!-- Forgot Password Form -->
+                        <div id="forgotpassword-form" class="auth-form">
+                            <form onsubmit="handleForgotPassword(event)">
+                                <!-- Email -->
+                                <div class="form-group">
+                                    <label for="forgot-email">
+                                        <i class="fas fa-envelope"></i>
+                                        Email
+                                    </label>
+                                    <input type="email" id="forgot-email" name="email" required
+                                           placeholder="Nhập email của bạn">
+                                </div>
+
+                                <!-- Mật khẩu mới -->
+                                <div class="form-group">
+                                    <label for="forgot-new-password">
+                                        <i class="fas fa-lock"></i>
+                                        Mật khẩu mới
+                                    </label>
+                                    <div class="password-input">
+                                        <input type="password" id="forgot-new-password" name="newPassword" required
+                                               placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)">
+                                        <button type="button" class="toggle-password" onclick="togglePassword('forgot-new-password')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Xác nhận mật khẩu mới -->
+                                <div class="form-group">
+                                    <label for="forgot-confirm-password">
+                                        <i class="fas fa-lock"></i>
+                                        Xác nhận mật khẩu mới
+                                    </label>
+                                    <div class="password-input">
+                                        <input type="password" id="forgot-confirm-password" name="confirmNewPassword" required
+                                               placeholder="Nhập lại mật khẩu mới">
+                                        <button type="button" class="toggle-password" onclick="togglePassword('forgot-confirm-password')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Nút xác nhận -->
+                                <button type="submit" class="auth-btn">
+                                    <i class="fas fa-key"></i>
+                                    Đặt lại mật khẩu
+                                </button>
+                            </form>
+                        </div>
+
 
                         <div class="auth-footer">
                             <button class="back-to-home" onclick="showPage('home')">
@@ -355,9 +407,6 @@
             </div>
             <div class="modal-body">
                 <p>Cảm ơn bạn đã đặt sân. Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>
-                <div class="booking-details">
-                    <p><strong>Mã đặt sân:</strong> <span id="booking-code"></span></p>
-                </div>
             </div>
             <div class="modal-footer">
                 <button class="modal-btn" onclick="closeModal()">Đóng</button>
