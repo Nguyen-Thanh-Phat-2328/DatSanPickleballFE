@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Frontend</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -17,10 +17,10 @@
                 <h1>Sân Pickleball Tuấn Phát</h1>
             </div>
             <nav class="nav">
-                <a href="#home" onclick="showPage('home')">Trang chủ</a>
+                <a href="@Url.Action("Index", "TrangChu")">Trang chủ</a>
                 <a href="@Url.Action("ShopIndex", "Shop")">Shop</a>
-                <a href="#contact" onclick="showPage('contact')">Liên hệ</a>
-                <a href="#auth" onclick="showPage('auth')">Đăng nhập</a>
+                <a href="@Url.Action("ContactPage", "Contact")">Liên hệ</a>
+                <a href="@Url.Action("AuthPage", "Auth")">Đăng nhập</a>
             </nav>
         </div>
     </header>
@@ -38,5 +38,17 @@
 
     <script src="/js/script.js"></script>
     <script src="/js/Shop.js"></script>
+    <script>
+        window.appUrls = {
+          home: '@Url.Action("Index", "TrangChu")',
+          shop: '@Url.Action("ShopIndex", "Shop")',
+          contact: '@Url.Action("ContactPage", "Contact")'
+        };
+
+        // Chạy updateUserUI khi tải trang (nếu hàm đã được định nghĩa)
+        document.addEventListener('DOMContentLoaded', () => {
+          if (typeof updateUserUI === 'function') updateUserUI();
+        });
+    </script>
 </body>
 </html>

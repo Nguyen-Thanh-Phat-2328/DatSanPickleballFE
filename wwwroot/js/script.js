@@ -695,7 +695,7 @@ async function handleLogin(event) {
 
                 // Redirect to home after 1 second
                 setTimeout(() => {
-                    showPage('home');
+                    window.location.href = homeUrl;
                     updateUserUI();
                 }, 1000);
             }, 1500);
@@ -919,9 +919,9 @@ function updateUserUI() {
         // Update header to show user dropdown
         const nav = document.querySelector('.nav');
         nav.innerHTML = `
-            <a href="#home" onclick="showPage('home')">Trang chủ</a>
-            <a href="#courts" onclick="showPage('courts')">Shop</a>
-            <a href="#contact" onclick="showPage('contact')">Liên hệ</a>
+            <a href="${window.appUrls.home}">Trang chủ</a>
+            <a href="${window.appUrls.shop}">Shop</a>
+            <a href="${window.appUrls.contact}">Liên hệ</a>
             <div class="user-dropdown">
                 <button class="user-avatar" onclick="toggleUserMenu()">
                     <i class="fas fa-user-circle"></i>

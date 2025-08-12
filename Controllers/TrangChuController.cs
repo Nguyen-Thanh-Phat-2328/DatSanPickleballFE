@@ -10,6 +10,7 @@ namespace Frontend.Controllers
 
         private readonly HttpClient _httpClient;
 
+       
         public TrangChuController()
         {
             _httpClient = new HttpClient();

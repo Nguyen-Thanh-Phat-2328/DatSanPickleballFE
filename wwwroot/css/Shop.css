@@ -132,8 +132,7 @@ body {
 }
 
 .search-toggle,
-.cart-icon,
-.user-menu {
+.cart-icon {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -147,8 +146,7 @@ body {
 }
 
     .search-toggle:hover,
-    .cart-icon:hover,
-    .user-menu:hover {
+    .cart-icon:hover {
         background: #667eea;
         color: white;
         transform: translateY(-2px);
@@ -724,12 +722,6 @@ body {
     .header-content {
         flex-wrap: wrap;
         gap: 1rem;
-    }
-
-    .nav {
-        order: 3;
-        width: 100%;
-        justify-content: center;
     }
 
     .hero-content h2 {
