@@ -762,38 +762,76 @@ async function handleRegister(event) {
         alert("Lỗi kết nối đến máy chủ.");
     }
 }
-async function handleForgotPassword(event) {
-    event.preventDefault(); // Ngăn load lại trang
 
-    const email = document.getElementById('forgot-email').value.trim();
+async function handlePickEmail(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('pick-email').value.trim();
+    if (!email) {
+        alert("Vui lòng nhập email của tài khoản quên mật khẩu!");
+        return;
+    }
+    try {
+        const response = await fetch(`https://localhost:7067/User/reset-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(email)
+        });
+
+        if (response.ok) {
+            // Lưu email vào localStorage
+            sessionStorage.setItem("resetEmail", email);
+            //localStorage.setItem("resetEmail", email);
+            alert("Đã gửi mã OTP đến email. Vui lòng kiểm tra hộp thư của bạn.");
+            switchAuthTab('forgotpassword');
+        } else {
+            alert("Lỗi: " + await response.text());
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Không thể kết nối đến server!");
+    }
+}
+
+async function handleForgotPassword(event) {
+    event.preventDefault();
     const newPassword = document.getElementById('forgot-new-password').value;
     const confirmNewPassword = document.getElementById('forgot-confirm-password').value;
+    const Otp = document.getElementById('forgot-otp').value;
 
-    // Kiểm tra xác nhận mật khẩu
+    if (!Otp) {
+        alert("Vui lòng nhập mã Otp có trong Mail!");
+        return;
+    }
+
     if (newPassword !== confirmNewPassword) {
         alert("Mật khẩu xác nhận không khớp!");
         return;
     }
 
     try {
-        const response = await fetch(`https://localhost:7067/User/UpdatePasswordByEmail/${email}`, {
+        const response = await fetch(`https://localhost:7067/User/reset-password`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newPassword)
+            body: JSON.stringify({
+                Otp: Otp,
+                matKhau: newPassword
+            })
         });
 
         if (response.ok) {
             alert("Đặt lại mật khẩu thành công!");
-            // Chuyển về trang đăng nhập
+            sessionStorage.removeItem('resetEmail');
             switchAuthTab('login');
         } else {
-            const errorText = await response.text();
-            alert("Lỗi: " + errorText);
+            alert("Lỗi: " + await response.text());
         }
     } catch (error) {
-        console.error("Lỗi kết nối:", error);
+        console.error(error);
         alert("Không thể kết nối đến server!");
     }
 }
@@ -802,14 +840,15 @@ function switchAuthTab(tab) {
     const loginForm = document.getElementById("login-form");
     const registerForm = document.getElementById("register-form");
     const forgotForm = document.getElementById("forgotpassword-form");
+    const pickemailForm = document.getElementById("pickemail-form");
     const loginTab = document.querySelector(".auth-tab:nth-child(1)");
     const registerTab = document.querySelector(".auth-tab:nth-child(2)");
-    const forgotTab = document.querySelector(".auth-tab:nth-child(3)");
 
     if (tab === "login") {
         loginForm.classList.add("active");
         registerForm.classList.remove("active");
         forgotForm.classList.remove("active");
+        pickemailForm.classList.remove("active");
         loginTab.classList.add("active");
         registerTab.classList.remove("active");
     } else {
@@ -817,15 +856,27 @@ function switchAuthTab(tab) {
             loginForm.classList.remove("active");
             registerForm.classList.add("active");
             forgotForm.classList.remove("active");
+            pickemailForm.classList.remove("active");
             loginTab.classList.remove("active");
             registerTab.classList.add("active");
         }
         else {
-            loginForm.classList.remove("active");
-            registerForm.classList.remove("active");
-            forgotForm.classList.add("active");
-            loginTab.classList.remove("active");
-            registerTab.classList.remove("active");
+            if (tab === "pickemail") {
+                loginForm.classList.remove("active");
+                registerForm.classList.remove("active");
+                forgotForm.classList.remove("active");
+                pickemailForm.classList.add("active");
+                loginTab.classList.remove("active");
+                registerTab.classList.remove("active");
+            }
+            else {
+                loginForm.classList.remove("active");
+                registerForm.classList.remove("active");
+                forgotForm.classList.add("active");
+                pickemailForm.classList.remove("active");
+                loginTab.classList.remove("active");
+                registerTab.classList.remove("active");
+            }
         }
     }
 }

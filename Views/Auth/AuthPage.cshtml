@@ -58,7 +58,7 @@
                                     <span class="checkmark"></span>
                                     Ghi nhớ đăng nhập
                                 </label>
-                                <a class="forgot-password" onclick="switchAuthTab('forgotpassword')">Quên mật khẩu?</a>
+                                <a class="forgot-password" onclick="switchAuthTab('pickemail')">Quên mật khẩu?</a>
                             </div>
 
                             <button type="submit" class="auth-btn">
@@ -166,19 +166,30 @@
                         </form>
                     </div>
 
-                    <!-- Forgot Password Form -->
-                    <div id="forgotpassword-form" class="auth-form">
-                        <form onsubmit="handleForgotPassword(event)">
+                    <!-- Pick Email Form -->
+                    <div id="pickemail-form" class="auth-form">
+                        <form onsubmit="handlePickEmail(event)">
                             <!-- Email -->
                             <div class="form-group">
-                                <label for="forgot-email">
+                                <label for="picl-email">
                                     <i class="fas fa-envelope"></i>
                                     Email
                                 </label>
-                                <input type="email" id="forgot-email" name="email" required
+                                <input type="email" id="pick-email" name="email" required
                                        placeholder="Nhập email của bạn">
-                            </div>
+                            </div>                        
 
+                            <!-- Nút xác nhận -->
+                            <button type="submit" class="auth-btn">
+                                <i class="fas fa-key"></i>
+                                Email link
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Forgot Password Form -->
+                    <div id="forgotpassword-form" class="auth-form">
+                        <form onsubmit="handleForgotPassword(event)">                           
                             <!-- Mật khẩu mới -->
                             <div class="form-group">
                                 <label for="forgot-new-password">
@@ -209,6 +220,16 @@
                                 </div>
                             </div>
 
+                            <!-- Mã OTP -->
+                            <div class="form-group">
+                                <label for="forgot-otp">
+                                    <i class="fas fa-key"></i>
+                                    Mã OTP
+                                </label>
+                                <input type="text" id="forgot-otp" name="otp" required
+                                       placeholder="Nhập mã OTP gồm 6 số" maxlength="6" pattern="\d{6}">
+                            </div>
+
                             <!-- Nút xác nhận -->
                             <button type="submit" class="auth-btn">
                                 <i class="fas fa-key"></i>
@@ -219,16 +240,16 @@
 
 
                     <div class="auth-footer">
-                        <button class="back-to-home" onclick="showPage('home')">
+                        <button class="back-to-home" >
                             <i class="fas fa-arrow-left"></i>
-                            Về trang chủ
+                            <a style="text-decoration:none;" href="@Url.Action("Index", "TrangChu")">Về trang chủ</a>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     <script>
-        const homeUrl = '@Url.Action("Index", "TrangChu")';
+        const homeUrl = '@Url.Action("Index", "TrangChu")';           
     </script>
 </body>
 </html>
