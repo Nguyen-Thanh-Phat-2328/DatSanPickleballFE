@@ -1,0 +1,90 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Product-Detail";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm - Shop Pickleball</title>
+    <link rel="stylesheet" href="/css/ProductDetail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="shop.html"><i class="fas fa-arrow-left"></i> Quay lại Shop</a>
+            <span class="breadcrumb-separator">/</span>
+            <span id="breadcrumb-category">Sản phẩm</span>
+            <span class="breadcrumb-separator">/</span>
+            <span id="breadcrumb-product">Chi tiết</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="product-detail" id="product-detail">
+                <!-- Product content will be loaded here -->
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section" id="reviews-section">
+                <h2>Đánh giá sản phẩm</h2>
+                <div class="reviews-summary" id="reviews-summary">
+                    <!-- Reviews summary will be loaded here -->
+                </div>
+                <div class="reviews-list" id="reviews-list">
+                    <!-- Reviews will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <div class="related-products" id="related-products">
+                <h2>Sản phẩm liên quan</h2>
+                <div class="products-grid" id="related-products-grid">
+                    <!-- Related products will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Giỏ hàng</h3>
+            <button class="close-cart" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be loaded here -->
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Tổng cộng: </span>
+                <span id="cart-total">0đ</span>
+            </div>
+            <div class="cart-actions">
+                <a href="cart.html" class="btn btn-secondary">Xem giỏ hàng</a>
+                <a href="checkout.html" class="btn btn-primary">Thanh toán</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Đang tải...</p>
+    </div>
+
+    <script src="/js/ProductDetail.js"></script>
+</body>
+</html>
+

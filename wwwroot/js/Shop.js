@@ -1,100 +1,12 @@
-﻿// Product data
-const products = [
-    {
-        id: 1,
-        name: "Vợt Pickleball Chuyên Nghiệp",
-        category: "vot",
-        price: 1200000,
-        originalPrice: 1500000,
-        image: "/placeholder-oyol2.png",
-        description: "Vợt pickleball chất lượng cao dành cho người chơi chuyên nghiệp",
-        badge: "sale",
-        inStock: true,
-        rating: 4.8,
-        reviews: 124,
-    },
-    {
-        id: 2,
-        name: "Áo Thể Thao Pickleball",
-        category: "quan-ao",
-        price: 350000,
-        image: "/pickleball-sports-shirt.png",
-        description: "Áo thể thao thoáng mát, thấm hút mồ hôi tốt",
-        badge: "new",
-        inStock: true,
-        rating: 4.6,
-        reviews: 89,
-    },
-    {
-        id: 3,
-        name: "Giày Pickleball Chuyên Dụng",
-        category: "giay",
-        price: 2200000,
-        originalPrice: 2500000,
-        image: "/pickleball-shoes.png",
-        description: "Giày thể thao chuyên dụng cho pickleball với đế chống trượt",
-        badge: "sale",
-        inStock: true,
-        rating: 4.9,
-        reviews: 156,
-    },
-    {
-        id: 4,
-        name: "Túi Đựng Vợt Pickleball",
-        category: "phu-kien",
-        price: 450000,
-        image: "/pickleball-paddle-bag.png",
-        description: "Túi đựng vợt cao cấp, bảo vệ vợt tối ưu",
-        inStock: true,
-        rating: 4.5,
-        reviews: 67,
-    },
-    {
-        id: 5,
-        name: "Quần Short Thể Thao",
-        category: "quan-ao",
-        price: 280000,
-        image: "/pickleball-shorts.png",
-        description: "Quần short thể thao thoải mái, phù hợp mọi hoạt động",
-        inStock: true,
-        rating: 4.4,
-        reviews: 43,
-    },
-    {
-        id: 6,
-        name: "Vợt Pickleball Cho Người Mới",
-        category: "vot",
-        price: 800000,
-        image: "/beginner-pickleball-paddle.png",
-        description: "Vợt pickleball dành cho người mới bắt đầu, dễ sử dụng",
-        badge: "new",
-        inStock: true,
-        rating: 4.3,
-        reviews: 78,
-    },
-    {
-        id: 7,
-        name: "Băng Đô Thể Thao",
-        category: "phu-kien",
-        price: 120000,
-        image: "/placeholder-48wy9.png",
-        description: "Băng đô thấm mồ hôi, giữ tóc gọn gàng khi chơi",
-        inStock: true,
-        rating: 4.2,
-        reviews: 34,
-    },
-    {
-        id: 8,
-        name: "Tất Thể Thao Cao Cấp",
-        category: "phu-kien",
-        price: 150000,
-        image: "/placeholder-4p10p.png",
-        description: "Tất thể thao chống trượt, thoáng khí",
-        inStock: false,
-        rating: 4.7,
-        reviews: 92,
-    },
-]
+﻿
+let products = [];
+//lấy sản phẩm về từ api
+fetch("https://localhost:7067/SanPham/ListAll")
+    .then(response => response.json())
+    .then(data => {
+        products = data;
+        initializeShop();
+    }).catch(error => console.error("Lỗi khi lấy sản phẩm: ", error));
 
 // Cart data
 let cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
@@ -109,9 +21,8 @@ const currentFilters = {
 
 // Initialize the shop
 document.addEventListener("DOMContentLoaded", () => {
-    initializeShop()
-    setupEventListeners()
-    updateCartUI()
+    setupEventListeners();
+    updateCartUI();
 })
 
 function initializeShop() {
@@ -122,9 +33,9 @@ function initializeShop() {
 function setupEventListeners() {
     // Search functionality
     const searchInput = document.getElementById("search-input")
-    const searchToggle = document.querySelector(".search-toggle")
+    //const searchToggle = document.querySelector(".search-toggle")
 
-    searchToggle.addEventListener("click", toggleSearch)
+    //searchToggle.addEventListener("click", toggleSearch)
     searchInput.addEventListener("input", handleSearch)
 
     // Filter functionality
@@ -178,9 +89,9 @@ function handleViewToggle(e) {
     const productsGrid = document.getElementById("products-grid")
 
     viewBtns.forEach((btn) => btn.classList.remove("active"))
-    e.target.classList.add("active")
+    e.currentTarget.classList.add("active")
 
-    const view = e.target.dataset.view
+    const view = e.currentTarget.dataset.view
     if (view === "list") {
         productsGrid.classList.add("list-view")
     } else {
@@ -195,34 +106,34 @@ function filterAndDisplayProducts() {
     if (currentFilters.search) {
         filteredProducts = filteredProducts.filter(
             (product) =>
-                product.name.toLowerCase().includes(currentFilters.search) ||
-                product.description.toLowerCase().includes(currentFilters.search),
+                product.tenSanPham.toLowerCase().includes(currentFilters.search) ||
+                product.moTa.toLowerCase().includes(currentFilters.search),
         )
     }
 
     // Apply category filter
     if (currentFilters.category) {
-        filteredProducts = filteredProducts.filter((product) => product.category === currentFilters.category)
+        filteredProducts = filteredProducts.filter((product) => String(product.maDanhMuc) === String(currentFilters.category));
     }
 
     // Apply price filter
     if (currentFilters.priceRange) {
         const [min, max] = currentFilters.priceRange.split("-").map(Number)
-        filteredProducts = filteredProducts.filter((product) => product.price >= min && product.price <= max)
+        filteredProducts = filteredProducts.filter((product) => product.giaBan >= min && product.giaBan <= max)
     }
 
     // Apply sorting
     filteredProducts.sort((a, b) => {
         switch (currentFilters.sort) {
             case "price-low":
-                return a.price - b.price
+                return a.giaBan - b.giaBan
             case "price-high":
-                return b.price - a.price
+                return b.giaBan - a.giaBan
             case "newest":
-                return b.id - a.id
+                return b.maSanPham - a.maSanPham
             case "name":
             default:
-                return a.name.localeCompare(b.name)
+                return a.tenSanPham.localeCompare(b.tenSanPham)
         }
     })
 
@@ -247,36 +158,36 @@ function displayProducts(productsToShow) {
 }
 
 function createProductCard(product) {
-    const isInCart = cart.some((item) => item.id === product.id)
-    const badgeHtml = product.badge
-        ? `<div class="product-badge ${product.badge}">${getBadgeText(product.badge)}</div>`
+    const isInCart = cart.some((item) => item.maSanPham === product.maSanPham)
+    const badgeHtml = product.soLuongTon
+        ? `<div class="product-badge ${product.soLuongTon}">${getBadgeText(product.soLuongTon)}</div>`
         : ""
-    const originalPriceHtml = product.originalPrice
-        ? `<span class="original-price">${formatPrice(product.originalPrice)}</span>`
+    const originalPriceHtml = product.giaBan
+        ? `<span class="original-price">${formatPrice(product.giaBan)}</span>`
         : ""
-    const stockStatus = product.inStock ? "" : '<span style="color: #ef4444; font-size: 0.9rem;">Hết hàng</span>'
+    const stockStatus = product.soLuongTon > 0 ? "" : '<span style="color: #ef4444; font-size: 0.9rem;">Hết hàng</span>'
 
     return `
-        <div class="product-card" data-id="${product.id}">
+        <div class="product-card" data-id="${product.maSanPham}">
             <div class="product-image">
-                <img src="${product.image}" alt="${product.name}" loading="lazy">
+                <img src="${product.hinhAnh}" alt="${product.tenSanPham}" loading="lazy">
                 ${badgeHtml}
             </div>
             <div class="product-info">
-                <div class="product-category">${getCategoryName(product.category)}</div>
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-description">${product.description}</p>
+                <div class="product-category">${getCategoryName(product.tenDanhMuc)}</div>
+                <h3 class="product-name">${product.tenSanPham}</h3>
+                <p class="product-description">${product.moTa}</p>
                 <div class="product-price">
-                    <span class="current-price">${formatPrice(product.price)}</span>
+                    <span class="current-price">${formatPrice(product.giaBan)}</span>
                     ${originalPriceHtml}
                 </div>
                 ${stockStatus}
                 <div class="product-actions">
-                    <button class="btn btn-primary" onclick="addToCart(${product.id})" ${!product.inStock ? "disabled" : ""}>
+                    <button class="btn btn-primary" onclick="addToCart(${product.maSanPham})" ${product.soLuongTon === 0 ? "disabled" : ""}>
                         <i class="fas fa-shopping-cart"></i>
                         ${isInCart ? "Đã thêm" : "Thêm vào giỏ"}
                     </button>
-                    <button class="btn btn-icon btn-secondary" onclick="toggleWishlist(${product.id})">
+                    <button class="btn btn-icon btn-secondary" onclick="toggleWishlist(${product.maSanPham})">
                         <i class="far fa-heart"></i>
                     </button>
                 </div>
@@ -312,26 +223,26 @@ function formatPrice(price) {
 }
 
 function addToCart(productId) {
-    const product = products.find((p) => p.id === productId)
-    if (!product || !product.inStock) return
+    const product = products.find((p) => p.maSanPham === productId)
+    if (!product || !product.soLuongTon === 0) return
 
-    const existingItem = cart.find((item) => item.id === productId)
+    const existingItem = cart.find((item) => item.maSanPham === productId)
 
     if (existingItem) {
         existingItem.quantity += 1
     } else {
         cart.push({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
+            id: product.maSanPham,
+            name: product.tenSanPham,
+            price: product.giaBan,
+            image: product.hinhAnh,
             quantity: 1,
         })
     }
 
     saveCart()
     updateCartUI()
-    showAddToCartNotification(product.name)
+    showAddToCartNotification(product.tenSanPham)
 
     // Update button text
     const productCard = document.querySelector(`[data-id="${productId}"]`)

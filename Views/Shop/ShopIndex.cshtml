@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Frontend.DataAdmin
+@model ShopView
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Shop";
 }
@@ -52,10 +54,10 @@
                         <label>Danh mục:</label>
                         <select id="category-filter">
                             <option value="">Tất cả</option>
-                            <option value="vot">Vợt</option>
-                            <option value="quan-ao">Quần áo</option>
-                            <option value="giay">Giày</option>
-                            <option value="phu-kien">Phụ kiện</option>
+                            @foreach(var c in Model.DanhMucSanPhamList)
+                            {
+                                <option value="@c.MaDanhMuc">@c.TenDanhMuc</option>
+                            }
                         </select>
                     </div>
                     <div class="filter-group">

@@ -1,0 +1,767 @@
+﻿// Import product data from shop.js (in real app, this would be from API)
+const products = [
+    {
+        id: 1,
+        name: "Vợt Pickleball Chuyên Nghiệp",
+        category: "vot",
+        price: 1200000,
+        originalPrice: 1500000,
+        image: "/placeholder-oyol2.png",
+        images: ["/placeholder-oyol2.png", "/placeholder-oyol2.png", "/placeholder-oyol2.png"],
+        description:
+            "Vợt pickleball chất lượng cao dành cho người chơi chuyên nghiệp. Được làm từ chất liệu carbon fiber cao cấp, mang lại cảm giác tuyệt vời khi chơi.",
+        features: [
+            "Chất liệu carbon fiber cao cấp",
+            "Trọng lượng tối ưu 225g",
+            "Grip chống trượt",
+            "Thiết kế aerodynamic",
+            "Bảo hành 2 năm",
+        ],
+        badge: "sale",
+        inStock: true,
+        stockQuantity: 15,
+        rating: 4.8,
+        reviews: 124,
+    },
+    {
+        id: 2,
+        name: "Áo Thể Thao Pickleball",
+        category: "quan-ao",
+        price: 350000,
+        image: "/pickleball-sports-shirt.png",
+        images: ["/pickleball-sports-shirt.png", "/pickleball-sports-shirt.png"],
+        description: "Áo thể thao thoáng mát, thấm hút mồ hôi tốt, phù hợp cho mọi hoạt động thể thao.",
+        features: [
+            "Chất liệu polyester cao cấp",
+            "Công nghệ thấm hút mồ hôi",
+            "Thiết kế thoáng khí",
+            "Form áo thoải mái",
+            "Màu sắc đa dạng",
+        ],
+        badge: "new",
+        inStock: true,
+        stockQuantity: 25,
+        rating: 4.6,
+        reviews: 89,
+    },
+    {
+        id: 3,
+        name: "Giày Pickleball Chuyên Dụng",
+        category: "giay",
+        price: 2200000,
+        originalPrice: 2500000,
+        image: "/pickleball-shoes.png",
+        images: ["/pickleball-shoes.png", "/pickleball-shoes.png"],
+        description: "Giày thể thao chuyên dụng cho pickleball với đế chống trượt và hỗ trợ tối ưu.",
+        features: ["Đế cao su chống trượt", "Hỗ trợ mắt cá chân", "Đệm êm ái", "Thoáng khí tối ưu", "Thiết kế thời trang"],
+        badge: "sale",
+        inStock: true,
+        stockQuantity: 8,
+        rating: 4.9,
+        reviews: 156,
+    },
+    {
+        id: 4,
+        name: "Túi Đựng Vợt Pickleball",
+        category: "phu-kien",
+        price: 450000,
+        image: "/pickleball-paddle-bag.png",
+        images: ["/pickleball-paddle-bag.png"],
+        description: "Túi đựng vợt cao cấp, bảo vệ vợt tối ưu với nhiều ngăn tiện dụng.",
+        features: [
+            "Chất liệu chống nước",
+            "Nhiều ngăn tiện dụng",
+            "Dây đeo thoải mái",
+            "Bảo vệ vợt tối ưu",
+            "Thiết kế compact",
+        ],
+        inStock: true,
+        stockQuantity: 12,
+        rating: 4.5,
+        reviews: 67,
+    },
+    {
+        id: 5,
+        name: "Quần Short Thể Thao",
+        category: "quan-ao",
+        price: 280000,
+        image: "/pickleball-shorts.png",
+        images: ["/pickleball-shorts.png"],
+        description: "Quần short thể thao thoải mái, phù hợp mọi hoạt động thể thao.",
+        features: ["Chất liệu thoáng mát", "Thiết kế thoải mái", "Túi tiện dụng", "Dây rút điều chỉnh", "Màu sắc đa dạng"],
+        inStock: true,
+        stockQuantity: 20,
+        rating: 4.4,
+        reviews: 43,
+    },
+    {
+        id: 6,
+        name: "Vợt Pickleball Cho Người Mới",
+        category: "vot",
+        price: 800000,
+        image: "/beginner-pickleball-paddle.png",
+        images: ["/beginner-pickleball-paddle.png"],
+        description: "Vợt pickleball dành cho người mới bắt đầu, dễ sử dụng và giá cả phải chăng.",
+        features: ["Thiết kế dễ sử dụng", "Trọng lượng nhẹ", "Grip thoải mái", "Giá cả phải chăng", "Phù hợp người mới"],
+        badge: "new",
+        inStock: true,
+        stockQuantity: 18,
+        rating: 4.3,
+        reviews: 78,
+    },
+    {
+        id: 7,
+        name: "Băng Đô Thể Thao",
+        category: "phu-kien",
+        price: 120000,
+        image: "/placeholder-48wy9.png",
+        images: ["/placeholder-48wy9.png"],
+        description: "Băng đô thấm mồ hôi, giữ tóc gọn gàng khi chơi thể thao.",
+        features: ["Thấm hút mồ hôi tốt", "Chất liệu mềm mại", "Co giãn thoải mái", "Dễ dàng giặt sạch", "Nhiều màu sắc"],
+        inStock: true,
+        stockQuantity: 30,
+        rating: 4.2,
+        reviews: 34,
+    },
+    {
+        id: 8,
+        name: "Tất Thể Thao Cao Cấp",
+        category: "phu-kien",
+        price: 150000,
+        image: "/placeholder-4p10p.png",
+        images: ["/placeholder-4p10p.png"],
+        description: "Tất thể thao chống trượt, thoáng khí, mang lại cảm giác thoải mái.",
+        features: ["Chống trượt hiệu quả", "Thoáng khí tối ưu", "Chất liệu cao cấp", "Độ bền cao", "Thiết kế ergonomic"],
+        inStock: false,
+        stockQuantity: 0,
+        rating: 4.7,
+        reviews: 92,
+    },
+]
+
+// Sample reviews data
+const reviewsData = {
+    1: [
+        {
+            id: 1,
+            userName: "Nguyễn Văn A",
+            rating: 5,
+            date: "2024-01-15",
+            content: "Vợt rất tốt, chất lượng cao, đánh rất êm tay. Rất hài lòng với sản phẩm này!",
+        },
+        {
+            id: 2,
+            userName: "Trần Thị B",
+            rating: 4,
+            date: "2024-01-10",
+            content: "Sản phẩm đúng như mô tả, giao hàng nhanh. Vợt có trọng lượng vừa phải.",
+        },
+        {
+            id: 3,
+            userName: "Lê Văn C",
+            rating: 5,
+            date: "2024-01-05",
+            content: "Tuyệt vời! Đây là vợt tốt nhất tôi từng sử dụng. Grip rất chắc tay.",
+        },
+    ],
+    2: [
+        {
+            id: 4,
+            userName: "Phạm Thị D",
+            rating: 4,
+            date: "2024-01-12",
+            content: "Áo đẹp, chất liệu thoáng mát. Thấm hút mồ hôi tốt khi chơi thể thao.",
+        },
+        {
+            id: 5,
+            userName: "Hoàng Văn E",
+            rating: 5,
+            date: "2024-01-08",
+            content: "Chất lượng tuyệt vời, form áo vừa vặn. Sẽ mua thêm màu khác.",
+        },
+    ],
+}
+
+// Cart data
+let cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
+let currentProduct = null
+let currentQuantity = 1
+
+// Initialize page
+document.addEventListener("DOMContentLoaded", () => {
+    showLoading()
+    loadProduct()
+    updateCartUI()
+    setupEventListeners()
+})
+
+function showLoading() {
+    document.getElementById("loading").classList.remove("hidden")
+}
+
+function hideLoading() {
+    document.getElementById("loading").classList.add("hidden")
+}
+
+function setupEventListeners() {
+    // Quantity controls
+    document.addEventListener("click", (e) => {
+        if (e.target.closest(".quantity-decrease")) {
+            updateQuantity(-1)
+        } else if (e.target.closest(".quantity-increase")) {
+            updateQuantity(1)
+        }
+    })
+
+    // Quantity input
+    document.addEventListener("input", (e) => {
+        if (e.target.classList.contains("quantity-input")) {
+            const value = Number.parseInt(e.target.value) || 1
+            currentQuantity = Math.max(1, Math.min(value, currentProduct?.stockQuantity || 1))
+            e.target.value = currentQuantity
+        }
+    })
+}
+
+function loadProduct() {
+    // Get product ID from URL parameters
+    const urlParams = new URLSearchParams(window.location.search)
+    const productId = Number.parseInt(urlParams.get("id"))
+
+    if (!productId) {
+        window.location.href = "shop.html"
+        return
+    }
+
+    // Find product
+    currentProduct = products.find((p) => p.id === productId)
+
+    if (!currentProduct) {
+        window.location.href = "shop.html"
+        return
+    }
+
+    // Simulate loading delay
+    setTimeout(() => {
+        renderProduct()
+        renderReviews()
+        renderRelatedProducts()
+        hideLoading()
+    }, 500)
+}
+
+function renderProduct() {
+    const productDetail = document.getElementById("product-detail")
+    const breadcrumbCategory = document.getElementById("breadcrumb-category")
+    const breadcrumbProduct = document.getElementById("breadcrumb-product")
+
+    // Update breadcrumb
+    breadcrumbCategory.textContent = getCategoryName(currentProduct.category)
+    breadcrumbProduct.textContent = currentProduct.name
+
+    // Calculate discount
+    const discount = currentProduct.originalPrice
+        ? Math.round(((currentProduct.originalPrice - currentProduct.price) / currentProduct.originalPrice) * 100)
+        : 0
+
+    productDetail.innerHTML = `
+    <div class="product-images">
+      <div class="main-image">
+        <img src="${currentProduct.image}" alt="${currentProduct.name}" id="main-product-image">
+      </div>
+      <div class="thumbnail-images">
+        ${currentProduct.images
+            ?.map(
+                (img, index) => `
+          <div class="thumbnail ${index === 0 ? "active" : ""}" onclick="changeMainImage('${img}', this)">
+            <img src="${img}" alt="Thumbnail ${index + 1}">
+          </div>
+        `,
+            )
+            .join("") || ""
+        }
+      </div>
+    </div>
+
+    <div class="product-info">
+      <div class="product-category">${getCategoryName(currentProduct.category)}</div>
+      <h1>${currentProduct.name}</h1>
+      
+      <div class="product-rating">
+        <div class="stars">
+          ${generateStars(currentProduct.rating)}
+        </div>
+        <span class="rating-text">${currentProduct.rating}/5 (${currentProduct.reviews} đánh giá)</span>
+      </div>
+
+      <div class="product-price">
+        <span class="current-price">${formatPrice(currentProduct.price)}</span>
+        ${currentProduct.originalPrice
+            ? `
+          <span class="original-price">${formatPrice(currentProduct.originalPrice)}</span>
+          <span class="discount-badge">-${discount}%</span>
+        `
+            : ""
+        }
+      </div>
+
+      <p class="product-description">${currentProduct.description}</p>
+
+      <div class="product-options">
+        <div class="quantity-selector">
+          <label>Số lượng:</label>
+          <div class="quantity-controls">
+            <button class="quantity-btn quantity-decrease" ${currentQuantity <= 1 ? "disabled" : ""}>
+              <i class="fas fa-minus"></i>
+            </button>
+            <input type="number" class="quantity-input" value="${currentQuantity}" min="1" max="${currentProduct.stockQuantity}">
+            <button class="quantity-btn quantity-increase" ${currentQuantity >= currentProduct.stockQuantity ? "disabled" : ""}>
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="stock-status ${currentProduct.inStock ? "in-stock" : "out-of-stock"}">
+          <i class="fas ${currentProduct.inStock ? "fa-check-circle" : "fa-times-circle"}"></i>
+          ${currentProduct.inStock ? `Còn ${currentProduct.stockQuantity} sản phẩm` : "Hết hàng"}
+        </div>
+      </div>
+
+      <div class="product-actions">
+        <button class="btn btn-primary" onclick="addToCart()" ${!currentProduct.inStock ? "disabled" : ""}>
+          <i class="fas fa-shopping-cart"></i>
+          ${currentProduct.inStock ? "Thêm vào giỏ hàng" : "Hết hàng"}
+        </button>
+        <button class="btn btn-secondary" onclick="toggleWishlist()">
+          <i class="far fa-heart"></i>
+          Yêu thích
+        </button>
+      </div>
+
+      ${currentProduct.features
+            ? `
+        <div class="product-features">
+          <h3>Đặc điểm nổi bật</h3>
+          <ul class="features-list">
+            ${currentProduct.features
+                .map(
+                    (feature) => `
+              <li><i class="fas fa-check"></i> ${feature}</li>
+            `,
+                )
+                .join("")}
+          </ul>
+        </div>
+      `
+            : ""
+        }
+    </div>
+  `
+}
+
+function renderReviews() {
+    const reviewsSection = document.getElementById("reviews-section")
+    const productReviews = reviewsData[currentProduct.id] || []
+
+    // Calculate rating breakdown
+    const ratingBreakdown = [5, 4, 3, 2, 1].map((rating) => {
+        const count = productReviews.filter((r) => r.rating === rating).length
+        const percentage = productReviews.length > 0 ? (count / productReviews.length) * 100 : 0
+        return { rating, count, percentage }
+    })
+
+    const reviewsSummary = document.getElementById("reviews-summary")
+    reviewsSummary.innerHTML = `
+    <div class="rating-overview">
+      <div class="rating-score">${currentProduct.rating}</div>
+      <div class="stars">
+        ${generateStars(currentProduct.rating)}
+      </div>
+      <div class="rating-text">${currentProduct.reviews} đánh giá</div>
+    </div>
+    <div class="rating-breakdown">
+      ${ratingBreakdown
+            .map(
+                (item) => `
+        <div class="rating-bar">
+          <div class="rating-bar-label">${item.rating} sao</div>
+          <div class="rating-bar-fill">
+            <div class="rating-bar-progress" style="width: ${item.percentage}%"></div>
+          </div>
+          <div class="rating-bar-count">${item.count}</div>
+        </div>
+      `,
+            )
+            .join("")}
+    </div>
+  `
+
+    const reviewsList = document.getElementById("reviews-list")
+    if (productReviews.length > 0) {
+        reviewsList.innerHTML = productReviews
+            .map(
+                (review) => `
+      <div class="review-item">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <div class="reviewer-avatar">
+              ${review.userName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <div class="reviewer-name">${review.userName}</div>
+              <div class="review-date">${formatDate(review.date)}</div>
+            </div>
+          </div>
+          <div class="review-rating">
+            ${generateStars(review.rating)}
+          </div>
+        </div>
+        <div class="review-content">${review.content}</div>
+      </div>
+    `,
+            )
+            .join("")
+    } else {
+        reviewsList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-comments"></i>
+        <h3>Chưa có đánh giá</h3>
+        <p>Hãy là người đầu tiên đánh giá sản phẩm này</p>
+      </div>
+    `
+    }
+}
+
+function renderRelatedProducts() {
+    const relatedProducts = products
+        .filter((p) => p.id !== currentProduct.id && p.category === currentProduct.category)
+        .slice(0, 4)
+
+    const relatedProductsGrid = document.getElementById("related-products-grid")
+
+    if (relatedProducts.length > 0) {
+        relatedProductsGrid.innerHTML = relatedProducts
+            .map(
+                (product) => `
+      <div class="product-card" onclick="goToProduct(${product.id})">
+        <div class="product-image">
+          <img src="${product.image}" alt="${product.name}">
+          ${product.badge ? `<div class="product-badge ${product.badge}">${getBadgeText(product.badge)}</div>` : ""}
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">${product.name}</h3>
+          <div class="product-price">
+            ${formatPrice(product.price)}
+            ${product.originalPrice ? `<span class="original-price">${formatPrice(product.originalPrice)}</span>` : ""}
+          </div>
+        </div>
+      </div>
+    `,
+            )
+            .join("")
+    } else {
+        document.getElementById("related-products").style.display = "none"
+    }
+}
+
+function changeMainImage(imageSrc, thumbnailElement) {
+    document.getElementById("main-product-image").src = imageSrc
+
+    // Update active thumbnail
+    document.querySelectorAll(".thumbnail").forEach((thumb) => thumb.classList.remove("active"))
+    thumbnailElement.classList.add("active")
+}
+
+function updateQuantity(change) {
+    const newQuantity = currentQuantity + change
+
+    if (newQuantity >= 1 && newQuantity <= currentProduct.stockQuantity) {
+        currentQuantity = newQuantity
+
+        // Update input
+        document.querySelector(".quantity-input").value = currentQuantity
+
+        // Update buttons
+        document.querySelector(".quantity-decrease").disabled = currentQuantity <= 1
+        document.querySelector(".quantity-increase").disabled = currentQuantity >= currentProduct.stockQuantity
+    }
+}
+
+function addToCart() {
+    if (!currentProduct.inStock) return
+
+    const existingItem = cart.find((item) => item.id === currentProduct.id)
+
+    if (existingItem) {
+        existingItem.quantity += currentQuantity
+    } else {
+        cart.push({
+            id: currentProduct.id,
+            name: currentProduct.name,
+            price: currentProduct.price,
+            image: currentProduct.image,
+            quantity: currentQuantity,
+        })
+    }
+
+    saveCart()
+    updateCartUI()
+    showAddToCartNotification()
+
+    // Update button temporarily
+    const addButton = document.querySelector(".btn-primary")
+    const originalText = addButton.innerHTML
+    addButton.innerHTML = '<i class="fas fa-check"></i> Đã thêm vào giỏ'
+    addButton.disabled = true
+
+    setTimeout(() => {
+        addButton.innerHTML = originalText
+        addButton.disabled = false
+    }, 2000)
+}
+
+function toggleWishlist() {
+    showNotification("Tính năng yêu thích sẽ được cập nhật!", "info")
+}
+
+function goToProduct(productId) {
+    window.location.href = `product-detail.html?id=${productId}`
+}
+
+// Utility functions
+function getCategoryName(category) {
+    const categories = {
+        vot: "Vợt",
+        "quan-ao": "Quần áo",
+        giay: "Giày",
+        "phu-kien": "Phụ kiện",
+    }
+    return categories[category] || category
+}
+
+function getBadgeText(badge) {
+    const badges = {
+        new: "Mới",
+        sale: "Giảm giá",
+        hot: "Hot",
+    }
+    return badges[badge] || ""
+}
+
+function formatPrice(price) {
+    return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+    }).format(price)
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("vi-VN")
+}
+
+function generateStars(rating) {
+    const fullStars = Math.floor(rating)
+    const hasHalfStar = rating % 1 !== 0
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
+
+    let starsHtml = ""
+
+    // Full stars
+    for (let i = 0; i < fullStars; i++) {
+        starsHtml += '<i class="fas fa-star star"></i>'
+    }
+
+    // Half star
+    if (hasHalfStar) {
+        starsHtml += '<i class="fas fa-star-half-alt star"></i>'
+    }
+
+    // Empty stars
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<i class="far fa-star star empty"></i>'
+    }
+
+    return starsHtml
+}
+
+// Cart functions
+function saveCart() {
+    localStorage.setItem("pickleballCart", JSON.stringify(cart))
+}
+
+function updateCartUI() {
+    updateCartCount()
+    updateCartSidebar()
+}
+
+function updateCartCount() {
+    const cartCount = document.getElementById("cart-count")
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
+    cartCount.textContent = totalItems
+    cartCount.style.display = totalItems > 0 ? "flex" : "none"
+}
+
+function updateCartSidebar() {
+    const cartItems = document.getElementById("cart-items")
+    const cartTotal = document.getElementById("cart-total")
+
+    if (cart.length === 0) {
+        cartItems.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-shopping-cart"></i>
+        <h3>Giỏ hàng trống</h3>
+        <p>Thêm sản phẩm để bắt đầu mua sắm</p>
+      </div>
+    `
+        cartTotal.textContent = "0đ"
+        return
+    }
+
+    cartItems.innerHTML = cart
+        .map(
+            (item) => `
+    <div class="cart-item">
+      <div class="cart-item-image">
+        <img src="${item.image}" alt="${item.name}">
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${formatPrice(item.price)}</div>
+      </div>
+      <div class="cart-item-controls">
+        <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, -1)">
+          <i class="fas fa-minus"></i>
+        </button>
+        <span class="quantity">${item.quantity}</span>
+        <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, 1)">
+          <i class="fas fa-plus"></i>
+        </button>
+        <button class="remove-btn" onclick="removeFromCart(${item.id})">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `,
+        )
+        .join("")
+
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    cartTotal.textContent = formatPrice(total)
+}
+
+function updateCartQuantity(productId, change) {
+    const item = cart.find((item) => item.id === productId)
+    if (!item) return
+
+    item.quantity += change
+
+    if (item.quantity <= 0) {
+        removeFromCart(productId)
+    } else {
+        saveCart()
+        updateCartUI()
+    }
+}
+
+function removeFromCart(productId) {
+    cart = cart.filter((item) => item.id !== productId)
+    saveCart()
+    updateCartUI()
+}
+
+function toggleCart() {
+    const cartSidebar = document.getElementById("cart-sidebar")
+    const cartOverlay = document.getElementById("cart-overlay")
+
+    cartSidebar.classList.toggle("active")
+    cartOverlay.classList.toggle("active")
+
+    if (cartSidebar.classList.contains("active")) {
+        document.body.style.overflow = "hidden"
+    } else {
+        document.body.style.overflow = ""
+    }
+}
+
+function showAddToCartNotification() {
+    showNotification(`Đã thêm ${currentQuantity} "${currentProduct.name}" vào giỏ hàng!`, "success")
+}
+
+function showNotification(message, type = "info") {
+    const notification = document.createElement("div")
+    notification.className = `notification notification-${type}`
+    notification.innerHTML = `
+    <i class="fas ${type === "success" ? "fa-check-circle" : "fa-info-circle"}"></i>
+    <span>${message}</span>
+  `
+
+    // Add notification styles if not already added
+    if (!document.querySelector("#notification-styles")) {
+        const styles = document.createElement("style")
+        styles.id = "notification-styles"
+        styles.textContent = `
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+        max-width: 300px;
+      }
+      .notification-success {
+        border-left: 4px solid #10b981;
+        color: #10b981;
+      }
+      .notification-info {
+        border-left: 4px solid #667eea;
+        color: #667eea;
+      }
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `
+        document.head.appendChild(styles)
+    }
+
+    document.body.appendChild(notification)
+
+    setTimeout(() => {
+        notification.style.animation = "slideInRight 0.3s ease reverse"
+        setTimeout(() => notification.remove(), 300)
+    }, 3000)
+}
+
+// Close cart when clicking outside
+document.addEventListener("click", (e) => {
+    const cartSidebar = document.getElementById("cart-sidebar")
+    const cartIcon = document.querySelector(".cart-icon")
+
+    if (cartSidebar.classList.contains("active") && !cartSidebar.contains(e.target) && !cartIcon.contains(e.target)) {
+        toggleCart()
+    }
+})
+
+// Keyboard shortcuts
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        const cartSidebar = document.getElementById("cart-sidebar")
+        if (cartSidebar.classList.contains("active")) {
+            toggleCart()
+        }
+    }
+})
