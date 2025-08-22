@@ -294,7 +294,7 @@ body {
     gap: 8px;
 }
 
-.view-btn {
+.layout-btn {
     width: 40px;
     height: 40px;
     border: 2px solid #e0e7ff;
@@ -307,8 +307,8 @@ body {
     transition: all 0.3s ease;
 }
 
-    .view-btn:hover,
-    .view-btn.active {
+    .layout-btn:hover,
+    .layout-btn.active {
         border-color: #667eea;
         background: #667eea;
         color: white;
@@ -826,3 +826,125 @@ body {
         margin-bottom: 0.5rem;
         color: #333;
     }
+
+/* Style cho All và Love của SanPham */
+/* Container cho menu actions */
+.menu-actions {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Styling cho các button */
+.view-btn {
+    /* Increased padding and made width flexible for full text display */
+    padding: 12px 20px;
+    min-width: 160px;
+    width: auto;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: visible;
+}
+
+    /* Hiệu ứng hover */
+    .view-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: #3b82f6;
+    }
+
+        .view-btn:hover i {
+            transform: scale(1.1);
+            color: #3b82f6;
+        }
+
+        /* Hiệu ứng shimmer khi hover */
+        .view-btn:hover::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 0.6s ease-in-out;
+        }
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+/* Trạng thái active */
+.view-btn.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #1f2937;
+    border-color: #2563eb;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+}
+
+    .view-btn.active i {
+        color: #1f2937;
+        transform: scale(1.05);
+    }
+
+/* Hiệu ứng khi click */
+.view-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon styling */
+.view-btn i {
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .menu-actions {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .view-btn {
+        /* Ensured full width on mobile with proper text display */
+        width: 100%;
+        min-width: unset;
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+}
+
+/* Đảm bảo text không bị cắt */
+.view-btn {
+    box-sizing: border-box;
+    text-align: center;
+}
