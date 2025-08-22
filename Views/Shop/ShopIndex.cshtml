@@ -49,6 +49,14 @@
 
             <!--Filters & Controls-->
             <section class="controls">
+                <div class="menu-actions">
+                    <button class="view-btn active" id="all-products-btn">
+                        <i class="fas fa-store"></i> Tất cả sản phẩm
+                    </button>
+                    <button class="view-btn" id="wishlist-btn">
+                        <i class="fas fa-heart"></i> Yêu thích
+                    </button>
+                </div>
                 <div class="filters">
                     <div class="filter-group">
                         <label>Danh mục:</label>
@@ -69,7 +77,7 @@
                             <option value="1000000-2000000">1tr - 2tr</option>
                             <option value="2000000-999999999">Trên 2tr</option>
                         </select>
-                    </div>
+                    </div>                   
                     <div class="filter-group">
                         <label>Sắp xếp:</label>
                         <select id="sort-filter">
@@ -81,10 +89,10 @@
                     </div>
                 </div>
                 <div class="view-controls">
-                    <button class="view-btn active" data-view="grid">
+                    <button class="layout-btn active" data-view="grid">
                         <i class="fas fa-th"></i>
                     </button>
-                    <button class="view-btn" data-view="list">
+                    <button class="layout-btn" data-view="list">
                         <i class="fas fa-list"></i>
                     </button>
                 </div>

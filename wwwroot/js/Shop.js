@@ -1,12 +1,15 @@
-﻿
-let products = [];
+﻿let currentProductList = []
+let products = []
+let favoriteProducts = []
+
 //lấy sản phẩm về từ api
 fetch("https://localhost:7067/SanPham/ListAll")
-    .then(response => response.json())
-    .then(data => {
-        products = data;
-        initializeShop();
-    }).catch(error => console.error("Lỗi khi lấy sản phẩm: ", error));
+    .then((response) => response.json())
+    .then((data) => {
+        products = data
+        initializeShop()
+    })
+    .catch((error) => console.error("Lỗi khi lấy sản phẩm: ", error))
 
 // Cart data
 let cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
@@ -21,13 +24,52 @@ const currentFilters = {
 
 // Initialize the shop
 document.addEventListener("DOMContentLoaded", () => {
-    setupEventListeners();
-    updateCartUI();
+    setupEventListeners()
+    updateCartUI()
 })
 
 function initializeShop() {
-    displayProducts(products)
+    currentProductList = products
+    displayProducts(currentProductList)
     updateCartCount()
+
+    loadFavoritesList()
+}
+
+function loadFavoritesList() {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (user && user.maNguoiDung) {
+        fetch(`https://localhost:7067/SanPham/DoYeuThich/${user.maNguoiDung}`)
+            .then((res) => res.json())
+            .then((favorites) => {
+                favoriteProducts = favorites.map((fav) => fav.maSanPham)
+                // Cập nhật giao diện trái tim cho tất cả sản phẩm
+                updateAllHeartsUI()
+            })
+            .catch((err) => {
+                console.error("Lỗi khi tải yêu thích: ", err)
+                favoriteProducts = []
+            })
+    }
+}
+
+function updateAllHeartsUI() {
+    document.querySelectorAll(".wishlist-btn").forEach((btn) => {
+        const productId = Number.parseInt(btn.getAttribute("data-id"))
+        const heartIcon = btn.querySelector("i")
+
+        if (favoriteProducts.includes(productId)) {
+            // Sản phẩm đã yêu thích - trái tim đỏ fas
+            heartIcon.classList.remove("far")
+            heartIcon.classList.add("fas")
+            heartIcon.style.color = "red"
+        } else {
+            // Sản phẩm chưa yêu thích - trái tim rỗng far
+            heartIcon.classList.remove("fas")
+            heartIcon.classList.add("far")
+            heartIcon.style.color = ""
+        }
+    })
 }
 
 function setupEventListeners() {
@@ -44,7 +86,7 @@ function setupEventListeners() {
     document.getElementById("sort-filter").addEventListener("change", handleSort)
 
     // View toggle
-    document.querySelectorAll(".view-btn").forEach((btn) => {
+    document.querySelectorAll(".layout-btn").forEach((btn) => {
         btn.addEventListener("click", handleViewToggle)
     })
 }
@@ -85,7 +127,7 @@ function handleSort(e) {
 }
 
 function handleViewToggle(e) {
-    const viewBtns = document.querySelectorAll(".view-btn")
+    const viewBtns = document.querySelectorAll(".layout-btn")
     const productsGrid = document.getElementById("products-grid")
 
     viewBtns.forEach((btn) => btn.classList.remove("active"))
@@ -100,7 +142,7 @@ function handleViewToggle(e) {
 }
 
 function filterAndDisplayProducts() {
-    let filteredProducts = [...products]
+    let filteredProducts = [...currentProductList]
 
     // Apply search filter
     if (currentFilters.search) {
@@ -113,7 +155,9 @@ function filterAndDisplayProducts() {
 
     // Apply category filter
     if (currentFilters.category) {
-        filteredProducts = filteredProducts.filter((product) => String(product.maDanhMuc) === String(currentFilters.category));
+        filteredProducts = filteredProducts.filter(
+            (product) => String(product.maDanhMuc) === String(currentFilters.category),
+        )
     }
 
     // Apply price filter
@@ -155,6 +199,10 @@ function displayProducts(productsToShow) {
     }
 
     productsGrid.innerHTML = productsToShow.map((product) => createProductCard(product)).join("")
+
+    setTimeout(() => {
+        updateAllHeartsUI()
+    }, 100)
 }
 
 function createProductCard(product) {
@@ -162,9 +210,7 @@ function createProductCard(product) {
     const badgeHtml = product.soLuongTon
         ? `<div class="product-badge ${product.soLuongTon}">${getBadgeText(product.soLuongTon)}</div>`
         : ""
-    const originalPriceHtml = product.giaBan
-        ? `<span class="original-price">${formatPrice(product.giaBan)}</span>`
-        : ""
+    const originalPriceHtml = product.giaBan ? `<span class="original-price">${formatPrice(product.giaBan)}</span>` : ""
     const stockStatus = product.soLuongTon > 0 ? "" : '<span style="color: #ef4444; font-size: 0.9rem;">Hết hàng</span>'
 
     return `
@@ -189,7 +235,7 @@ function createProductCard(product) {
                         <i class="fas fa-shopping-cart"></i>
                         ${isInCart ? "Đã thêm" : "Thêm vào giỏ"}
                     </button>
-                    <button class="btn btn-icon btn-secondary" onclick="toggleWishlist(${product.maSanPham})">
+                    <button class="btn btn-icon btn-secondary wishlist-btn" data-id="${product.maSanPham}" onclick="toggleWishlist(${product.maSanPham}, this)">
                         <i class="far fa-heart"></i>
                     </button>
                 </div>
@@ -308,33 +354,7 @@ function updateCartSidebar() {
         return
     }
 
-    cartItems.innerHTML = cart
-        .map(
-            (item) => `
-        <div class="cart-item">
-            <div class="cart-item-image">
-                <img src="${item.image}" alt="${item.name}">
-            </div>
-            <div class="cart-item-info">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-price">${formatPrice(item.price)}</div>
-            </div>
-            <div class="cart-item-controls">
-                <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, -1)">
-                    <i class="fas fa-minus"></i>
-                </button>
-                <span class="quantity">${item.quantity}</span>
-                <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, 1)">
-                    <i class="fas fa-plus"></i>
-                </button>
-                <button class="remove-btn" onclick="removeFromCart(${item.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `,
-        )
-        .join("")
+    cartItems.innerHTML = cart.map((item) => ``).join("")
 
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
     cartTotal.textContent = formatPrice(total)
@@ -354,10 +374,78 @@ function toggleCart() {
     }
 }
 
-function toggleWishlist(productId) {
-    // Wishlist functionality - placeholder
-    console.log("Toggle wishlist for product:", productId)
-    showNotification("Tính năng yêu thích sẽ được cập nhật!", "info")
+async function toggleWishlist(maSanPham, btn) {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user) {
+        alert("Bạn cần đăng nhập để dùng chức năng yêu thích!")
+        return
+    }
+
+    const userId = user.maNguoiDung
+    const heartIcon = btn.querySelector("i")
+
+    // Kiểm tra sản phẩm đã nằm trong favoriteProducts chưa
+    const isAlreadyFavorite = favoriteProducts.includes(maSanPham)
+
+    if (isAlreadyFavorite) {
+        try {
+            const res = await fetch(`https://localhost:7067/SanPham/Delete/${userId}/${maSanPham}`, {
+                method: "DELETE",
+            })
+
+            if (res.ok) {
+                // Cập nhật danh sách favoriteProducts
+                favoriteProducts = favoriteProducts.filter((id) => id !== maSanPham)
+
+                // Cập nhật giao diện trái tim
+                heartIcon.classList.remove("fas")
+                heartIcon.classList.add("far")
+                heartIcon.style.color = ""
+
+                showToast("Đã xóa khỏi yêu thích!")
+            } else {
+                const err = await res.text()
+                alert(err)
+            }
+        } catch (error) {
+            console.error("Lỗi xóa yêu thích:", error)
+        }
+    } else {
+        try {
+            const res = await fetch("https://localhost:7067/SanPham/create/DoYeuThich", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    maNguoiDung: userId,
+                    maSanPham: maSanPham,
+                }),
+            })
+
+            if (res.ok) {
+                // Cập nhật danh sách favoriteProducts
+                favoriteProducts.push(maSanPham)
+
+                // Cập nhật giao diện trái tim
+                heartIcon.classList.remove("far")
+                heartIcon.classList.add("fas")
+                heartIcon.style.color = "red"
+
+                showToast("Đã thêm vào yêu thích!")
+            } else {
+                const err = await res.text()
+                alert(err)
+            }
+        } catch (error) {
+            console.error("Lỗi thêm yêu thích:", error)
+        }
+    }
+}
+
+// Hàm toast nhỏ (tùy bạn muốn custom hay dùng alert)
+function showToast(message) {
+    alert(message)
 }
 
 function showAddToCartNotification(productName) {
@@ -367,50 +455,12 @@ function showAddToCartNotification(productName) {
 function showNotification(message, type = "info") {
     const notification = document.createElement("div")
     notification.className = `notification notification-${type}`
-    notification.innerHTML = `
-        <i class="fas ${type === "success" ? "fa-check-circle" : "fa-info-circle"}"></i>
-        <span>${message}</span>
-    `
-
+    notification.innerHTML = ``
     // Add notification styles if not already added
     if (!document.querySelector("#notification-styles")) {
         const styles = document.createElement("style")
         styles.id = "notification-styles"
-        styles.textContent = `
-            .notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                padding: 1rem 1.5rem;
-                border-radius: 10px;
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                z-index: 10000;
-                animation: slideInRight 0.3s ease;
-                max-width: 300px;
-            }
-            .notification-success {
-                border-left: 4px solid #10b981;
-                color: #10b981;
-            }
-            .notification-info {
-                border-left: 4px solid #667eea;
-                color: #667eea;
-            }
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-        `
+        styles.textContent = ``
         document.head.appendChild(styles)
     }
 
@@ -454,3 +504,93 @@ document.addEventListener("keydown", (e) => {
         }
     }
 })
+
+//Danh sách các sản phẩm yêu thích
+function loadWishlist() {
+    const user = JSON.parse(localStorage.getItem("user")) // lấy object user
+    const maNguoiDung = user ? user.maNguoiDung : null
+
+    if (!maNguoiDung) {
+        showNotification("Bạn cần đăng nhập để xem sản phẩm yêu thích!", "info")
+        return
+    }
+
+    fetch(`https://localhost:7067/SanPham/DoYeuThich/${maNguoiDung}`)
+        .then((response) => response.text()) // lấy text thô thay vì json
+        .then((text) => {
+            let data
+            try {
+                data = JSON.parse(text) // thử parse JSON
+            } catch (e) {
+                data = null // nếu không phải JSON thì gán null
+            }
+
+            if (Array.isArray(data) && data.length > 0) {
+                favoriteProducts = data.map((fav) => fav.maSanPham)
+                currentProductList = data // Chỉ hiển thị sản phẩm yêu thích
+                filterAndDisplayProducts()
+            } else {
+                const productsGrid = document.getElementById("products-grid")
+                productsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-heart-broken"></i>
+                        <h3>Chưa có sản phẩm nào được yêu thích</h3>
+                        <p>Hãy thêm sản phẩm vào danh sách yêu thích để dễ theo dõi.</p>
+                    </div>
+                `
+            }
+        })
+        .catch((error) => {
+            console.error("Lỗi khi lấy danh sách yêu thích:", error)
+            const productsGrid = document.getElementById("products-grid")
+            productsGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-heart-broken"></i>
+                    <h3>Chưa có sản phẩm nào được yêu thích</h3>
+                    <p>Hãy thêm sản phẩm vào danh sách yêu thích để dễ theo dõi.</p>
+                </div>
+            `
+        })
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupEventListeners()
+    updateCartUI()
+
+    // thêm sự kiện cho nút Yêu thích
+    document.getElementById("wishlist-btn").addEventListener("click", loadWishlist)
+})
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupEventListeners()
+    updateCartUI()
+
+    // Mặc định khi vào shop -> load tất cả sản phẩm
+    loadAllProducts()
+
+    // Nút Tất cả sản phẩm
+    document.getElementById("all-products-btn").addEventListener("click", () => {
+        loadAllProducts()
+        setActiveMenu("all-products-btn")
+    })
+
+    // Nút Yêu thích
+    document.getElementById("wishlist-btn").addEventListener("click", () => {
+        loadWishlist()
+        setActiveMenu("wishlist-btn")
+    })
+})
+
+// Hàm load tất cả sản phẩm
+function loadAllProducts() {
+    currentProductList = products // Reset về tất cả sản phẩm
+    filterAndDisplayProducts()
+}
+
+// Hàm đổi trạng thái active cho nút menu
+function setActiveMenu(activeId) {
+    document.querySelectorAll(".menu-actions .view-btn").forEach((btn) => {
+        btn.classList.remove("active")
+    })
+    document.getElementById(activeId).classList.add("active")
+}
