@@ -1,143 +1,160 @@
 ﻿// Import product data from shop.js (in real app, this would be from API)
-const products = [
-    {
-        id: 1,
-        name: "Vợt Pickleball Chuyên Nghiệp",
-        category: "vot",
-        price: 1200000,
-        originalPrice: 1500000,
-        image: "/placeholder-oyol2.png",
-        images: ["/placeholder-oyol2.png", "/placeholder-oyol2.png", "/placeholder-oyol2.png"],
-        description:
-            "Vợt pickleball chất lượng cao dành cho người chơi chuyên nghiệp. Được làm từ chất liệu carbon fiber cao cấp, mang lại cảm giác tuyệt vời khi chơi.",
-        features: [
-            "Chất liệu carbon fiber cao cấp",
-            "Trọng lượng tối ưu 225g",
-            "Grip chống trượt",
-            "Thiết kế aerodynamic",
-            "Bảo hành 2 năm",
-        ],
-        badge: "sale",
-        inStock: true,
-        stockQuantity: 15,
-        rating: 4.8,
-        reviews: 124,
-    },
-    {
-        id: 2,
-        name: "Áo Thể Thao Pickleball",
-        category: "quan-ao",
-        price: 350000,
-        image: "/pickleball-sports-shirt.png",
-        images: ["/pickleball-sports-shirt.png", "/pickleball-sports-shirt.png"],
-        description: "Áo thể thao thoáng mát, thấm hút mồ hôi tốt, phù hợp cho mọi hoạt động thể thao.",
-        features: [
-            "Chất liệu polyester cao cấp",
-            "Công nghệ thấm hút mồ hôi",
-            "Thiết kế thoáng khí",
-            "Form áo thoải mái",
-            "Màu sắc đa dạng",
-        ],
-        badge: "new",
-        inStock: true,
-        stockQuantity: 25,
-        rating: 4.6,
-        reviews: 89,
-    },
-    {
-        id: 3,
-        name: "Giày Pickleball Chuyên Dụng",
-        category: "giay",
-        price: 2200000,
-        originalPrice: 2500000,
-        image: "/pickleball-shoes.png",
-        images: ["/pickleball-shoes.png", "/pickleball-shoes.png"],
-        description: "Giày thể thao chuyên dụng cho pickleball với đế chống trượt và hỗ trợ tối ưu.",
-        features: ["Đế cao su chống trượt", "Hỗ trợ mắt cá chân", "Đệm êm ái", "Thoáng khí tối ưu", "Thiết kế thời trang"],
-        badge: "sale",
-        inStock: true,
-        stockQuantity: 8,
-        rating: 4.9,
-        reviews: 156,
-    },
-    {
-        id: 4,
-        name: "Túi Đựng Vợt Pickleball",
-        category: "phu-kien",
-        price: 450000,
-        image: "/pickleball-paddle-bag.png",
-        images: ["/pickleball-paddle-bag.png"],
-        description: "Túi đựng vợt cao cấp, bảo vệ vợt tối ưu với nhiều ngăn tiện dụng.",
-        features: [
-            "Chất liệu chống nước",
-            "Nhiều ngăn tiện dụng",
-            "Dây đeo thoải mái",
-            "Bảo vệ vợt tối ưu",
-            "Thiết kế compact",
-        ],
-        inStock: true,
-        stockQuantity: 12,
-        rating: 4.5,
-        reviews: 67,
-    },
-    {
-        id: 5,
-        name: "Quần Short Thể Thao",
-        category: "quan-ao",
-        price: 280000,
-        image: "/pickleball-shorts.png",
-        images: ["/pickleball-shorts.png"],
-        description: "Quần short thể thao thoải mái, phù hợp mọi hoạt động thể thao.",
-        features: ["Chất liệu thoáng mát", "Thiết kế thoải mái", "Túi tiện dụng", "Dây rút điều chỉnh", "Màu sắc đa dạng"],
-        inStock: true,
-        stockQuantity: 20,
-        rating: 4.4,
-        reviews: 43,
-    },
-    {
-        id: 6,
-        name: "Vợt Pickleball Cho Người Mới",
-        category: "vot",
-        price: 800000,
-        image: "/beginner-pickleball-paddle.png",
-        images: ["/beginner-pickleball-paddle.png"],
-        description: "Vợt pickleball dành cho người mới bắt đầu, dễ sử dụng và giá cả phải chăng.",
-        features: ["Thiết kế dễ sử dụng", "Trọng lượng nhẹ", "Grip thoải mái", "Giá cả phải chăng", "Phù hợp người mới"],
-        badge: "new",
-        inStock: true,
-        stockQuantity: 18,
-        rating: 4.3,
-        reviews: 78,
-    },
-    {
-        id: 7,
-        name: "Băng Đô Thể Thao",
-        category: "phu-kien",
-        price: 120000,
-        image: "/placeholder-48wy9.png",
-        images: ["/placeholder-48wy9.png"],
-        description: "Băng đô thấm mồ hôi, giữ tóc gọn gàng khi chơi thể thao.",
-        features: ["Thấm hút mồ hôi tốt", "Chất liệu mềm mại", "Co giãn thoải mái", "Dễ dàng giặt sạch", "Nhiều màu sắc"],
-        inStock: true,
-        stockQuantity: 30,
-        rating: 4.2,
-        reviews: 34,
-    },
-    {
-        id: 8,
-        name: "Tất Thể Thao Cao Cấp",
-        category: "phu-kien",
-        price: 150000,
-        image: "/placeholder-4p10p.png",
-        images: ["/placeholder-4p10p.png"],
-        description: "Tất thể thao chống trượt, thoáng khí, mang lại cảm giác thoải mái.",
-        features: ["Chống trượt hiệu quả", "Thoáng khí tối ưu", "Chất liệu cao cấp", "Độ bền cao", "Thiết kế ergonomic"],
-        inStock: false,
-        stockQuantity: 0,
-        rating: 4.7,
-        reviews: 92,
-    },
-]
+//const products = [
+//    {
+//        id: 1,
+//        name: "Vợt Pickleball Chuyên Nghiệp",
+//        category: "vot",
+//        price: 1200000,
+//        originalPrice: 1500000,
+//        image: "/placeholder-oyol2.png",
+//        images: ["/placeholder-oyol2.png", "/placeholder-oyol2.png", "/placeholder-oyol2.png"],
+//        description:
+//            "Vợt pickleball chất lượng cao dành cho người chơi chuyên nghiệp. Được làm từ chất liệu carbon fiber cao cấp, mang lại cảm giác tuyệt vời khi chơi.",
+//        features: [
+//            "Chất liệu carbon fiber cao cấp",
+//            "Trọng lượng tối ưu 225g",
+//            "Grip chống trượt",
+//            "Thiết kế aerodynamic",
+//            "Bảo hành 2 năm",
+//        ],
+//        badge: "sale",
+//        inStock: true,
+//        stockQuantity: 15,
+//        rating: 1.5,
+//        reviews: 124,
+//    },
+//    {
+//        id: 2,
+//        name: "Áo Thể Thao Pickleball",
+//        category: "quan-ao",
+//        price: 350000,
+//        image: "/pickleball-sports-shirt.png",
+//        images: ["/pickleball-sports-shirt.png", "/pickleball-sports-shirt.png"],
+//        description: "Áo thể thao thoáng mát, thấm hút mồ hôi tốt, phù hợp cho mọi hoạt động thể thao.",
+//        features: [
+//            "Chất liệu polyester cao cấp",
+//            "Công nghệ thấm hút mồ hôi",
+//            "Thiết kế thoáng khí",
+//            "Form áo thoải mái",
+//            "Màu sắc đa dạng",
+//        ],
+//        badge: "new",
+//        inStock: true,
+//        stockQuantity: 25,
+//        rating: 4.6,
+//        reviews: 89,
+//    },
+//    {
+//        id: 3,
+//        name: "Giày Pickleball Chuyên Dụng",
+//        category: "giay",
+//        price: 2200000,
+//        originalPrice: 2500000,
+//        image: "/pickleball-shoes.png",
+//        images: ["/pickleball-shoes.png", "/pickleball-shoes.png"],
+//        description: "Giày thể thao chuyên dụng cho pickleball với đế chống trượt và hỗ trợ tối ưu.",
+//        features: ["Đế cao su chống trượt", "Hỗ trợ mắt cá chân", "Đệm êm ái", "Thoáng khí tối ưu", "Thiết kế thời trang"],
+//        badge: "sale",
+//        inStock: true,
+//        stockQuantity: 8,
+//        rating: 4.9,
+//        reviews: 156,
+//    },
+//    {
+//        id: 4,
+//        name: "Túi Đựng Vợt Pickleball",
+//        category: "phu-kien",
+//        price: 450000,
+//        image: "/pickleball-paddle-bag.png",
+//        images: ["/pickleball-paddle-bag.png"],
+//        description: "Túi đựng vợt cao cấp, bảo vệ vợt tối ưu với nhiều ngăn tiện dụng.",
+//        features: [
+//            "Chất liệu chống nước",
+//            "Nhiều ngăn tiện dụng",
+//            "Dây đeo thoải mái",
+//            "Bảo vệ vợt tối ưu",
+//            "Thiết kế compact",
+//        ],
+//        inStock: true,
+//        stockQuantity: 12,
+//        rating: 4.5,
+//        reviews: 67,
+//    },
+//    {
+//        id: 5,
+//        name: "Quần Short Thể Thao",
+//        category: "quan-ao",
+//        price: 280000,
+//        image: "/pickleball-shorts.png",
+//        images: ["/pickleball-shorts.png"],
+//        description: "Quần short thể thao thoải mái, phù hợp mọi hoạt động thể thao.",
+//        features: ["Chất liệu thoáng mát", "Thiết kế thoải mái", "Túi tiện dụng", "Dây rút điều chỉnh", "Màu sắc đa dạng"],
+//        inStock: true,
+//        stockQuantity: 20,
+//        rating: 4.4,
+//        reviews: 43,
+//    },
+//    {
+//        id: 6,
+//        name: "Vợt Pickleball Cho Người Mới",
+//        category: "vot",
+//        price: 800000,
+//        image: "/beginner-pickleball-paddle.png",
+//        images: ["/beginner-pickleball-paddle.png"],
+//        description: "Vợt pickleball dành cho người mới bắt đầu, dễ sử dụng và giá cả phải chăng.",
+//        features: ["Thiết kế dễ sử dụng", "Trọng lượng nhẹ", "Grip thoải mái", "Giá cả phải chăng", "Phù hợp người mới"],
+//        badge: "new",
+//        inStock: true,
+//        stockQuantity: 18,
+//        rating: 4.3,
+//        reviews: 78,
+//    },
+//    {
+//        id: 7,
+//        name: "Băng Đô Thể Thao",
+//        category: "phu-kien",
+//        price: 120000,
+//        image: "/placeholder-48wy9.png",
+//        images: ["/placeholder-48wy9.png"],
+//        description: "Băng đô thấm mồ hôi, giữ tóc gọn gàng khi chơi thể thao.",
+//        features: ["Thấm hút mồ hôi tốt", "Chất liệu mềm mại", "Co giãn thoải mái", "Dễ dàng giặt sạch", "Nhiều màu sắc"],
+//        inStock: true,
+//        stockQuantity: 30,
+//        rating: 4.2,
+//        reviews: 34,
+//    },
+//    {
+//        id: 8,
+//        name: "Tất Thể Thao Cao Cấp",
+//        category: "phu-kien",
+//        price: 150000,
+//        image: "/placeholder-4p10p.png",
+//        images: ["/placeholder-4p10p.png"],
+//        description: "Tất thể thao chống trượt, thoáng khí, mang lại cảm giác thoải mái.",
+//        features: ["Chống trượt hiệu quả", "Thoáng khí tối ưu", "Chất liệu cao cấp", "Độ bền cao", "Thiết kế ergonomic"],
+//        inStock: false,
+//        stockQuantity: 0,
+//        rating: 4.7,
+//        reviews: 92,
+//    },
+//]
+
+let products = [];
+// Lấy sản phẩm về từ API
+function fetchProducts() {
+    showLoading();
+    fetch("https://localhost:7067/SanPham/ListAllForDetail")
+        .then(response => response.json())
+        .then(data => {
+            products = data;
+            console.log("Products loaded:", products); // debug
+            loadProduct(); // chỉ gọi khi đã có dữ liệu
+        })
+        .catch(error => {
+            console.error("Lỗi khi lấy sản phẩm:", error);
+            hideLoading();
+        });
+}
 
 // Sample reviews data
 const reviewsData = {
@@ -186,13 +203,17 @@ const reviewsData = {
 let cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
 let currentProduct = null
 let currentQuantity = 1
+// Review form variables
+let selectedRating = 0
 
 // Initialize page
 document.addEventListener("DOMContentLoaded", () => {
-    showLoading()
-    loadProduct()
+    //showLoading()
+    //loadProduct()
+    fetchProducts()
     updateCartUI()
     setupEventListeners()
+    setupReviewForm()
 })
 
 function showLoading() {
@@ -223,13 +244,196 @@ function setupEventListeners() {
     })
 }
 
+//review form
+function setupReviewForm() {
+    // Rating stars click handler
+    document.addEventListener("click", (e) => {
+        if (e.target.matches(".rating-input i")) {
+            const rating = Number.parseInt(e.target.dataset.rating)
+            setRating(rating)
+        }
+    })
+
+    // Review form submit handler
+    document.addEventListener("submit", async (e) => {
+        if (e.target.id === "review-form") {
+            e.preventDefault()
+            await handleReviewSubmit(e)
+        }
+    })
+}
+
+function setRating(rating) {
+    selectedRating = rating
+    const stars = document.querySelectorAll(".rating-input i")
+    const ratingText = document.getElementById("rating-text")
+
+    stars.forEach((star, index) => {
+        if (index < rating) {
+            star.classList.add("active")
+        } else {
+            star.classList.remove("active")
+        }
+    })
+
+    const ratingTexts = {
+        1: "Rất tệ",
+        2: "Tệ",
+        3: "Bình thường",
+        4: "Tốt",
+        5: "Rất tốt",
+    }
+
+    ratingText.textContent = ratingTexts[rating] || "Chọn số sao"
+}
+
+async function handleReviewSubmit(e) {
+    const formData = new FormData(e.target)
+    const reviewerName = formData.get("reviewerName").trim()
+    const comment = formData.get("comment").trim()
+
+    // Validation
+    if (!reviewerName) {
+        showNotification("Vui lòng nhập tên của bạn!", "error")
+        return
+    }
+
+    if (selectedRating === 0) {
+        showNotification("Vui lòng chọn số sao đánh giá!", "error")
+        return
+    }
+
+    if (!comment) {
+        showNotification("Vui lòng nhập nhận xét!", "error")
+        return
+    }
+
+    // Lấy user từ localStorage
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user) {
+        showNotification("Bạn cần đăng nhập trước khi đánh giá!", "error")
+        return
+    }
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const productId = Number.parseInt(urlParams.get("id"))
+
+    // Create new review
+    const newReview = {
+        MaNguoiDung: user.maNguoiDung,
+        MaSanPham: productId,
+        SoSao: selectedRating,
+        BinhLuan: comment,
+        NgayDanhGia: new Date().toISOString()
+    }
+
+    try {
+        const response = await fetch("https://localhost:7067/DanhGia/Insert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newReview)
+        })
+
+        if (!response.ok) throw new Error("Lỗi khi gửi đánh giá")
+
+        //updateProductRating()
+        await updateProductRatingAfterReview();
+        renderReviews()
+        resetReviewForm()
+        showReviewSuccess()
+    } catch (err) {
+        console.error("Lỗi gửi đánh giá:", err)
+        showNotification("Không thể gửi đánh giá. Vui lòng thử lại!", "error")
+    }
+}
+
+async function updateProductRatingAfterReview() {
+    try {
+        // Lấy id sản phẩm từ URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = Number.parseInt(urlParams.get("id"));
+
+        if (!productId) {
+            console.error("Không tìm thấy id sản phẩm từ URL");
+            return;
+        }
+
+        // Gọi API để lấy tất cả review
+        const response = await fetch("https://localhost:7067/DanhGia/ListAll");
+        const data = await response.json();
+
+        // Tìm object chứa review của sản phẩm hiện tại
+        const productReviewObj = data.find(p => p.maSanPham === productId);
+        if (!productReviewObj) {
+            console.warn("Không có review nào cho sản phẩm", productId);
+            return;
+        }
+
+        const productReviews = productReviewObj.reviews || [];
+        const reviewCount = productReviews.length;
+
+        const avgRating = reviewCount > 0
+            ? (productReviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / reviewCount).toFixed(1)
+            : 0;
+
+        // --- Cập nhật DOM ---
+        const starsContainer = document.querySelector(".product-rating .stars");
+        const ratingTextEl = document.querySelector(".product-rating .rating-text");
+
+        if (starsContainer) {
+            starsContainer.innerHTML = generateStars(avgRating);
+        }
+
+        if (ratingTextEl) {
+            ratingTextEl.textContent = `${avgRating}/5 (${reviewCount} đánh giá)`;
+        }
+
+    } catch (err) {
+        console.error("Lỗi khi update rating:", err);
+    }
+}
+
+function updateProductRating() {
+    const productReviews = reviewsData[currentProduct.id] || []
+    if (productReviews.length > 0) {
+        const totalRating = productReviews.reduce((sum, review) => sum + review.rating, 0)
+        currentProduct.rating = Math.round((totalRating / productReviews.length) * 10) / 10
+        currentProduct.reviews = productReviews.length
+    }
+}
+
+function showReviewSuccess() {
+    const form = document.getElementById("review-form")
+    const successDiv = document.createElement("div")
+    successDiv.className = "review-success"
+    successDiv.innerHTML = `
+    <i class="fas fa-check-circle"></i>
+    <span>Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được thêm thành công.</span>
+  `
+
+    form.parentNode.insertBefore(successDiv, form.nextSibling)
+
+    setTimeout(() => {
+        successDiv.remove()
+    }, 5000)
+}
+
+function resetReviewForm() {
+    document.getElementById("review-form").reset()
+    selectedRating = 0
+    document.querySelectorAll(".rating-input i").forEach((star) => {
+        star.classList.remove("active")
+    })
+    document.getElementById("rating-text").textContent = "Chọn số sao"
+}
+
 function loadProduct() {
     // Get product ID from URL parameters
     const urlParams = new URLSearchParams(window.location.search)
     const productId = Number.parseInt(urlParams.get("id"))
 
     if (!productId) {
-        window.location.href = "shop.html"
+        window.location.href = "/Shop/ShopIndex"
         return
     }
 
@@ -237,8 +441,14 @@ function loadProduct() {
     currentProduct = products.find((p) => p.id === productId)
 
     if (!currentProduct) {
-        window.location.href = "shop.html"
-        return
+        document.getElementById("product-detail").innerHTML = `
+        <div class="empty-state">
+            <h3>Không tìm thấy sản phẩm</h3>
+            <a href="/Shop/ShopIndex" class="btn btn-primary">Quay lại shop</a>
+        </div>
+    `;
+        hideLoading();
+        return;
     }
 
     // Simulate loading delay
@@ -291,7 +501,7 @@ function renderProduct() {
         <div class="stars">
           ${generateStars(currentProduct.rating)}
         </div>
-        <span class="rating-text">${currentProduct.rating}/5 (${currentProduct.reviews} đánh giá)</span>
+        <span class="rating-text">${currentProduct.rating.toFixed(1)}/5 (${currentProduct.reviews} đánh giá)</span>
       </div>
 
       <div class="product-price">
@@ -359,76 +569,80 @@ function renderProduct() {
   `
 }
 
-function renderReviews() {
+async function renderReviews() {
     const reviewsSection = document.getElementById("reviews-section")
-    const productReviews = reviewsData[currentProduct.id] || []
-
-    // Calculate rating breakdown
-    const ratingBreakdown = [5, 4, 3, 2, 1].map((rating) => {
-        const count = productReviews.filter((r) => r.rating === rating).length
-        const percentage = productReviews.length > 0 ? (count / productReviews.length) * 100 : 0
-        return { rating, count, percentage }
-    })
-
     const reviewsSummary = document.getElementById("reviews-summary")
-    reviewsSummary.innerHTML = `
-    <div class="rating-overview">
-      <div class="rating-score">${currentProduct.rating}</div>
-      <div class="stars">
-        ${generateStars(currentProduct.rating)}
-      </div>
-      <div class="rating-text">${currentProduct.reviews} đánh giá</div>
-    </div>
-    <div class="rating-breakdown">
-      ${ratingBreakdown
-            .map(
-                (item) => `
-        <div class="rating-bar">
-          <div class="rating-bar-label">${item.rating} sao</div>
-          <div class="rating-bar-fill">
-            <div class="rating-bar-progress" style="width: ${item.percentage}%"></div>
-          </div>
-          <div class="rating-bar-count">${item.count}</div>
-        </div>
-      `,
-            )
-            .join("")}
-    </div>
-  `
-
     const reviewsList = document.getElementById("reviews-list")
-    if (productReviews.length > 0) {
-        reviewsList.innerHTML = productReviews
-            .map(
-                (review) => `
-      <div class="review-item">
-        <div class="review-header">
-          <div class="reviewer-info">
-            <div class="reviewer-avatar">
-              ${review.userName.charAt(0).toUpperCase()}
+
+    try {
+        // Gọi API để lấy toàn bộ review
+        const response = await fetch("https://localhost:7067/DanhGia/ListAll")
+        const data = await response.json()
+
+        // Tìm review cho sản phẩm hiện tại
+        const productReviewObj = data.find(r => r.maSanPham === currentProduct.id)
+        const productReviews = productReviewObj ? productReviewObj.reviews : []
+
+        // --- TÍNH TOÁN ---
+        const ratingBreakdown = [5, 4, 3, 2, 1].map((rating) => {
+            const count = productReviews.filter((r) => r.rating === rating).length
+            const percentage = productReviews.length > 0 ? (count / productReviews.length) * 100 : 0
+            return { rating, count, percentage }
+        })
+
+        // --- HIỂN THỊ TÓM TẮT ---
+        const avgRating = productReviews.length > 0
+            ? (productReviews.reduce((sum, r) => sum + r.rating, 0) / productReviews.length).toFixed(1)
+            : 0
+
+        reviewsSummary.innerHTML = `
+            <div class="rating-overview">
+              <div class="rating-score">${avgRating}</div>
+              <div class="stars">${generateStars(avgRating)}</div>
+              <div class="rating-text">${productReviews.length} đánh giá</div>
             </div>
-            <div>
-              <div class="reviewer-name">${review.userName}</div>
-              <div class="review-date">${formatDate(review.date)}</div>
+            <div class="rating-breakdown">
+              ${ratingBreakdown.map(item => `
+                <div class="rating-bar">
+                  <div class="rating-bar-label">${item.rating} sao</div>
+                  <div class="rating-bar-fill">
+                    <div class="rating-bar-progress" style="width: ${item.percentage}%"></div>
+                  </div>
+                  <div class="rating-bar-count">${item.count}</div>
+                </div>
+              `).join("")}
             </div>
-          </div>
-          <div class="review-rating">
-            ${generateStars(review.rating)}
-          </div>
-        </div>
-        <div class="review-content">${review.content}</div>
-      </div>
-    `,
-            )
-            .join("")
-    } else {
-        reviewsList.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-comments"></i>
-        <h3>Chưa có đánh giá</h3>
-        <p>Hãy là người đầu tiên đánh giá sản phẩm này</p>
-      </div>
-    `
+        `
+
+        // --- HIỂN THỊ DANH SÁCH ---
+        if (productReviews.length > 0) {
+            reviewsList.innerHTML = productReviews.map(review => `
+                <div class="review-item">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">${review.userName.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <div class="reviewer-name">${review.userName}</div>
+                                <div class="review-date">${formatDate(review.date)}</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">${generateStars(review.rating)}</div>
+                    </div>
+                    <div class="review-content">${review.content}</div>
+                </div>
+            `).join("")
+        } else {
+            reviewsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <h3>Chưa có đánh giá</h3>
+                    <p>Hãy là người đầu tiên đánh giá sản phẩm này</p>
+                </div>
+            `
+        }
+    } catch (error) {
+        console.error("Lỗi khi load review: ", error)
+        reviewsList.innerHTML = `<p style="color:red">Không thể tải đánh giá</p>`
     }
 }
 
@@ -591,7 +805,7 @@ function saveCart() {
 }
 
 function updateCartUI() {
-    updateCartCount()
+    //updateCartCount()
     updateCartSidebar()
 }
 

@@ -34,9 +34,16 @@ namespace Frontend.Controllers
             return View(shopView);
         }
 
-        public IActionResult ProductDetail()
+        public async Task<IActionResult> ProductDetail(int maSanPham)
         {
-            return View();
+            ShopView shopView = new ShopView();
+            HttpResponseMessage response = await _httpClient.GetAsync($"/SanPham/MaSanPham/{maSanPham}");
+            if(response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                shopView.SanPham = JsonConvert.DeserializeObject<SanPhamModel>(data);
+            }
+            return View(shopView);
         }
 
         public IActionResult CartIndex()

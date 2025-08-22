@@ -169,10 +169,12 @@ function createProductCard(product) {
 
     return `
         <div class="product-card" data-id="${product.maSanPham}">
-            <div class="product-image">
-                <img src="${product.hinhAnh}" alt="${product.tenSanPham}" loading="lazy">
-                ${badgeHtml}
-            </div>
+            <a href="/Shop/ProductDetail?id=${product.maSanPham}">
+                <div class="product-image">               
+                    <img src="${product.hinhAnh}" alt="${product.tenSanPham}" loading="lazy">
+                    ${badgeHtml}
+                </div>
+            </a>
             <div class="product-info">
                 <div class="product-category">${getCategoryName(product.tenDanhMuc)}</div>
                 <h3 class="product-name">${product.tenSanPham}</h3>

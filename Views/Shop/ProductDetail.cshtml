@@ -16,7 +16,7 @@
     <!-- Breadcrumb -->
     <div class="breadcrumb">
         <div class="container">
-            <a href="shop.html"><i class="fas fa-arrow-left"></i> Quay lại Shop</a>
+            <a href="#"><i class="fas fa-arrow-left"></i> Quay lại Shop</a>
             <span class="breadcrumb-separator">/</span>
             <span id="breadcrumb-category">Sản phẩm</span>
             <span class="breadcrumb-separator">/</span>
@@ -36,6 +36,37 @@
                 <h2>Đánh giá sản phẩm</h2>
                 <div class="reviews-summary" id="reviews-summary">
                     <!-- Reviews summary will be loaded here -->
+                </div>
+                <div class="review-form-section">
+                    <h3>Viết đánh giá của bạn</h3>
+                    <form class="review-form" id="review-form" action="javascript:void(0);">
+                        <div class="form-group">
+                            <label for="reviewer-name">Tên của bạn:</label>
+                            <input type="text" id="reviewer-name" name="reviewerName" required placeholder="Nhập tên của bạn">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Đánh giá:</label>
+                            <div class="rating-input" id="rating-input">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                            <span class="rating-text" id="rating-text">Chọn số sao</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="review-comment">Nhận xét:</label>
+                            <textarea id="review-comment" name="comment" rows="4" required placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Gửi đánh giá
+                        </button>
+                    </form>
                 </div>
                 <div class="reviews-list" id="reviews-list">
                     <!-- Reviews will be loaded here -->

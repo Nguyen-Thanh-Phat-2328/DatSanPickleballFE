@@ -18,84 +18,6 @@ body {
 }
 
 /* Header */
-.header {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 0;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #667eea;
-}
-
-.nav {
-    display: flex;
-    gap: 2rem;
-}
-
-    .nav a {
-        text-decoration: none;
-        color: #333;
-        font-weight: 500;
-        transition: color 0.3s ease;
-    }
-
-        .nav a:hover {
-            color: #667eea;
-        }
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.cart-icon {
-    position: relative;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 50%;
-    background: #f8f9ff;
-    color: #667eea;
-    transition: all 0.3s ease;
-}
-
-    .cart-icon:hover {
-        background: #667eea;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-.cart-count {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #ef4444;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
 
 /* Breadcrumb */
 .breadcrumb {
@@ -542,6 +464,122 @@ body {
     color: #666;
     line-height: 1.6;
 }
+
+/*form đánh giá*/
+.review-form-section {
+    margin: 2rem 0;
+    padding: 2rem;
+    background: #f8f9ff;
+    border-radius: 15px;
+    border: 1px solid #e0e7ff;
+}
+
+    .review-form-section h3 {
+        margin-bottom: 1.5rem;
+        color: #333;
+        font-size: 1.2rem;
+    }
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 12px 15px;
+        border: 2px solid #e0e7ff;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+.rating-input {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+    .rating-input i {
+        font-size: 1.5rem;
+        color: #e5e7eb;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .rating-input i:hover,
+        .rating-input i.active {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+
+.review-form .btn {
+    align-self: flex-start;
+    min-width: 150px;
+}
+
+.review-success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+    .review-success i {
+        color: #10b981;
+    }
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #666;
+}
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #e0e7ff;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .empty-state p {
+        color: #666;
+    }
 
 /* Related Products */
 .related-products {
