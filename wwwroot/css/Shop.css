@@ -847,34 +847,34 @@ body {
 /* Container cho menu actions */
 .menu-actions {
     display: flex;
-    gap: 12px;
-    padding: 20px;
+    gap: 8px; /* Reduced gap from 12px to 8px */
+    padding: 12px; /* Reduced padding from 20px to 12px */
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    margin: 20px;
+    border-radius: 8px; /* Reduced border radius from 12px to 8px */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Reduced shadow intensity */
+    margin: 12px; /* Reduced margin from 20px to 12px */
     justify-content: center;
     flex-wrap: wrap;
 }
 
 /* Styling cho các button */
 .view-btn {
-    /* Increased padding and made width flexible for full text display */
-    padding: 12px 20px;
-    min-width: 160px;
+    /* Made buttons more compact */
+    padding: 8px 16px; /* Reduced from 12px 20px */
+    min-width: 120px; /* Reduced from 160px */
     width: auto;
     background: #ffffff;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid #e2e8f0; /* Reduced border width from 2px to 1px */
+    border-radius: 6px; /* Reduced from 8px */
     color: #374151;
-    font-size: 14px;
+    font-size: 13px; /* Reduced from 14px */
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px; /* Reduced from 8px */
     position: relative;
     overflow: visible;
     white-space: nowrap;
@@ -883,13 +883,13 @@ body {
 
     /* Hiệu ứng hover */
     .view-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px); /* Reduced movement from -2px */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* Reduced shadow */
         border-color: #3b82f6;
     }
 
         .view-btn:hover i {
-            transform: scale(1.1);
+            transform: scale(1.05); /* Reduced scale from 1.1 */
             color: #3b82f6;
         }
 
@@ -920,24 +920,24 @@ body {
     background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: #1f2937;
     border-color: #2563eb;
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-    transform: translateY(-1px);
+    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.25); /* Reduced shadow */
+    transform: translateY(-0.5px); /* Reduced from -1px */
 }
 
     .view-btn.active i {
         color: #1f2937;
-        transform: scale(1.05);
+        transform: scale(1.02); /* Reduced from 1.05 */
     }
 
 /* Hiệu ứng khi click */
 .view-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
 }
 
 /* Icon styling */
 .view-btn i {
-    font-size: 16px;
+    font-size: 14px; /* Reduced from 16px */
     transition: all 0.3s ease;
 }
 
@@ -945,17 +945,16 @@ body {
 @media (max-width: 768px) {
     .menu-actions {
         flex-direction: column;
-        gap: 10px;
-        padding: 15px;
-        margin: 10px;
+        gap: 6px; /* Reduced from 10px */
+        padding: 10px; /* Reduced from 15px */
+        margin: 8px; /* Reduced from 10px */
     }
 
     .view-btn {
-        /* Ensured full width on mobile with proper text display */
         width: 100%;
         min-width: unset;
-        padding: 14px 16px;
-        font-size: 15px;
+        padding: 10px 12px; /* Reduced from 14px 16px */
+        font-size: 13px; /* Reduced from 15px */
     }
 }
 
@@ -963,4 +962,110 @@ body {
 .view-btn {
     box-sizing: border-box;
     text-align: center;
+}
+
+
+/* Pagination Styles */
+.pagination-container {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+    .pagination-btn:hover:not(:disabled) {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+    }
+
+    .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f9fafb;
+    }
+
+.pagination-numbers {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.page-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+    .page-number:hover {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+    }
+
+    .page-number.active {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+    }
+
+        .page-number.active:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+.pagination-info {
+    color: #6b7280;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .pagination {
+        gap: 0.25rem;
+    }
+
+    .pagination-btn,
+    .page-number {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+    }
+
+    .pagination-info {
+        font-size: 13px;
+    }
 }
