@@ -491,10 +491,10 @@ function renderProduct() {
         <div class="rating-text">${currentProduct.rating}/5 (${currentProduct.reviews} đánh giá)</div>
       </div>
       <div class="product-price">
-        <span class="price">${currentProduct.price.toLocaleString()} VND</span>
+      <span class="price">${currentProduct.price.toLocaleString()} VND</span>
         ${currentProduct.originalPrice ? `<span class="original-price">${currentProduct.originalPrice.toLocaleString()} VND</span>` : ""}
         ${discount > 0 ? `<span class="discount">-${discount}%</span>` : ""}
-      </div>
+</div>
       <div class="product-description">
         <p>${currentProduct.description}</p>
       </div>
