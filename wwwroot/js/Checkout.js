@@ -1,5 +1,19 @@
 ﻿// Cart data
-const cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
+let cart = []
+
+async function loadCart(maNguoiDung) {
+    try {
+        const response = await fetch(`https://localhost:7067/GioHang/MaNguoiDung/${maNguoiDung}`);
+        if (!response.ok)
+            throw new Error("Lỗi khi lấy giỏ hàng");
+        cart = await response.json();
+        //updateCartUI();
+    } catch (error) {
+        console.error(error);
+        cart = [];
+        //updateCartUI();
+    }
+}
 
 // Districts data
 const districts = {
@@ -35,15 +49,17 @@ const districts = {
 }
 
 // Initialize checkout page
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    const user = JSON.parse(localStorage.getItem("user"))
+    await loadCart(user.maNguoiDung)
     if (cart.length === 0) {
-        window.location.href = "cart.html"
-        return
+        alert("Không có sản phẩm nào trong giỏ hàng để thanh toán!")
+        window.location.href = "/Shop/ShopIndex";
+    } else {
+        loadOrderSummary()
+        setupEventListeners()
+        loadUserData()
     }
-
-    loadOrderSummary()
-    setupEventListeners()
-    loadUserData()
 })
 
 function setupEventListeners() {
@@ -62,18 +78,20 @@ function setupEventListeners() {
 
 function loadUserData() {
     // Load user data from localStorage if available
-    const user = JSON.parse(localStorage.getItem("user") || "null")
+    const user = JSON.parse(localStorage.getItem("user"))
     if (user) {
         document.getElementById("firstName").value = user.name?.split(" ")[0] || ""
         document.getElementById("lastName").value = user.name?.split(" ").slice(1).join(" ") || ""
         document.getElementById("email").value = user.email || ""
         document.getElementById("phone").value = user.phone || ""
+    } else {
+        alert("Vui lòng đăng nhập!")
     }
 }
 
 function loadOrderSummary() {
     const orderItems = document.getElementById("order-items")
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const subtotal = cart.reduce((sum, item) => sum + item.giaBan * item.soLuong, 0)
     const shippingFee = 30000
     const total = subtotal + shippingFee
 
@@ -83,13 +101,13 @@ function loadOrderSummary() {
             (item) => `
         <div class="order-item">
             <div class="item-image">
-                <img src="${item.image}" alt="${item.name}" loading="lazy">
+                <img src="${item.hinhAnh}" alt="${item.tenSanPham}" loading="lazy">
             </div>
             <div class="item-details">
-                <div class="item-name">${item.name}</div>
-                <div class="item-quantity">Số lượng: ${item.quantity}</div>
+                <div class="item-name">${item.tenSanPham}</div>
+                <div class="item-quantity">Số lượng: ${item.soLuong}</div>
             </div>
-            <div class="item-price">${formatPrice(item.price * item.quantity)}</div>
+            <div class="item-price">${formatPrice(item.giaBan * item.soLuong)}</div>
         </div>
     `,
         )

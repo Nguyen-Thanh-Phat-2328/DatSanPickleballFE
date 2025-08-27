@@ -1,145 +1,145 @@
 ﻿let favoriteProducts = []
 
 // Import product data from shop.js (in real app, this would be from API)
-const initialProducts = [
-    {
-        id: 1,
-        name: "Vợt Pickleball Chuyên Nghiệp",
-        category: "vot",
-        price: 1200000,
-        originalPrice: 1500000,
-        image: "/placeholder-oyol2.png",
-        images: ["/placeholder-oyol2.png", "/placeholder-oyol2.png", "/placeholder-oyol2.png"],
-        description:
-            "Vợt pickleball chất lượng cao dành cho người chơi chuyên nghiệp. Được làm từ chất liệu carbon fiber cao cấp, mang lại cảm giác tuyệt vời khi chơi.",
-        features: [
-            "Chất liệu carbon fiber cao cấp",
-            "Trọng lượng tối ưu 225g",
-            "Grip chống trượt",
-            "Thiết kế aerodynamic",
-            "Bảo hành 2 năm",
-        ],
-        badge: "sale",
-        inStock: true,
-        stockQuantity: 15,
-        rating: 1.5,
-        reviews: 124,
-    },
-    {
-        id: 2,
-        name: "Áo Thể Thao Pickleball",
-        category: "quan-ao",
-        price: 350000,
-        image: "/pickleball-sports-shirt.png",
-        images: ["/pickleball-sports-shirt.png", "/pickleball-sports-shirt.png"],
-        description: "Áo thể thao thoáng mát, thấm hút mồ hôi tốt, phù hợp cho mọi hoạt động thể thao.",
-        features: [
-            "Chất liệu polyester cao cấp",
-            "Công nghệ thấm hút mồ hôi",
-            "Thiết kế thoáng khí",
-            "Form áo thoải mái",
-            "Màu sắc đa dạng",
-        ],
-        badge: "new",
-        inStock: true,
-        stockQuantity: 25,
-        rating: 4.6,
-        reviews: 89,
-    },
-    {
-        id: 3,
-        name: "Giày Pickleball Chuyên Dụng",
-        category: "giay",
-        price: 2200000,
-        originalPrice: 2500000,
-        image: "/pickleball-shoes.png",
-        images: ["/pickleball-shoes.png", "/pickleball-shoes.png"],
-        description: "Giày thể thao chuyên dụng cho pickleball với đế chống trượt và hỗ trợ tối ưu.",
-        features: ["Đế cao su chống trượt", "Hỗ trợ mắt cá chân", "Đệm êm ái", "Thoáng khí tối ưu", "Thiết kế thời trang"],
-        badge: "sale",
-        inStock: true,
-        stockQuantity: 8,
-        rating: 4.9,
-        reviews: 156,
-    },
-    {
-        id: 4,
-        name: "Túi Đựng Vợt Pickleball",
-        category: "phu-kien",
-        price: 450000,
-        image: "/pickleball-paddle-bag.png",
-        images: ["/pickleball-paddle-bag.png"],
-        description: "Túi đựng vợt cao cấp, bảo vệ vợt tối ưu với nhiều ngăn tiện dụng.",
-        features: [
-            "Chất liệu chống nước",
-            "Nhiều ngăn tiện dụng",
-            "Dây đeo thoải mái",
-            "Bảo vệ vợt tối ưu",
-            "Thiết kế compact",
-        ],
-        inStock: true,
-        stockQuantity: 12,
-        rating: 4.5,
-        reviews: 67,
-    },
-    {
-        id: 5,
-        name: "Quần Short Thể Thao",
-        category: "quan-ao",
-        price: 280000,
-        image: "/pickleball-shorts.png",
-        images: ["/pickleball-shorts.png"],
-        description: "Quần short thể thao thoải mái, phù hợp mọi hoạt động thể thao.",
-        features: ["Chất liệu thoáng mát", "Thiết kế thoải mái", "Túi tiện dụng", "Dây rút điều chỉnh", "Màu sắc đa dạng"],
-        inStock: true,
-        stockQuantity: 20,
-        rating: 4.4,
-        reviews: 43,
-    },
-    {
-        id: 6,
-        name: "Vợt Pickleball Cho Người Mới",
-        category: "vot",
-        price: 800000,
-        image: "/beginner-pickleball-paddle.png",
-        images: ["/beginner-pickleball-paddle.png"],
-        description: "Vợt pickleball dành cho người mới bắt đầu, dễ sử dụng và giá cả phải chăng.",
-        features: ["Thiết kế dễ sử dụng", "Trọng lượng nhẹ", "Grip thoải mái", "Giá cả phải chăng", "Phù hợp người mới"],
-        badge: "new",
-        inStock: true,
-        stockQuantity: 18,
-        rating: 4.3,
-        reviews: 78,
-    },
-    {
-        id: 7,
-        name: "Băng Đô Thể Thao",
-        category: "phu-kien",
-        price: 120000,
-        image: "/placeholder-48wy9.png",
-        images: ["/placeholder-48wy9.png"],
-        description: "Băng đô thấm mồ hôi, giữ tóc gọn gàng khi chơi thể thao.",
-        features: ["Thấm hút mồ hôi tốt", "Chất liệu mềm mại", "Co giãn thoải mái", "Dễ dàng giặt sạch", "Nhiều màu sắc"],
-        inStock: true,
-        stockQuantity: 30,
-        rating: 4.2,
-        reviews: 34,
-    },
-    {
-        id: 8,
-        name: "Tất Thể Thao Cao Cấp",
-        category: "phu-kien",
-        price: 150000,
-        image: "/placeholder-4p10p.png",
-        images: ["/placeholder-4p10p.png"],
-        description: "Tất thể thao chống trượt, thoáng khí, mang lại cảm giác thoải mái.",
-        features: ["Chống trượt hiệu quả", "Thoáng khí tối ưu", "Chất liệu cao cấp", "Độ bền cao", "Thiết kế ergonomic"],
-        inStock: false,
-        stockQuantity: 0,
-        rating: 4.7,
-        reviews: 92,
-    },
-]
+//const products = [
+//    {
+//        id: 1,
+//        name: "Vợt Pickleball Chuyên Nghiệp",
+//        category: "vot",
+//        price: 1200000,
+//        originalPrice: 1500000,
+//        image: "/placeholder-oyol2.png",
+//        images: ["/placeholder-oyol2.png", "/placeholder-oyol2.png", "/placeholder-oyol2.png"],
+//        description:
+//            "Vợt pickleball chất lượng cao dành cho người chơi chuyên nghiệp. Được làm từ chất liệu carbon fiber cao cấp, mang lại cảm giác tuyệt vời khi chơi.",
+//        features: [
+//            "Chất liệu carbon fiber cao cấp",
+//            "Trọng lượng tối ưu 225g",
+//            "Grip chống trượt",
+//            "Thiết kế aerodynamic",
+//            "Bảo hành 2 năm",
+//        ],
+//        badge: "sale",
+//        inStock: true,
+//        stockQuantity: 15,
+//        rating: 1.5,
+//        reviews: 124,
+//    },
+//    {
+//        id: 2,
+//        name: "Áo Thể Thao Pickleball",
+//        category: "quan-ao",
+//        price: 350000,
+//        image: "/pickleball-sports-shirt.png",
+//        images: ["/pickleball-sports-shirt.png", "/pickleball-sports-shirt.png"],
+//        description: "Áo thể thao thoáng mát, thấm hút mồ hôi tốt, phù hợp cho mọi hoạt động thể thao.",
+//        features: [
+//            "Chất liệu polyester cao cấp",
+//            "Công nghệ thấm hút mồ hôi",
+//            "Thiết kế thoáng khí",
+//            "Form áo thoải mái",
+//            "Màu sắc đa dạng",
+//        ],
+//        badge: "new",
+//        inStock: true,
+//        stockQuantity: 25,
+//        rating: 4.6,
+//        reviews: 89,
+//    },
+//    {
+//        id: 3,
+//        name: "Giày Pickleball Chuyên Dụng",
+//        category: "giay",
+//        price: 2200000,
+//        originalPrice: 2500000,
+//        image: "/pickleball-shoes.png",
+//        images: ["/pickleball-shoes.png", "/pickleball-shoes.png"],
+//        description: "Giày thể thao chuyên dụng cho pickleball với đế chống trượt và hỗ trợ tối ưu.",
+//        features: ["Đế cao su chống trượt", "Hỗ trợ mắt cá chân", "Đệm êm ái", "Thoáng khí tối ưu", "Thiết kế thời trang"],
+//        badge: "sale",
+//        inStock: true,
+//        stockQuantity: 8,
+//        rating: 4.9,
+//        reviews: 156,
+//    },
+//    {
+//        id: 4,
+//        name: "Túi Đựng Vợt Pickleball",
+//        category: "phu-kien",
+//        price: 450000,
+//        image: "/pickleball-paddle-bag.png",
+//        images: ["/pickleball-paddle-bag.png"],
+//        description: "Túi đựng vợt cao cấp, bảo vệ vợt tối ưu với nhiều ngăn tiện dụng.",
+//        features: [
+//            "Chất liệu chống nước",
+//            "Nhiều ngăn tiện dụng",
+//            "Dây đeo thoải mái",
+//            "Bảo vệ vợt tối ưu",
+//            "Thiết kế compact",
+//        ],
+//        inStock: true,
+//        stockQuantity: 12,
+//        rating: 4.5,
+//        reviews: 67,
+//    },
+//    {
+//        id: 5,
+//        name: "Quần Short Thể Thao",
+//        category: "quan-ao",
+//        price: 280000,
+//        image: "/pickleball-shorts.png",
+//        images: ["/pickleball-shorts.png"],
+//        description: "Quần short thể thao thoải mái, phù hợp mọi hoạt động thể thao.",
+//        features: ["Chất liệu thoáng mát", "Thiết kế thoải mái", "Túi tiện dụng", "Dây rút điều chỉnh", "Màu sắc đa dạng"],
+//        inStock: true,
+//        stockQuantity: 20,
+//        rating: 4.4,
+//        reviews: 43,
+//    },
+//    {
+//        id: 6,
+//        name: "Vợt Pickleball Cho Người Mới",
+//        category: "vot",
+//        price: 800000,
+//        image: "/beginner-pickleball-paddle.png",
+//        images: ["/beginner-pickleball-paddle.png"],
+//        description: "Vợt pickleball dành cho người mới bắt đầu, dễ sử dụng và giá cả phải chăng.",
+//        features: ["Thiết kế dễ sử dụng", "Trọng lượng nhẹ", "Grip thoải mái", "Giá cả phải chăng", "Phù hợp người mới"],
+//        badge: "new",
+//        inStock: true,
+//        stockQuantity: 18,
+//        rating: 4.3,
+//        reviews: 78,
+//    },
+//    {
+//        id: 7,
+//        name: "Băng Đô Thể Thao",
+//        category: "phu-kien",
+//        price: 120000,
+//        image: "/placeholder-48wy9.png",
+//        images: ["/placeholder-48wy9.png"],
+//        description: "Băng đô thấm mồ hôi, giữ tóc gọn gàng khi chơi thể thao.",
+//        features: ["Thấm hút mồ hôi tốt", "Chất liệu mềm mại", "Co giãn thoải mái", "Dễ dàng giặt sạch", "Nhiều màu sắc"],
+//        inStock: true,
+//        stockQuantity: 30,
+//        rating: 4.2,
+//        reviews: 34,
+//    },
+//    {
+//        id: 8,
+//        name: "Tất Thể Thao Cao Cấp",
+//        category: "phu-kien",
+//        price: 150000,
+//        image: "/placeholder-4p10p.png",
+//        images: ["/placeholder-4p10p.png"],
+//        description: "Tất thể thao chống trượt, thoáng khí, mang lại cảm giác thoải mái.",
+//        features: ["Chống trượt hiệu quả", "Thoáng khí tối ưu", "Chất liệu cao cấp", "Độ bền cao", "Thiết kế ergonomic"],
+//        inStock: false,
+//        stockQuantity: 0,
+//        rating: 4.7,
+//        reviews: 92,
+//    },
+//]
 
 let products = []
 // Lấy sản phẩm về từ API
@@ -220,6 +220,9 @@ let currentFilter = "newest"
 document.addEventListener("DOMContentLoaded", async () => {
     await loadUserFavorites()
     fetchProducts()
+    //updateCartUI()
+    setupEventListeners()
+    setupReviewForm()
 })
 
 function showLoading() {
@@ -479,37 +482,68 @@ function renderProduct() {
       <div class="thumbnail-images">
         ${currentProduct.images
             ?.map(
-                (img, index) => `<img src="${img}" alt="${currentProduct.name} thumbnail ${index + 1}" class="thumbnail">`,
+                (img, index) => `
+          <div class="thumbnail ${index === 0 ? "active" : ""}" onclick="changeMainImage('${img}', this)">
+            <img src="${img}" alt="Thumbnail ${index + 1}">
+          </div>
+        `,
             )
-            .join("")}
+            .join("") || ""
+        }
       </div>
     </div>
     <div class="product-info">
-      <h2>${currentProduct.name}</h2>
+      <div class="product-category">${getCategoryName(currentProduct.category)}</div>
+      <h1>${currentProduct.name}</h1>
+      
       <div class="product-rating">
-        <div class="stars">${generateStars(currentProduct.rating)}</div>
-        <div class="rating-text">${currentProduct.rating}/5 (${currentProduct.reviews} đánh giá)</div>
+        <div class="stars">
+          ${generateStars(currentProduct.rating)}
+        </div>
+        <span class="rating-text">${currentProduct.rating.toFixed(1)}/5 (${currentProduct.reviews} đánh giá)</span>
       </div>
       <div class="product-price">
-      <span class="price">${currentProduct.price.toLocaleString()} VND</span>
-        ${currentProduct.originalPrice ? `<span class="original-price">${currentProduct.originalPrice.toLocaleString()} VND</span>` : ""}
-        ${discount > 0 ? `<span class="discount">-${discount}%</span>` : ""}
-</div>
-      <div class="product-description">
-        <p>${currentProduct.description}</p>
+        <span class="current-price">${formatPrice(currentProduct.price)}</span>
+        ${currentProduct.originalPrice
+            ? `
+          <span class="original-price">${formatPrice(currentProduct.originalPrice)}</span>
+          <span class="discount-badge">-${discount}%</span>
+        `
+            : ""
+        }
+      </div>
+
+      <p class="product-description">${currentProduct.description}</p>
+
+      <div class="product-options">
+        <div class="quantity-selector">
+          <label>Số lượng:</label>
+          <div class="quantity-control">
+            <button class="quantity-btn quantity-decrease" ${currentQuantity <= 1 ? "disabled" : ""}>
+              <i class="fas fa-minus"></i>
+            </button>
+            <input type="number" class="quantity-input" value="${currentQuantity}" min="1" max="${currentProduct.stockQuantity}">
+            <button class="quantity-btn quantity-increase" ${currentQuantity >= currentProduct.stockQuantity ? "disabled" : ""}>
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="stock-status ${currentProduct.inStock ? "in-stock" : "out-of-stock"}">
+          <i class="fas ${currentProduct.inStock ? "fa-check-circle" : "fa-times-circle"}"></i>
+          ${currentProduct.inStock ? `Còn ${currentProduct.stockQuantity} sản phẩm` : "Hết hàng"}
+        </div>
       </div>
       <div class="product-actions">
-        <button class="btn btn-primary" onclick="addToCart()">Thêm vào giỏ hàng</button>
+        <button class="btn btn-primary" onclick="addToCart()" ${!currentProduct.inStock ? "disabled" : ""}>
+          <i class="fas fa-shopping-cart"></i>
+          ${currentProduct.inStock ? "Thêm vào giỏ hàng" : "Hết hàng"}
+        </button>
         <button class="btn btn-wishlist" onclick="toggleWishlist(${currentProduct.id}, this)" title="Thêm vào yêu thích">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
           </svg>
         </button>
-        <div class="quantity-control">
-          <button class="quantity-decrease">-</button>
-          <input type="number" class="quantity-input" value="${currentQuantity}">
-          <button class="quantity-increase">+</button>
-        </div>
       </div>
       ${currentProduct.features
             ? `
@@ -879,27 +913,51 @@ function changeMainImage(imageSrc, thumbnailElement) {
     }
 }
 
-function addToCart() {
-    if (!currentProduct.inStock) return
+//function addToCart() {
+//    if (!currentProduct.inStock) return
 
-    const existingItem = cart.find((item) => item.id === currentProduct.id)
+//    const existingItem = cart.find((item) => item.id === currentProduct.id)
 
-    if (existingItem) {
-        existingItem.quantity += currentQuantity
-    } else {
-        cart.push({
-            id: currentProduct.id,
-            name: currentProduct.name,
-            price: currentProduct.price,
-            image: currentProduct.image,
-            quantity: currentQuantity,
-        })
+//    if (existingItem) {
+//        existingItem.quantity += currentQuantity
+//    } else {
+//        cart.push({
+//            id: currentProduct.id,
+//            name: currentProduct.name,
+//            price: currentProduct.price,
+//            image: currentProduct.image,
+//            quantity: currentQuantity,
+//        })
+//    }
+
+//    saveCart()
+//    updateCartUI()
+//    showAddToCartNotification()
+
+//    // Update button temporarily
+//    const addButton = document.querySelector(".btn-primary")
+//    const originalText = addButton.innerHTML
+//    addButton.innerHTML = '<i class="fas fa-check"></i> Đã thêm vào giỏ'
+//    addButton.disabled = true
+
+//    setTimeout(() => {
+//        addButton.innerHTML = originalText
+//        addButton.disabled = false
+//    }, 2000)
+//}
+async function addToCart() {
+    const user = JSON.parse(localStorage.getItem("user"))
+    //lấy mã sản phẩm
+    const params = new URLSearchParams(window.location.search)
+    const maSanPham = parseInt(params.get("id"), 10)
+    if (!user) {
+        alert("Vui lòng đăng nhập để sử dụng chức năng này!");
+        return;
     }
 
-    saveCart()
-    updateCartUI()
+    //lưu vào giỏ hàng
+    await saveCart(user.maNguoiDung, maSanPham, currentQuantity)
     showAddToCartNotification()
-
     // Update button temporarily
     const addButton = document.querySelector(".btn-primary")
     if (addButton) {
@@ -913,15 +971,46 @@ function addToCart() {
         }, 2000)
     }
 }
+async function saveCart(userId, prId, quantity) {
+    try {
+        const res = await fetch("https://localhost:7067/GioHang/Insert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                maNguoiDung: userId,
+                maSanPham: prId,
+                soLuong: quantity
+            })
+        });
+        if (!res.ok) {
+            // Nếu backend trả lỗi (400, 500...)
+            const errText = await res.text();
+            console.error("API error:", res.status, errText);
+            return;
+        }
+
+        const data = await res.json();
+        console.log("Cart saved:", data);
+    } catch (err) {
+        console.error("Fetch failed:", err);
+    }
+}
+
+//function toggleWishlist() {
+//    showNotification("Tính năng yêu thích sẽ được cập nhật!", "info")
+//}
+function fullQuantity() {
+    showNotification("Không đủ số lượng!", "info")
+}
 
 function goToProduct(productId) {
-    window.location.href = `product-detail.html?id=${productId}`
+    window.location.href = `/Shop/ProductDetail?id=${productId}`
 }
 
 // Cart functions
-function saveCart() {
-    localStorage.setItem("pickleballCart", JSON.stringify(cart))
-}
+//function saveCart() {
+//    localStorage.setItem("pickleballCart", JSON.stringify(cart))
+//}
 
 function updateCartUI() {
     updateCartSidebar()
