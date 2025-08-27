@@ -2,6 +2,18 @@
 let products = []
 let favoriteProducts = []
 
+let currentPage = 1
+const itemsPerPage = 9
+let totalPages = 1
+let filteredProducts = []
+let isShowingWishlist = false
+
+// Function to toggle search bar
+function toggleSearch() {
+    const searchBar = document.getElementById("search-bar")
+    searchBar.classList.toggle("active")
+}
+
 //lấy sản phẩm về từ api
 fetch("https://localhost:7067/SanPham/ListAll")
     .then((response) => response.json())
@@ -24,15 +36,18 @@ const currentFilters = {
 
 // Initialize the shop
 document.addEventListener("DOMContentLoaded", () => {
-    setupEventListeners()
     updateCartUI()
+    // Don't setup event listeners here - wait for products to load
 })
 
 function initializeShop() {
     currentProductList = products
-    displayProducts(currentProductList)
-    updateCartCount()
+    filteredProducts = products
 
+    setupEventListeners()
+
+    filterAndDisplayProducts()
+    updateCartCount()
     loadFavoritesList()
 }
 
@@ -73,40 +88,74 @@ function updateAllHeartsUI() {
 }
 
 function setupEventListeners() {
+
     // Search functionality
     const searchInput = document.getElementById("search-input")
-    //const searchToggle = document.querySelector(".search-toggle")
+    const searchToggle = document.querySelector(".search-toggle")
 
-    //searchToggle.addEventListener("click", toggleSearch)
-    searchInput.addEventListener("input", handleSearch)
+    if (searchToggle) {
+        searchToggle.addEventListener("click", toggleSearch)
+    }
+    if (searchInput) {
+        searchInput.addEventListener("input", handleSearch)
+    }
 
-    // Filter functionality
-    document.getElementById("category-filter").addEventListener("change", handleCategoryFilter)
-    document.getElementById("price-filter").addEventListener("change", handlePriceFilter)
-    document.getElementById("sort-filter").addEventListener("change", handleSort)
+    const categoryFilter = document.getElementById("category-filter")
+    const priceFilter = document.getElementById("price-filter")
+    const sortFilter = document.getElementById("sort-filter")
+
+    if (categoryFilter) {
+        categoryFilter.addEventListener("change", handleCategoryFilter)
+    }
+
+    if (priceFilter) {
+        priceFilter.addEventListener("change", handlePriceFilter)
+    }
+
+    if (sortFilter) {
+        sortFilter.addEventListener("change", handleSort)
+    }
 
     // View toggle
     document.querySelectorAll(".layout-btn").forEach((btn) => {
         btn.addEventListener("click", handleViewToggle)
     })
-}
 
-function toggleSearch() {
-    const searchBar = document.getElementById("search-bar")
-    const searchInput = document.getElementById("search-input")
+    const allProductsBtn = document.getElementById("all-products-btn")
+    const wishlistBtn = document.getElementById("wishlist-btn")
 
-    searchBar.classList.toggle("active")
-
-    if (searchBar.classList.contains("active")) {
-        setTimeout(() => searchInput.focus(), 300)
-    } else {
-        searchInput.value = ""
-        currentFilters.search = ""
-        filterAndDisplayProducts()
+    if (allProductsBtn) {
+        allProductsBtn.addEventListener("click", () => {
+            console.log("[v0] All products button clicked")
+            loadAllProducts()
+            setActiveMenu("all-products-btn")
+            isShowingWishlist = false
+        })
     }
+
+    if (wishlistBtn) {
+        wishlistBtn.addEventListener("click", () => {
+            loadWishlist()
+            setActiveMenu("wishlist-btn")
+            isShowingWishlist = true
+        })
+    }
+
+    // Pagination buttons
+    const firstPageBtn = document.getElementById("first-page-btn")
+    const prevPageBtn = document.getElementById("prev-page-btn")
+    const nextPageBtn = document.getElementById("next-page-btn")
+    const lastPageBtn = document.getElementById("last-page-btn")
+
+    if (firstPageBtn) firstPageBtn.addEventListener("click", goToFirstPage)
+    if (prevPageBtn) prevPageBtn.addEventListener("click", goToPreviousPage)
+    if (nextPageBtn) nextPageBtn.addEventListener("click", goToNextPage)
+    if (lastPageBtn) lastPageBtn.addEventListener("click", goToLastPage)
+
 }
 
 function handleSearch(e) {
+    console.log("[v0] Search triggered:", e.target.value)
     currentFilters.search = e.target.value.toLowerCase()
     filterAndDisplayProducts()
 }
@@ -142,11 +191,12 @@ function handleViewToggle(e) {
 }
 
 function filterAndDisplayProducts() {
-    let filteredProducts = [...currentProductList]
+
+    let filteredProductsTemp = [...currentProductList]
 
     // Apply search filter
     if (currentFilters.search) {
-        filteredProducts = filteredProducts.filter(
+        filteredProductsTemp = filteredProductsTemp.filter(
             (product) =>
                 product.tenSanPham.toLowerCase().includes(currentFilters.search) ||
                 product.moTa.toLowerCase().includes(currentFilters.search),
@@ -155,7 +205,7 @@ function filterAndDisplayProducts() {
 
     // Apply category filter
     if (currentFilters.category) {
-        filteredProducts = filteredProducts.filter(
+        filteredProductsTemp = filteredProductsTemp.filter(
             (product) => String(product.maDanhMuc) === String(currentFilters.category),
         )
     }
@@ -163,11 +213,11 @@ function filterAndDisplayProducts() {
     // Apply price filter
     if (currentFilters.priceRange) {
         const [min, max] = currentFilters.priceRange.split("-").map(Number)
-        filteredProducts = filteredProducts.filter((product) => product.giaBan >= min && product.giaBan <= max)
+        filteredProductsTemp = filteredProductsTemp.filter((product) => product.giaBan >= min && product.giaBan <= max)
     }
 
     // Apply sorting
-    filteredProducts.sort((a, b) => {
+    filteredProductsTemp.sort((a, b) => {
         switch (currentFilters.sort) {
             case "price-low":
                 return a.giaBan - b.giaBan
@@ -181,11 +231,22 @@ function filterAndDisplayProducts() {
         }
     })
 
-    displayProducts(filteredProducts)
+    filteredProducts = filteredProductsTemp
+    currentPage = 1
+    updatePagination()
+    displayProducts(getCurrentPageProducts())
+
+}
+
+function getCurrentPageProducts() {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return filteredProducts.slice(startIndex, endIndex)
 }
 
 function displayProducts(productsToShow) {
     const productsGrid = document.getElementById("products-grid")
+    const paginationContainer = document.getElementById("pagination-container")
 
     if (productsToShow.length === 0) {
         productsGrid.innerHTML = `
@@ -195,10 +256,17 @@ function displayProducts(productsToShow) {
                 <p>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
             </div>
         `
+        if (paginationContainer) {
+            paginationContainer.style.display = "none"
+        }
         return
     }
 
     productsGrid.innerHTML = productsToShow.map((product) => createProductCard(product)).join("")
+
+    if (paginationContainer && totalPages > 1) {
+        paginationContainer.style.display = "flex"
+    }
 
     setTimeout(() => {
         updateAllHeartsUI()
@@ -274,7 +342,7 @@ function addToCart(productId) {
     const product = products.find((p) => p.maSanPham === productId)
     if (!product || !product.soLuongTon === 0) return
 
-    const existingItem = cart.find((item) => item.maSanPham === productId)
+    const existingItem = cart.find((item) => item.id === productId)
 
     if (existingItem) {
         existingItem.quantity += 1
@@ -455,12 +523,40 @@ function showAddToCartNotification(productName) {
 function showNotification(message, type = "info") {
     const notification = document.createElement("div")
     notification.className = `notification notification-${type}`
-    notification.innerHTML = ``
+    notification.innerHTML = message
     // Add notification styles if not already added
     if (!document.querySelector("#notification-styles")) {
         const styles = document.createElement("style")
         styles.id = "notification-styles"
-        styles.textContent = ``
+        styles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                background-color: #3498db;
+                color: white;
+                border-radius: 5px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                animation: slideInRight 0.3s ease;
+            }
+            .notification-success {
+                background-color: #2ecc71;
+            }
+            .notification-info {
+                background-color: #3498db;
+            }
+            @keyframes slideInRight {
+                from {
+                    right: -300px;
+                    opacity: 0;
+                }
+                to {
+                    right: 20px;
+                    opacity: 1;
+                }
+            }
+        `
         document.head.appendChild(styles)
     }
 
@@ -505,85 +601,194 @@ document.addEventListener("keydown", (e) => {
     }
 })
 
-//Danh sách các sản phẩm yêu thích
+function updatePagination() {
+    totalPages = Math.ceil(filteredProducts.length / itemsPerPage)
+    const paginationContainer = document.getElementById("pagination-container")
+
+    if (!paginationContainer) {
+        console.warn("[v0] Pagination container not found")
+        return
+    }
+
+    if (totalPages <= 1) {
+        paginationContainer.style.display = "none"
+        return
+    }
+
+    paginationContainer.style.display = "flex"
+
+    const firstPageBtn = document.getElementById("first-page-btn")
+    const prevPageBtn = document.getElementById("prev-page-btn")
+    const nextPageBtn = document.getElementById("next-page-btn")
+    const lastPageBtn = document.getElementById("last-page-btn")
+
+    if (firstPageBtn) firstPageBtn.disabled = currentPage === 1
+    if (prevPageBtn) prevPageBtn.disabled = currentPage === 1
+    if (nextPageBtn) nextPageBtn.disabled = currentPage === totalPages
+    if (lastPageBtn) lastPageBtn.disabled = currentPage === totalPages
+
+    // Tạo số trang
+    generatePageNumbers()
+
+    // Cập nhật thông tin pagination
+    //updatePaginationInfo()
+}
+
+function generatePageNumbers() {
+    const paginationNumbers = document.getElementById("pagination-numbers")
+
+    if (!paginationNumbers) {
+        console.warn("[v0] Pagination numbers container not found")
+        return
+    }
+
+    let numbersHtml = ""
+
+    // Hiển thị tối đa 5 số trang
+    let startPage = Math.max(1, currentPage - 2)
+    const endPage = Math.min(totalPages, startPage + 4)
+
+    // Điều chỉnh startPage nếu endPage đã ở cuối
+    if (endPage - startPage < 4) {
+        startPage = Math.max(1, endPage - 4)
+    }
+
+    // Thêm dấu ... nếu cần
+    if (startPage > 1) {
+        numbersHtml += `<button class="page-number" onclick="goToPage(1)">1</button>`
+        if (startPage > 2) {
+            numbersHtml += `<span style="padding: 0 8px;">...</span>`
+        }
+    }
+
+    // Tạo các số trang
+    for (let i = startPage; i <= endPage; i++) {
+        const activeClass = i === currentPage ? "active" : ""
+        numbersHtml += `<button class="page-number ${activeClass}" onclick="goToPage(${i})">${i}</button>`
+    }
+
+    // Thêm dấu ... nếu cần
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            numbersHtml += `<span style="padding: 0 8px;">...</span>`
+        }
+        numbersHtml += `<button class="page-number" onclick="goToPage(${totalPages})">${totalPages}</button>`
+    }
+
+    paginationNumbers.innerHTML = numbersHtml
+}
+
+//function updatePaginationInfo() {
+//    const paginationInfoText = document.getElementById("pagination-info-text")
+
+//    if (!paginationInfoText) {
+//        console.warn("[v0] Pagination info text element not found")
+//        return
+//    }
+
+//    const startItem = (currentPage - 1) * itemsPerPage + 1
+//    const endItem = Math.min(currentPage * itemsPerPage, filteredProducts.length)
+//    const totalItems = filteredProducts.length
+
+//    paginationInfoText.textContent = `Hiển thị ${startItem}-${endItem} của ${totalItems} sản phẩm`
+//}
+
+function goToPage(page) {
+    if (page < 1 || page > totalPages || page === currentPage) return
+
+    currentPage = page
+    updatePagination()
+    displayProducts(getCurrentPageProducts())
+
+    // Cuộn lên đầu danh sách sản phẩm
+    document.getElementById("products-grid").scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+    })
+}
+
+function goToFirstPage() {
+    goToPage(1)
+}
+
+function goToPreviousPage() {
+    goToPage(currentPage - 1)
+}
+
+function goToNextPage() {
+    goToPage(currentPage + 1)
+}
+
+function goToLastPage() {
+    goToPage(totalPages)
+}
+
 function loadWishlist() {
-    const user = JSON.parse(localStorage.getItem("user")) // lấy object user
+    console.log("[v0] loadWishlist function called")
+    const user = JSON.parse(localStorage.getItem("user"))
     const maNguoiDung = user ? user.maNguoiDung : null
 
+    console.log("[v0] User:", user)
+    console.log("[v0] User ID:", maNguoiDung)
+
     if (!maNguoiDung) {
+        console.log("[v0] No user logged in")
         showNotification("Bạn cần đăng nhập để xem sản phẩm yêu thích!", "info")
         return
     }
 
+    console.log("[v0] Fetching wishlist from API...")
     fetch(`https://localhost:7067/SanPham/DoYeuThich/${maNguoiDung}`)
-        .then((response) => response.text()) // lấy text thô thay vì json
-        .then((text) => {
-            let data
-            try {
-                data = JSON.parse(text) // thử parse JSON
-            } catch (e) {
-                data = null // nếu không phải JSON thì gán null
-            }
-
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("[v0] Wishlist API response:", data)
             if (Array.isArray(data) && data.length > 0) {
-                favoriteProducts = data.map((fav) => fav.maSanPham)
-                currentProductList = data // Chỉ hiển thị sản phẩm yêu thích
+                const wishlistProductIds = data.map((fav) => fav.maSanPham)
+                const wishlistProducts = products.filter((product) => wishlistProductIds.includes(product.maSanPham))
+
+                console.log("[v0] Wishlist product IDs:", wishlistProductIds)
+                console.log("[v0] Filtered wishlist products:", wishlistProducts)
+
+                favoriteProducts = wishlistProductIds
+                currentProductList = wishlistProducts
+                currentPage = 1
                 filterAndDisplayProducts()
             } else {
+                console.log("[v0] No wishlist products found")
                 const productsGrid = document.getElementById("products-grid")
                 productsGrid.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-heart-broken"></i>
-                        <h3>Chưa có sản phẩm nào được yêu thích</h3>
-                        <p>Hãy thêm sản phẩm vào danh sách yêu thích để dễ theo dõi.</p>
-                    </div>
-                `
+          <div class="empty-state">
+            <i class="fas fa-heart-broken"></i>
+            <h3>Chưa có sản phẩm nào được yêu thích</h3>
+            <p>Hãy thêm sản phẩm vào danh sách yêu thích để dễ theo dõi.</p>
+          </div>
+        `
+                const paginationContainer = document.getElementById("pagination-container")
+                if (paginationContainer) {
+                    paginationContainer.style.display = "none"
+                }
             }
         })
         .catch((error) => {
-            console.error("Lỗi khi lấy danh sách yêu thích:", error)
+            console.error("[v0] Error loading wishlist:", error)
             const productsGrid = document.getElementById("products-grid")
             productsGrid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-heart-broken"></i>
-                    <h3>Chưa có sản phẩm nào được yêu thích</h3>
-                    <p>Hãy thêm sản phẩm vào danh sách yêu thích để dễ theo dõi.</p>
-                </div>
-            `
+        <div class="empty-state">
+          <i class="fas fa-heart-broken"></i>
+          <h3>Chưa có sản phẩm nào được yêu thích</h3>
+          <p>Hãy thêm sản phẩm vào danh sách yêu thích để dễ theo dõi.</p>
+        </div>
+      `
+            const paginationContainer = document.getElementById("pagination-container")
+            if (paginationContainer) {
+                paginationContainer.style.display = "none"
+            }
         })
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    setupEventListeners()
-    updateCartUI()
-
-    // thêm sự kiện cho nút Yêu thích
-    document.getElementById("wishlist-btn").addEventListener("click", loadWishlist)
-})
-
-document.addEventListener("DOMContentLoaded", () => {
-    setupEventListeners()
-    updateCartUI()
-
-    // Mặc định khi vào shop -> load tất cả sản phẩm
-    loadAllProducts()
-
-    // Nút Tất cả sản phẩm
-    document.getElementById("all-products-btn").addEventListener("click", () => {
-        loadAllProducts()
-        setActiveMenu("all-products-btn")
-    })
-
-    // Nút Yêu thích
-    document.getElementById("wishlist-btn").addEventListener("click", () => {
-        loadWishlist()
-        setActiveMenu("wishlist-btn")
-    })
-})
-
-// Hàm load tất cả sản phẩm
 function loadAllProducts() {
-    currentProductList = products // Reset về tất cả sản phẩm
+    currentProductList = products
+    currentPage = 1
     filterAndDisplayProducts()
 }
 

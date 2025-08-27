@@ -1,159 +1,161 @@
-﻿// Import product data from shop.js (in real app, this would be from API)
-//const products = [
-//    {
-//        id: 1,
-//        name: "Vợt Pickleball Chuyên Nghiệp",
-//        category: "vot",
-//        price: 1200000,
-//        originalPrice: 1500000,
-//        image: "/placeholder-oyol2.png",
-//        images: ["/placeholder-oyol2.png", "/placeholder-oyol2.png", "/placeholder-oyol2.png"],
-//        description:
-//            "Vợt pickleball chất lượng cao dành cho người chơi chuyên nghiệp. Được làm từ chất liệu carbon fiber cao cấp, mang lại cảm giác tuyệt vời khi chơi.",
-//        features: [
-//            "Chất liệu carbon fiber cao cấp",
-//            "Trọng lượng tối ưu 225g",
-//            "Grip chống trượt",
-//            "Thiết kế aerodynamic",
-//            "Bảo hành 2 năm",
-//        ],
-//        badge: "sale",
-//        inStock: true,
-//        stockQuantity: 15,
-//        rating: 1.5,
-//        reviews: 124,
-//    },
-//    {
-//        id: 2,
-//        name: "Áo Thể Thao Pickleball",
-//        category: "quan-ao",
-//        price: 350000,
-//        image: "/pickleball-sports-shirt.png",
-//        images: ["/pickleball-sports-shirt.png", "/pickleball-sports-shirt.png"],
-//        description: "Áo thể thao thoáng mát, thấm hút mồ hôi tốt, phù hợp cho mọi hoạt động thể thao.",
-//        features: [
-//            "Chất liệu polyester cao cấp",
-//            "Công nghệ thấm hút mồ hôi",
-//            "Thiết kế thoáng khí",
-//            "Form áo thoải mái",
-//            "Màu sắc đa dạng",
-//        ],
-//        badge: "new",
-//        inStock: true,
-//        stockQuantity: 25,
-//        rating: 4.6,
-//        reviews: 89,
-//    },
-//    {
-//        id: 3,
-//        name: "Giày Pickleball Chuyên Dụng",
-//        category: "giay",
-//        price: 2200000,
-//        originalPrice: 2500000,
-//        image: "/pickleball-shoes.png",
-//        images: ["/pickleball-shoes.png", "/pickleball-shoes.png"],
-//        description: "Giày thể thao chuyên dụng cho pickleball với đế chống trượt và hỗ trợ tối ưu.",
-//        features: ["Đế cao su chống trượt", "Hỗ trợ mắt cá chân", "Đệm êm ái", "Thoáng khí tối ưu", "Thiết kế thời trang"],
-//        badge: "sale",
-//        inStock: true,
-//        stockQuantity: 8,
-//        rating: 4.9,
-//        reviews: 156,
-//    },
-//    {
-//        id: 4,
-//        name: "Túi Đựng Vợt Pickleball",
-//        category: "phu-kien",
-//        price: 450000,
-//        image: "/pickleball-paddle-bag.png",
-//        images: ["/pickleball-paddle-bag.png"],
-//        description: "Túi đựng vợt cao cấp, bảo vệ vợt tối ưu với nhiều ngăn tiện dụng.",
-//        features: [
-//            "Chất liệu chống nước",
-//            "Nhiều ngăn tiện dụng",
-//            "Dây đeo thoải mái",
-//            "Bảo vệ vợt tối ưu",
-//            "Thiết kế compact",
-//        ],
-//        inStock: true,
-//        stockQuantity: 12,
-//        rating: 4.5,
-//        reviews: 67,
-//    },
-//    {
-//        id: 5,
-//        name: "Quần Short Thể Thao",
-//        category: "quan-ao",
-//        price: 280000,
-//        image: "/pickleball-shorts.png",
-//        images: ["/pickleball-shorts.png"],
-//        description: "Quần short thể thao thoải mái, phù hợp mọi hoạt động thể thao.",
-//        features: ["Chất liệu thoáng mát", "Thiết kế thoải mái", "Túi tiện dụng", "Dây rút điều chỉnh", "Màu sắc đa dạng"],
-//        inStock: true,
-//        stockQuantity: 20,
-//        rating: 4.4,
-//        reviews: 43,
-//    },
-//    {
-//        id: 6,
-//        name: "Vợt Pickleball Cho Người Mới",
-//        category: "vot",
-//        price: 800000,
-//        image: "/beginner-pickleball-paddle.png",
-//        images: ["/beginner-pickleball-paddle.png"],
-//        description: "Vợt pickleball dành cho người mới bắt đầu, dễ sử dụng và giá cả phải chăng.",
-//        features: ["Thiết kế dễ sử dụng", "Trọng lượng nhẹ", "Grip thoải mái", "Giá cả phải chăng", "Phù hợp người mới"],
-//        badge: "new",
-//        inStock: true,
-//        stockQuantity: 18,
-//        rating: 4.3,
-//        reviews: 78,
-//    },
-//    {
-//        id: 7,
-//        name: "Băng Đô Thể Thao",
-//        category: "phu-kien",
-//        price: 120000,
-//        image: "/placeholder-48wy9.png",
-//        images: ["/placeholder-48wy9.png"],
-//        description: "Băng đô thấm mồ hôi, giữ tóc gọn gàng khi chơi thể thao.",
-//        features: ["Thấm hút mồ hôi tốt", "Chất liệu mềm mại", "Co giãn thoải mái", "Dễ dàng giặt sạch", "Nhiều màu sắc"],
-//        inStock: true,
-//        stockQuantity: 30,
-//        rating: 4.2,
-//        reviews: 34,
-//    },
-//    {
-//        id: 8,
-//        name: "Tất Thể Thao Cao Cấp",
-//        category: "phu-kien",
-//        price: 150000,
-//        image: "/placeholder-4p10p.png",
-//        images: ["/placeholder-4p10p.png"],
-//        description: "Tất thể thao chống trượt, thoáng khí, mang lại cảm giác thoải mái.",
-//        features: ["Chống trượt hiệu quả", "Thoáng khí tối ưu", "Chất liệu cao cấp", "Độ bền cao", "Thiết kế ergonomic"],
-//        inStock: false,
-//        stockQuantity: 0,
-//        rating: 4.7,
-//        reviews: 92,
-//    },
-//]
+﻿let favoriteProducts = []
 
-let products = [];
+// Import product data from shop.js (in real app, this would be from API)
+const initialProducts = [
+    {
+        id: 1,
+        name: "Vợt Pickleball Chuyên Nghiệp",
+        category: "vot",
+        price: 1200000,
+        originalPrice: 1500000,
+        image: "/placeholder-oyol2.png",
+        images: ["/placeholder-oyol2.png", "/placeholder-oyol2.png", "/placeholder-oyol2.png"],
+        description:
+            "Vợt pickleball chất lượng cao dành cho người chơi chuyên nghiệp. Được làm từ chất liệu carbon fiber cao cấp, mang lại cảm giác tuyệt vời khi chơi.",
+        features: [
+            "Chất liệu carbon fiber cao cấp",
+            "Trọng lượng tối ưu 225g",
+            "Grip chống trượt",
+            "Thiết kế aerodynamic",
+            "Bảo hành 2 năm",
+        ],
+        badge: "sale",
+        inStock: true,
+        stockQuantity: 15,
+        rating: 1.5,
+        reviews: 124,
+    },
+    {
+        id: 2,
+        name: "Áo Thể Thao Pickleball",
+        category: "quan-ao",
+        price: 350000,
+        image: "/pickleball-sports-shirt.png",
+        images: ["/pickleball-sports-shirt.png", "/pickleball-sports-shirt.png"],
+        description: "Áo thể thao thoáng mát, thấm hút mồ hôi tốt, phù hợp cho mọi hoạt động thể thao.",
+        features: [
+            "Chất liệu polyester cao cấp",
+            "Công nghệ thấm hút mồ hôi",
+            "Thiết kế thoáng khí",
+            "Form áo thoải mái",
+            "Màu sắc đa dạng",
+        ],
+        badge: "new",
+        inStock: true,
+        stockQuantity: 25,
+        rating: 4.6,
+        reviews: 89,
+    },
+    {
+        id: 3,
+        name: "Giày Pickleball Chuyên Dụng",
+        category: "giay",
+        price: 2200000,
+        originalPrice: 2500000,
+        image: "/pickleball-shoes.png",
+        images: ["/pickleball-shoes.png", "/pickleball-shoes.png"],
+        description: "Giày thể thao chuyên dụng cho pickleball với đế chống trượt và hỗ trợ tối ưu.",
+        features: ["Đế cao su chống trượt", "Hỗ trợ mắt cá chân", "Đệm êm ái", "Thoáng khí tối ưu", "Thiết kế thời trang"],
+        badge: "sale",
+        inStock: true,
+        stockQuantity: 8,
+        rating: 4.9,
+        reviews: 156,
+    },
+    {
+        id: 4,
+        name: "Túi Đựng Vợt Pickleball",
+        category: "phu-kien",
+        price: 450000,
+        image: "/pickleball-paddle-bag.png",
+        images: ["/pickleball-paddle-bag.png"],
+        description: "Túi đựng vợt cao cấp, bảo vệ vợt tối ưu với nhiều ngăn tiện dụng.",
+        features: [
+            "Chất liệu chống nước",
+            "Nhiều ngăn tiện dụng",
+            "Dây đeo thoải mái",
+            "Bảo vệ vợt tối ưu",
+            "Thiết kế compact",
+        ],
+        inStock: true,
+        stockQuantity: 12,
+        rating: 4.5,
+        reviews: 67,
+    },
+    {
+        id: 5,
+        name: "Quần Short Thể Thao",
+        category: "quan-ao",
+        price: 280000,
+        image: "/pickleball-shorts.png",
+        images: ["/pickleball-shorts.png"],
+        description: "Quần short thể thao thoải mái, phù hợp mọi hoạt động thể thao.",
+        features: ["Chất liệu thoáng mát", "Thiết kế thoải mái", "Túi tiện dụng", "Dây rút điều chỉnh", "Màu sắc đa dạng"],
+        inStock: true,
+        stockQuantity: 20,
+        rating: 4.4,
+        reviews: 43,
+    },
+    {
+        id: 6,
+        name: "Vợt Pickleball Cho Người Mới",
+        category: "vot",
+        price: 800000,
+        image: "/beginner-pickleball-paddle.png",
+        images: ["/beginner-pickleball-paddle.png"],
+        description: "Vợt pickleball dành cho người mới bắt đầu, dễ sử dụng và giá cả phải chăng.",
+        features: ["Thiết kế dễ sử dụng", "Trọng lượng nhẹ", "Grip thoải mái", "Giá cả phải chăng", "Phù hợp người mới"],
+        badge: "new",
+        inStock: true,
+        stockQuantity: 18,
+        rating: 4.3,
+        reviews: 78,
+    },
+    {
+        id: 7,
+        name: "Băng Đô Thể Thao",
+        category: "phu-kien",
+        price: 120000,
+        image: "/placeholder-48wy9.png",
+        images: ["/placeholder-48wy9.png"],
+        description: "Băng đô thấm mồ hôi, giữ tóc gọn gàng khi chơi thể thao.",
+        features: ["Thấm hút mồ hôi tốt", "Chất liệu mềm mại", "Co giãn thoải mái", "Dễ dàng giặt sạch", "Nhiều màu sắc"],
+        inStock: true,
+        stockQuantity: 30,
+        rating: 4.2,
+        reviews: 34,
+    },
+    {
+        id: 8,
+        name: "Tất Thể Thao Cao Cấp",
+        category: "phu-kien",
+        price: 150000,
+        image: "/placeholder-4p10p.png",
+        images: ["/placeholder-4p10p.png"],
+        description: "Tất thể thao chống trượt, thoáng khí, mang lại cảm giác thoải mái.",
+        features: ["Chống trượt hiệu quả", "Thoáng khí tối ưu", "Chất liệu cao cấp", "Độ bền cao", "Thiết kế ergonomic"],
+        inStock: false,
+        stockQuantity: 0,
+        rating: 4.7,
+        reviews: 92,
+    },
+]
+
+let products = []
 // Lấy sản phẩm về từ API
 function fetchProducts() {
-    showLoading();
+    showLoading()
     fetch("https://localhost:7067/SanPham/ListAllForDetail")
-        .then(response => response.json())
-        .then(data => {
-            products = data;
-            console.log("Products loaded:", products); // debug
-            loadProduct(); // chỉ gọi khi đã có dữ liệu
+        .then((response) => response.json())
+        .then((data) => {
+            products = data
+            console.log("Products loaded:", products) // debug
+            loadProduct() // chỉ gọi khi đã có dữ liệu
         })
-        .catch(error => {
-            console.error("Lỗi khi lấy sản phẩm:", error);
-            hideLoading();
-        });
+        .catch((error) => {
+            console.error("Lỗi khi lấy sản phẩm:", error)
+            hideLoading()
+        })
 }
 
 // Sample reviews data
@@ -206,14 +208,18 @@ let currentQuantity = 1
 // Review form variables
 let selectedRating = 0
 
+// Pagination variables for reviews
+let currentPage = 1
+const reviewsPerPage = 5
+let totalReviews = 0
+let allReviews = []
+let filteredReviews = []
+let currentFilter = "newest"
+
 // Initialize page
-document.addEventListener("DOMContentLoaded", () => {
-    //showLoading()
-    //loadProduct()
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadUserFavorites()
     fetchProducts()
-    updateCartUI()
-    setupEventListeners()
-    setupReviewForm()
 })
 
 function showLoading() {
@@ -289,14 +295,7 @@ function setRating(rating) {
 
 async function handleReviewSubmit(e) {
     const formData = new FormData(e.target)
-    const reviewerName = formData.get("reviewerName").trim()
     const comment = formData.get("comment").trim()
-
-    // Validation
-    if (!reviewerName) {
-        showNotification("Vui lòng nhập tên của bạn!", "error")
-        return
-    }
 
     if (selectedRating === 0) {
         showNotification("Vui lòng chọn số sao đánh giá!", "error")
@@ -324,20 +323,20 @@ async function handleReviewSubmit(e) {
         MaSanPham: productId,
         SoSao: selectedRating,
         BinhLuan: comment,
-        NgayDanhGia: new Date().toISOString()
+        NgayDanhGia: new Date().toISOString(),
     }
 
     try {
         const response = await fetch("https://localhost:7067/DanhGia/Insert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newReview)
+            body: JSON.stringify(newReview),
         })
 
         if (!response.ok) throw new Error("Lỗi khi gửi đánh giá")
 
-        //updateProductRating()
-        await updateProductRatingAfterReview();
+        await updateProductRatingAfterReview()
+        currentPage = 1
         renderReviews()
         resetReviewForm()
         showReviewSuccess()
@@ -350,46 +349,44 @@ async function handleReviewSubmit(e) {
 async function updateProductRatingAfterReview() {
     try {
         // Lấy id sản phẩm từ URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = Number.parseInt(urlParams.get("id"));
+        const urlParams = new URLSearchParams(window.location.search)
+        const productId = Number.parseInt(urlParams.get("id"))
 
         if (!productId) {
-            console.error("Không tìm thấy id sản phẩm từ URL");
-            return;
+            console.error("Không tìm thấy id sản phẩm từ URL")
+            return
         }
 
         // Gọi API để lấy tất cả review
-        const response = await fetch("https://localhost:7067/DanhGia/ListAll");
-        const data = await response.json();
+        const response = await fetch("https://localhost:7067/DanhGia/ListAll")
+        const data = await response.json()
 
         // Tìm object chứa review của sản phẩm hiện tại
-        const productReviewObj = data.find(p => p.maSanPham === productId);
+        const productReviewObj = data.find((p) => p.maSanPham === productId)
         if (!productReviewObj) {
-            console.warn("Không có review nào cho sản phẩm", productId);
-            return;
+            console.warn("Không có review nào cho sản phẩm", productId)
+            return
         }
 
-        const productReviews = productReviewObj.reviews || [];
-        const reviewCount = productReviews.length;
+        const productReviews = productReviewObj.reviews || []
+        const reviewCount = productReviews.length
 
-        const avgRating = reviewCount > 0
-            ? (productReviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / reviewCount).toFixed(1)
-            : 0;
+        const avgRating =
+            reviewCount > 0 ? (productReviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / reviewCount).toFixed(1) : 0
 
         // --- Cập nhật DOM ---
-        const starsContainer = document.querySelector(".product-rating .stars");
-        const ratingTextEl = document.querySelector(".product-rating .rating-text");
+        const starsContainer = document.querySelector(".product-rating .stars")
+        const ratingTextEl = document.querySelector(".product-rating .rating-text")
 
         if (starsContainer) {
-            starsContainer.innerHTML = generateStars(avgRating);
+            starsContainer.innerHTML = generateStars(avgRating)
         }
 
         if (ratingTextEl) {
-            ratingTextEl.textContent = `${avgRating}/5 (${reviewCount} đánh giá)`;
+            ratingTextEl.textContent = `${avgRating}/5 (${reviewCount} đánh giá)`
         }
-
     } catch (err) {
-        console.error("Lỗi khi update rating:", err);
+        console.error("Lỗi khi update rating:", err)
     }
 }
 
@@ -446,9 +443,9 @@ function loadProduct() {
             <h3>Không tìm thấy sản phẩm</h3>
             <a href="/Shop/ShopIndex" class="btn btn-primary">Quay lại shop</a>
         </div>
-    `;
-        hideLoading();
-        return;
+    `
+        hideLoading()
+        return
     }
 
     // Simulate loading delay
@@ -482,72 +479,38 @@ function renderProduct() {
       <div class="thumbnail-images">
         ${currentProduct.images
             ?.map(
-                (img, index) => `
-          <div class="thumbnail ${index === 0 ? "active" : ""}" onclick="changeMainImage('${img}', this)">
-            <img src="${img}" alt="Thumbnail ${index + 1}">
-          </div>
-        `,
+                (img, index) => `<img src="${img}" alt="${currentProduct.name} thumbnail ${index + 1}" class="thumbnail">`,
             )
-            .join("") || ""
-        }
+            .join("")}
       </div>
     </div>
-
     <div class="product-info">
-      <div class="product-category">${getCategoryName(currentProduct.category)}</div>
-      <h1>${currentProduct.name}</h1>
-      
+      <h2>${currentProduct.name}</h2>
       <div class="product-rating">
-        <div class="stars">
-          ${generateStars(currentProduct.rating)}
-        </div>
-        <span class="rating-text">${currentProduct.rating.toFixed(1)}/5 (${currentProduct.reviews} đánh giá)</span>
+        <div class="stars">${generateStars(currentProduct.rating)}</div>
+        <div class="rating-text">${currentProduct.rating}/5 (${currentProduct.reviews} đánh giá)</div>
       </div>
-
       <div class="product-price">
-        <span class="current-price">${formatPrice(currentProduct.price)}</span>
-        ${currentProduct.originalPrice
-            ? `
-          <span class="original-price">${formatPrice(currentProduct.originalPrice)}</span>
-          <span class="discount-badge">-${discount}%</span>
-        `
-            : ""
-        }
+        <span class="price">${currentProduct.price.toLocaleString()} VND</span>
+        ${currentProduct.originalPrice ? `<span class="original-price">${currentProduct.originalPrice.toLocaleString()} VND</span>` : ""}
+        ${discount > 0 ? `<span class="discount">-${discount}%</span>` : ""}
       </div>
-
-      <p class="product-description">${currentProduct.description}</p>
-
-      <div class="product-options">
-        <div class="quantity-selector">
-          <label>Số lượng:</label>
-          <div class="quantity-controls">
-            <button class="quantity-btn quantity-decrease" ${currentQuantity <= 1 ? "disabled" : ""}>
-              <i class="fas fa-minus"></i>
-            </button>
-            <input type="number" class="quantity-input" value="${currentQuantity}" min="1" max="${currentProduct.stockQuantity}">
-            <button class="quantity-btn quantity-increase" ${currentQuantity >= currentProduct.stockQuantity ? "disabled" : ""}>
-              <i class="fas fa-plus"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="stock-status ${currentProduct.inStock ? "in-stock" : "out-of-stock"}">
-          <i class="fas ${currentProduct.inStock ? "fa-check-circle" : "fa-times-circle"}"></i>
-          ${currentProduct.inStock ? `Còn ${currentProduct.stockQuantity} sản phẩm` : "Hết hàng"}
-        </div>
+      <div class="product-description">
+        <p>${currentProduct.description}</p>
       </div>
-
       <div class="product-actions">
-        <button class="btn btn-primary" onclick="addToCart()" ${!currentProduct.inStock ? "disabled" : ""}>
-          <i class="fas fa-shopping-cart"></i>
-          ${currentProduct.inStock ? "Thêm vào giỏ hàng" : "Hết hàng"}
+        <button class="btn btn-primary" onclick="addToCart()">Thêm vào giỏ hàng</button>
+        <button class="btn btn-wishlist" onclick="toggleWishlist(${currentProduct.id}, this)" title="Thêm vào yêu thích">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
         </button>
-        <button class="btn btn-secondary" onclick="toggleWishlist()">
-          <i class="far fa-heart"></i>
-          Yêu thích
-        </button>
+        <div class="quantity-control">
+          <button class="quantity-decrease">-</button>
+          <input type="number" class="quantity-input" value="${currentQuantity}">
+          <button class="quantity-increase">+</button>
+        </div>
       </div>
-
       ${currentProduct.features
             ? `
         <div class="product-features">
@@ -567,12 +530,79 @@ function renderProduct() {
         }
     </div>
   `
+
+    setTimeout(() => {
+        updateWishlistButtonState(currentProduct.id)
+    }, 100)
+}
+
+async function toggleWishlist(maSanPham, btn) {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user) {
+        alert("Bạn cần đăng nhập để dùng chức năng yêu thích!")
+        return
+    }
+
+    const userId = user.maNguoiDung
+
+    // Kiểm tra sản phẩm đã nằm trong favoriteProducts chưa
+    const isAlreadyFavorite = favoriteProducts.includes(maSanPham)
+
+    if (isAlreadyFavorite) {
+        try {
+            const res = await fetch(`https://localhost:7067/SanPham/Delete/${userId}/${maSanPham}`, {
+                method: "DELETE",
+            })
+
+            if (res.ok) {
+                // Cập nhật danh sách favoriteProducts
+                favoriteProducts = favoriteProducts.filter((id) => id !== maSanPham)
+
+                btn.classList.remove("active")
+
+                alert("Đã xóa khỏi yêu thích!")
+            } else {
+                const err = await res.text()
+                alert(err)
+            }
+        } catch (error) {
+            console.error("Lỗi xóa yêu thích:", error)
+        }
+    } else {
+        try {
+            const res = await fetch("https://localhost:7067/SanPham/create/DoYeuThich", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    maNguoiDung: userId,
+                    maSanPham: maSanPham,
+                }),
+            })
+
+            if (res.ok) {
+                // Cập nhật danh sách favoriteProducts
+                favoriteProducts.push(maSanPham)
+
+                btn.classList.add("active")
+
+                alert("Đã thêm vào yêu thích!")
+            } else {
+                const err = await res.text()
+                alert(err)
+            }
+        } catch (error) {
+            console.error("Lỗi thêm yêu thích:", error)
+        }
+    }
 }
 
 async function renderReviews() {
     const reviewsSection = document.getElementById("reviews-section")
     const reviewsSummary = document.getElementById("reviews-summary")
     const reviewsList = document.getElementById("reviews-list")
+    const paginationContainer = document.getElementById("pagination-container")
 
     try {
         // Gọi API để lấy toàn bộ review
@@ -580,8 +610,11 @@ async function renderReviews() {
         const data = await response.json()
 
         // Tìm review cho sản phẩm hiện tại
-        const productReviewObj = data.find(r => r.maSanPham === currentProduct.id)
+        const productReviewObj = data.find((r) => r.maSanPham === currentProduct.id)
         const productReviews = productReviewObj ? productReviewObj.reviews : []
+
+        allReviews = productReviews
+        totalReviews = productReviews.length
 
         // --- TÍNH TOÁN ---
         const ratingBreakdown = [5, 4, 3, 2, 1].map((rating) => {
@@ -591,99 +624,220 @@ async function renderReviews() {
         })
 
         // --- HIỂN THỊ TÓM TẮT ---
-        const avgRating = productReviews.length > 0
-            ? (productReviews.reduce((sum, r) => sum + r.rating, 0) / productReviews.length).toFixed(1)
-            : 0
+        const avgRating =
+            productReviews.length > 0
+                ? (productReviews.reduce((sum, r) => sum + r.rating, 0) / productReviews.length).toFixed(1)
+                : 0
 
         reviewsSummary.innerHTML = `
-            <div class="rating-overview">
-              <div class="rating-score">${avgRating}</div>
-              <div class="stars">${generateStars(avgRating)}</div>
-              <div class="rating-text">${productReviews.length} đánh giá</div>
+      <div class="rating-overview">
+        <div class="rating-score">${avgRating}</div>
+        <div class="stars">${generateStars(avgRating)}</div>
+        <div class="rating-text">${productReviews.length} đánh giá</div>
+      </div>
+      <div class="rating-breakdown">
+        ${ratingBreakdown
+                .map(
+                    (item) => `
+          <div class="rating-bar">
+            <div class="rating-bar-label">${item.rating} sao</div>
+            <div class="rating-bar-fill">
+              <div class="rating-bar-progress" style="width: ${item.percentage}%"></div>
             </div>
-            <div class="rating-breakdown">
-              ${ratingBreakdown.map(item => `
-                <div class="rating-bar">
-                  <div class="rating-bar-label">${item.rating} sao</div>
-                  <div class="rating-bar-fill">
-                    <div class="rating-bar-progress" style="width: ${item.percentage}%"></div>
-                  </div>
-                  <div class="rating-bar-count">${item.count}</div>
-                </div>
-              `).join("")}
-            </div>
-        `
+            <div class="rating-bar-count">${item.count}</div>
+          </div>
+        `,
+                )
+                .join("")}
+      </div>
+    `
 
-        // --- HIỂN THỊ DANH SÁCH ---
+        const filterContainer = document.getElementById("reviews-filter")
+        const filterSelect = document.getElementById("review-filter-select")
+
         if (productReviews.length > 0) {
-            reviewsList.innerHTML = productReviews.map(review => `
-                <div class="review-item">
-                    <div class="review-header">
-                        <div class="reviewer-info">
-                            <div class="reviewer-avatar">${review.userName.charAt(0).toUpperCase()}</div>
-                            <div>
-                                <div class="reviewer-name">${review.userName}</div>
-                                <div class="review-date">${formatDate(review.date)}</div>
-                            </div>
-                        </div>
-                        <div class="review-rating">${generateStars(review.rating)}</div>
-                    </div>
-                    <div class="review-content">${review.content}</div>
-                </div>
-            `).join("")
+            filterContainer.style.display = "flex"
+            filterSelect.addEventListener("change", handleFilterChange)
         } else {
-            reviewsList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-comments"></i>
-                    <h3>Chưa có đánh giá</h3>
-                    <p>Hãy là người đầu tiên đánh giá sản phẩm này</p>
-                </div>
-            `
+            filterContainer.style.display = "none"
         }
+
+        applyFilter(currentFilter)
+        renderPaginatedReviews()
     } catch (error) {
         console.error("Lỗi khi load review: ", error)
         reviewsList.innerHTML = `<p style="color:red">Không thể tải đánh giá</p>`
     }
 }
 
-function renderRelatedProducts() {
-    const relatedProducts = products
-        .filter((p) => p.id !== currentProduct.id && p.category === currentProduct.category)
-        .slice(0, 4)
+function applyFilter(filterType) {
+    currentFilter = filterType
 
-    const relatedProductsGrid = document.getElementById("related-products-grid")
+    switch (filterType) {
+        case "newest":
+            filteredReviews = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date))
+            break
+        case "highest":
+            filteredReviews = [...allReviews].sort((a, b) => b.rating - a.rating)
+            break
+        case "lowest":
+            filteredReviews = [...allReviews].sort((a, b) => a.rating - b.rating)
+            break
+        default:
+            filteredReviews = [...allReviews]
+    }
 
-    if (relatedProducts.length > 0) {
-        relatedProductsGrid.innerHTML = relatedProducts
-            .map(
-                (product) => `
-      <div class="product-card" onclick="goToProduct(${product.id})">
-        <div class="product-image">
-          <img src="${product.image}" alt="${product.name}">
-          ${product.badge ? `<div class="product-badge ${product.badge}">${getBadgeText(product.badge)}</div>` : ""}
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">${product.name}</h3>
-          <div class="product-price">
-            ${formatPrice(product.price)}
-            ${product.originalPrice ? `<span class="original-price">${formatPrice(product.originalPrice)}</span>` : ""}
+    // Reset to first page when filter changes
+    currentPage = 1
+}
+
+function handleFilterChange(event) {
+    applyFilter(event.target.value)
+    renderPaginatedReviews()
+}
+
+function renderPaginatedReviews() {
+    const reviewsList = document.getElementById("reviews-list")
+    const paginationContainer = document.getElementById("pagination-container")
+
+    if (filteredReviews.length === 0) {
+        reviewsList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-comments"></i>
+        <h3>Chưa có đánh giá</h3>
+        <p>Hãy là người đầu tiên đánh giá sản phẩm này</p>
+      </div>
+    `
+        paginationContainer.style.display = "none"
+        return
+    }
+
+    const totalFilteredReviews = filteredReviews.length
+    const totalPages = Math.ceil(totalFilteredReviews / reviewsPerPage)
+    const startIndex = (currentPage - 1) * reviewsPerPage
+    const endIndex = startIndex + reviewsPerPage
+    const displayedReviews = filteredReviews.slice(startIndex, endIndex)
+
+    // Render reviews
+    reviewsList.innerHTML = displayedReviews
+        .map(
+            (review) => `
+    <div class="review-item">
+      <div class="review-header">
+        <div class="reviewer-info">
+          <div class="reviewer-avatar">${review.userName.charAt(0).toUpperCase()}</div>
+          <div>
+            <div class="reviewer-name">${review.userName}</div>
+            <div class="review-date">${formatDate(review.date)}</div>
           </div>
         </div>
+        <div class="review-rating">${generateStars(review.rating)}</div>
       </div>
-    `,
-            )
-            .join("")
+      <div class="review-content">${review.content}</div>
+    </div>
+  `,
+        )
+        .join("")
+
+    // Show/hide pagination
+    if (totalPages > 1) {
+        paginationContainer.style.display = "flex"
+        renderPagination(totalPages, totalFilteredReviews)
     } else {
-        document.getElementById("related-products").style.display = "none"
+        paginationContainer.style.display = "none"
     }
 }
 
-function changeMainImage(imageSrc, thumbnailElement) {
-    document.getElementById("main-product-image").src = imageSrc
+function renderPagination(totalPages, totalFilteredReviews = filteredReviews.length) {
+    const paginationNumbers = document.getElementById("pagination-numbers")
+    const firstPageBtn = document.getElementById("first-page-btn")
+    const prevPageBtn = document.getElementById("prev-page-btn")
+    const nextPageBtn = document.getElementById("next-page-btn")
+    const lastPageBtn = document.getElementById("last-page-btn")
 
-    // Update active thumbnail
-    document.querySelectorAll(".thumbnail").forEach((thumb) => thumb.classList.remove("active"))
-    thumbnailElement.classList.add("active")
+    // Update navigation buttons
+    firstPageBtn.disabled = currentPage === 1
+    prevPageBtn.disabled = currentPage === 1
+    nextPageBtn.disabled = currentPage === totalPages
+    lastPageBtn.disabled = currentPage === totalPages
+
+    // Generate page numbers
+    let paginationHTML = ""
+    const maxVisiblePages = 5
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+
+    // Adjust start page if we're near the end
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1)
+    }
+
+    // Add first page and ellipsis if needed
+    if (startPage > 1) {
+        paginationHTML += `<button class="page-number" onclick="goToPage(1)">1</button>`
+        if (startPage > 2) {
+            paginationHTML += `<span class="pagination-ellipsis">...</span>`
+        }
+    }
+
+    // Add page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `
+      <button class="page-number ${i === currentPage ? "active" : ""}" onclick="goToPage(${i})">
+        ${i}
+      </button>
+    `
+    }
+
+    // Add last page and ellipsis if needed
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            paginationHTML += `<span class="pagination-ellipsis">...</span>`
+        }
+        paginationHTML += `<button class="page-number" onclick="goToPage(${totalPages})">${totalPages}</button>`
+    }
+
+    paginationNumbers.innerHTML = paginationHTML
+
+    const startItem = (currentPage - 1) * reviewsPerPage + 1
+    const endItem = Math.min(currentPage * reviewsPerPage, totalFilteredReviews)
+
+    // Remove existing pagination info
+    const existingInfo = document.querySelector(".pagination-info")
+    if (existingInfo) {
+        existingInfo.remove()
+    }
+}
+
+function goToPage(page) {
+    const totalPages = Math.ceil(filteredReviews.length / reviewsPerPage)
+    if (page >= 1 && page <= totalPages) {
+        currentPage = page
+        renderPaginatedReviews()
+    }
+}
+
+function goToPreviousPage() {
+    if (currentPage > 1) {
+        currentPage--
+        renderPaginatedReviews()
+    }
+}
+
+function goToNextPage() {
+    const totalPages = Math.ceil(filteredReviews.length / reviewsPerPage)
+    if (currentPage < totalPages) {
+        currentPage++
+        renderPaginatedReviews()
+    }
+}
+
+function goToLastPage() {
+    const totalPages = Math.ceil(filteredReviews.length / reviewsPerPage)
+    if (currentPage < totalPages) {
+        currentPage = totalPages
+        renderPaginatedReviews()
+    }
 }
 
 function updateQuantity(change) {
@@ -693,11 +847,35 @@ function updateQuantity(change) {
         currentQuantity = newQuantity
 
         // Update input
-        document.querySelector(".quantity-input").value = currentQuantity
+        const quantityInput = document.querySelector(".quantity-input")
+        if (quantityInput) {
+            quantityInput.value = currentQuantity
+        }
 
         // Update buttons
-        document.querySelector(".quantity-decrease").disabled = currentQuantity <= 1
-        document.querySelector(".quantity-increase").disabled = currentQuantity >= currentProduct.stockQuantity
+        const decreaseBtn = document.querySelector(".quantity-decrease")
+        const increaseBtn = document.querySelector(".quantity-increase")
+
+        if (decreaseBtn) {
+            decreaseBtn.disabled = currentQuantity <= 1
+        }
+        if (increaseBtn) {
+            increaseBtn.disabled = currentQuantity >= currentProduct.stockQuantity
+        }
+    }
+}
+
+// Utility functions
+function changeMainImage(imageSrc, thumbnailElement) {
+    const mainImage = document.getElementById("main-product-image")
+    if (mainImage) {
+        mainImage.src = imageSrc
+    }
+
+    // Update active thumbnail
+    document.querySelectorAll(".thumbnail").forEach((thumb) => thumb.classList.remove("active"))
+    if (thumbnailElement) {
+        thumbnailElement.classList.add("active")
     }
 }
 
@@ -724,79 +902,20 @@ function addToCart() {
 
     // Update button temporarily
     const addButton = document.querySelector(".btn-primary")
-    const originalText = addButton.innerHTML
-    addButton.innerHTML = '<i class="fas fa-check"></i> Đã thêm vào giỏ'
-    addButton.disabled = true
+    if (addButton) {
+        const originalText = addButton.innerHTML
+        addButton.innerHTML = '<i class="fas fa-check"></i> Đã thêm vào giỏ'
+        addButton.disabled = true
 
-    setTimeout(() => {
-        addButton.innerHTML = originalText
-        addButton.disabled = false
-    }, 2000)
-}
-
-function toggleWishlist() {
-    showNotification("Tính năng yêu thích sẽ được cập nhật!", "info")
+        setTimeout(() => {
+            addButton.innerHTML = originalText
+            addButton.disabled = false
+        }, 2000)
+    }
 }
 
 function goToProduct(productId) {
     window.location.href = `product-detail.html?id=${productId}`
-}
-
-// Utility functions
-function getCategoryName(category) {
-    const categories = {
-        vot: "Vợt",
-        "quan-ao": "Quần áo",
-        giay: "Giày",
-        "phu-kien": "Phụ kiện",
-    }
-    return categories[category] || category
-}
-
-function getBadgeText(badge) {
-    const badges = {
-        new: "Mới",
-        sale: "Giảm giá",
-        hot: "Hot",
-    }
-    return badges[badge] || ""
-}
-
-function formatPrice(price) {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-    }).format(price)
-}
-
-function formatDate(dateString) {
-    const date = new Date(dateString)
-    return date.toLocaleDateString("vi-VN")
-}
-
-function generateStars(rating) {
-    const fullStars = Math.floor(rating)
-    const hasHalfStar = rating % 1 !== 0
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
-
-    let starsHtml = ""
-
-    // Full stars
-    for (let i = 0; i < fullStars; i++) {
-        starsHtml += '<i class="fas fa-star star"></i>'
-    }
-
-    // Half star
-    if (hasHalfStar) {
-        starsHtml += '<i class="fas fa-star-half-alt star"></i>'
-    }
-
-    // Empty stars
-    for (let i = 0; i < emptyStars; i++) {
-        starsHtml += '<i class="far fa-star star empty"></i>'
-    }
-
-    return starsHtml
 }
 
 // Cart functions
@@ -805,20 +924,14 @@ function saveCart() {
 }
 
 function updateCartUI() {
-    //updateCartCount()
     updateCartSidebar()
-}
-
-function updateCartCount() {
-    const cartCount = document.getElementById("cart-count")
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
-    cartCount.textContent = totalItems
-    cartCount.style.display = totalItems > 0 ? "flex" : "none"
 }
 
 function updateCartSidebar() {
     const cartItems = document.getElementById("cart-items")
     const cartTotal = document.getElementById("cart-total")
+
+    if (!cartItems || !cartTotal) return
 
     if (cart.length === 0) {
         cartItems.innerHTML = `
@@ -888,13 +1001,15 @@ function toggleCart() {
     const cartSidebar = document.getElementById("cart-sidebar")
     const cartOverlay = document.getElementById("cart-overlay")
 
-    cartSidebar.classList.toggle("active")
-    cartOverlay.classList.toggle("active")
+    if (cartSidebar && cartOverlay) {
+        cartSidebar.classList.toggle("active")
+        cartOverlay.classList.toggle("active")
 
-    if (cartSidebar.classList.contains("active")) {
-        document.body.style.overflow = "hidden"
-    } else {
-        document.body.style.overflow = ""
+        if (cartSidebar.classList.contains("active")) {
+            document.body.style.overflow = "hidden"
+        } else {
+            document.body.style.overflow = ""
+        }
     }
 }
 
@@ -960,12 +1075,73 @@ function showNotification(message, type = "info") {
     }, 3000)
 }
 
+function getCategoryName(category) {
+    const categories = {
+        vot: "Vợt",
+        "quan-ao": "Quần áo",
+        giay: "Giày",
+        "phu-kien": "Phụ kiện",
+    }
+    return categories[category] || category
+}
+
+function getBadgeText(badge) {
+    const badges = {
+        new: "Mới",
+        sale: "Giảm giá",
+        hot: "Hot",
+    }
+    return badges[badge] || ""
+}
+
+function formatPrice(price) {
+    return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+    }).format(price)
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("vi-VN")
+}
+
+function generateStars(rating) {
+    const fullStars = Math.floor(rating)
+    const hasHalfStar = rating % 1 !== 0
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
+
+    let starsHtml = ""
+
+    // Full stars
+    for (let i = 0; i < fullStars; i++) {
+        starsHtml += '<i class="fas fa-star star"></i>'
+    }
+
+    // Half star
+    if (hasHalfStar) {
+        starsHtml += '<i class="fas fa-star-half-alt star"></i>'
+    }
+
+    // Empty stars
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<i class="far fa-star star empty"></i>'
+    }
+
+    return starsHtml
+}
+
 // Close cart when clicking outside
 document.addEventListener("click", (e) => {
     const cartSidebar = document.getElementById("cart-sidebar")
     const cartIcon = document.querySelector(".cart-icon")
 
-    if (cartSidebar.classList.contains("active") && !cartSidebar.contains(e.target) && !cartIcon.contains(e.target)) {
+    if (
+        cartSidebar &&
+        cartSidebar.classList.contains("active") &&
+        !cartSidebar.contains(e.target) &&
+        (!cartIcon || !cartIcon.contains(e.target))
+    ) {
         toggleCart()
     }
 })
@@ -974,8 +1150,81 @@ document.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         const cartSidebar = document.getElementById("cart-sidebar")
-        if (cartSidebar.classList.contains("active")) {
+        if (cartSidebar && cartSidebar.classList.contains("active")) {
             toggleCart()
         }
     }
 })
+
+function renderRelatedProducts() {
+    const relatedProducts = products
+        .filter((p) => p.id !== currentProduct.id && p.category === currentProduct.category)
+        .slice(0, 4)
+
+    const relatedProductsGrid = document.getElementById("related-products-grid")
+
+    if (relatedProducts.length > 0) {
+        relatedProductsGrid.innerHTML = relatedProducts
+            .map(
+                (product) => `
+      <div class="product-card" onclick="goToProduct(${product.id})">
+        <div class="product-image">
+          <img src="${product.image}" alt="${product.name}">
+          ${product.badge ? `<div class="product-badge ${product.badge}">${getBadgeText(product.badge)}</div>` : ""}
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">${product.name}</h3>
+          <div class="product-price">
+            ${formatPrice(product.price)}
+            ${product.originalPrice ? `<span class="original-price">${formatPrice(product.originalPrice)}</span>` : ""}
+          </div>
+        </div>
+      </div>
+    `,
+            )
+            .join("")
+    } else {
+        document.getElementById("related-products").style.display = "none"
+    }
+}
+
+function viewProduct(productId) {
+    window.location.href = `/ProductDetail?id=${productId}`
+}
+
+function isProductInWishlist(productId) {
+    return favoriteProducts.includes(productId)
+}
+
+function updateWishlistButtonState(productId) {
+    const wishlistBtn = document.querySelector(".btn-wishlist")
+    if (wishlistBtn) {
+        if (isProductInWishlist(productId)) {
+            wishlistBtn.classList.add("active")
+            wishlistBtn.title = "Xóa khỏi yêu thích"
+        } else {
+            wishlistBtn.classList.remove("active")
+            wishlistBtn.title = "Thêm vào yêu thích"
+        }
+    }
+}
+
+async function loadUserFavorites() {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user) return
+
+    try {
+        const response = await fetch(`https://localhost:7067/SanPham/DoYeuThich/${user.maNguoiDung}`)
+        if (response.ok) {
+            const favorites = await response.json()
+            favoriteProducts = favorites.map((fav) => fav.maSanPham)
+            console.log("Loaded user favorites:", favoriteProducts)
+        }
+    } catch (error) {
+        console.error("Lỗi khi tải danh sách yêu thích:", error)
+    }
+}
+
+function showToast(message) {
+    alert(message)
+}
