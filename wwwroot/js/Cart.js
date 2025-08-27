@@ -1,5 +1,31 @@
 ﻿// Cart data
-const cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
+//const cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
+let cart = []
+
+async function loadCart(maNguoiDung) {
+    try {
+        const response = await fetch(`https://localhost:7067/GioHang/MaNguoiDung/${maNguoiDung}`);
+        if (!response.ok)
+            throw new Error("Lỗi khi lấy giỏ hàng");
+        cart = await response.json();
+        //updateCartUI();
+    } catch (error) {
+        console.error(error);
+        cart = [];
+        //updateCartUI();
+    }
+}
+async function saveCart(userId, prId, quantity) {
+    await fetch("https://localhost:7067/GioHang/Insert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            maNguoiDung: userId,
+            maSanPham: prId,
+            soLuong: quantity
+        })
+    })
+}
 
 // Coupon codes
 const coupons = {
@@ -12,12 +38,14 @@ let appliedCoupon = null
 const shippingFee = 30000
 
 // Initialize cart page
-document.addEventListener("DOMContentLoaded", () => {
-    loadCartItems()
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadCartItems()
     updateCartSummary()
 })
 
-function loadCartItems() {
+async function loadCartItems() {
+    const user = JSON.parse(localStorage.getItem("user"))
+    await loadCart(user.maNguoiDung)
     const cartItemsContainer = document.getElementById("cart-items")
     const itemCount = document.getElementById("item-count")
 
@@ -27,7 +55,7 @@ function loadCartItems() {
                 <i class="fas fa-shopping-cart"></i>
                 <h3>Giỏ hàng trống</h3>
                 <p>Bạn chưa có sản phẩm nào trong giỏ hàng</p>
-                <a href="@Url.Action("ShopIndex", "Shop")" class="btn btn-primary">
+                <a href="/Shop/ShopIndex" class="btn btn-primary">
                     <i class="fas fa-shopping-bag"></i>
                     Bắt đầu mua sắm
                 </a>
@@ -37,7 +65,7 @@ function loadCartItems() {
         return
     }
 
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
+    const totalItems = cart.reduce((sum, item) => sum + item.soLuong, 0)
     itemCount.textContent = `${totalItems} sản phẩm`
 
     cartItemsContainer.innerHTML = cart.map((item) => createCartItemHTML(item)).join("")
@@ -45,26 +73,26 @@ function loadCartItems() {
 
 function createCartItemHTML(item) {
     return `
-        <div class="cart-item" data-id="${item.id}">
+        <div class="cart-item" data-id="${item.maSanPham}">
             <div class="item-image">
-                <img src="${item.image}" alt="${item.name}" loading="lazy">
+                <img src="${item.hinhAnh}" alt="${item.tenSanPham}" loading="lazy">
             </div>
             <div class="item-info">
-                <h3 class="item-name">${item.name}</h3>
-                <div class="item-category">${getCategoryName(item.category || "phu-kien")}</div>
-                <div class="item-price">${formatPrice(item.price)}</div>
+                <h3 class="item-name">${item.tenSanPham}</h3>
+                <div class="item-category">${item.tenDanhMuc}</div>
+                <div class="item-price">${formatPrice(item.giaBan)}</div>
             </div>
             <div class="item-controls">
                 <div class="quantity-controls">
-                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">
+                    <button class="quantity-btn" onclick="updateQuantity(${item.maSanPham}, -1)">
                         <i class="fas fa-minus"></i>
                     </button>
-                    <span class="quantity-display">${item.quantity}</span>
-                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">
+                    <span class="quantity-display">${item.soLuong}</span>
+                    <button class="quantity-btn" onclick="updateQuantity(${item.maSanPham}, 1)">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
-                <button class="remove-btn" onclick="removeItem(${item.id})" title="Xóa sản phẩm">
+                <button class="remove-btn" onclick="removeItem(${item.maSanPham})" title="Xóa sản phẩm">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -89,42 +117,109 @@ function formatPrice(price) {
     }).format(price)
 }
 
-function updateQuantity(productId, change) {
-    const item = cart.find((item) => item.id === productId)
+async function updateQuantity(productId, change) {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user)
+        return
+    const item = cart.find((item) => item.maSanPham === productId)
     if (!item) return
 
-    item.quantity += change
+    const newQuantity = item.soLuong + change
 
-    if (item.quantity <= 0) {
+    if (newQuantity <= 0) {
         removeItem(productId)
+    } else if (newQuantity > item.soLuongTon) {
+        showNotificationCenter("Không đủ số lượng", "info")
         return
+    } else {
+        await saveCart(user.maNguoiDung, productId, change)
+        await loadCartItems()
+        updateCartSummary()
+        showNotification("Đã cập nhật số lượng", "success")
+    }
+}
+function showNotificationCenter(message, type = "info") {
+    const notification = document.createElement("div")
+    notification.className = `notification notification-${type}`
+    notification.innerHTML = `
+    <i class="fas ${type === "success" ? "fa-check-circle" : "fa-info-circle"}"></i>
+    <span>${message}</span>
+  `
+
+    // Add notification styles if not already added
+    if (!document.querySelector("#notification-styles")) {
+        const styles = document.createElement("style")
+        styles.id = "notification-styles"
+        styles.textContent = `
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+        max-width: 300px;
+      }
+      .notification-success {
+        border-left: 4px solid #10b981;
+        color: #10b981;
+      }
+      .notification-info {
+        border-left: 4px solid #667eea;
+        color: #667eea;
+      }
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `
+        document.head.appendChild(styles)
     }
 
-    saveCart()
-    loadCartItems()
-    updateCartSummary()
-    showNotification("Đã cập nhật số lượng", "success")
+    document.body.appendChild(notification)
+
+    setTimeout(() => {
+        notification.style.animation = "slideInRight 0.3s ease reverse"
+        setTimeout(() => notification.remove(), 300)
+    }, 1000)
 }
 
-function removeItem(productId) {
-    const itemIndex = cart.findIndex((item) => item.id === productId)
-    if (itemIndex === -1) return
-
-    const itemName = cart[itemIndex].name
-    cart.splice(itemIndex, 1)
-
-    saveCart()
-    loadCartItems()
+async function removeItem(productId) {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user)
+        return
+    await fetch("https://localhost:7067/GioHang/Delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            maNguoiDung: user.maNguoiDung,
+            maSanPham: productId
+        })
+    })
+    //await loadCart(user.maNguoiDung)
+    await loadCartItems()
     updateCartSummary()
     showNotification(`Đã xóa "${itemName}" khỏi giỏ hàng`, "success")
 }
 
-function saveCart() {
-    localStorage.setItem("pickleballCart", JSON.stringify(cart))
-}
+//function saveCart() {
+//    localStorage.setItem("pickleballCart", JSON.stringify(cart))
+//}
 
 function updateCartSummary() {
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const subtotal = cart.reduce((sum, item) => sum + item.giaBan * item.soLuong, 0)
     const discountAmount = appliedCoupon ? calculateDiscount(subtotal, appliedCoupon) : 0
     const finalShippingFee =
         appliedCoupon && appliedCoupon.freeShipping && subtotal >= appliedCoupon.minAmount ? 0 : shippingFee
@@ -261,3 +356,6 @@ document.addEventListener("keydown", (e) => {
         applyCoupon()
     }
 })
+
+//-----------
+

@@ -12,7 +12,22 @@ fetch("https://localhost:7067/SanPham/ListAll")
     .catch((error) => console.error("Lỗi khi lấy sản phẩm: ", error))
 
 // Cart data
-let cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
+//let cart = JSON.parse(localStorage.getItem("pickleballCart")) || []
+let cart = []
+
+async function loadCart(maNguoiDung) {
+    try {
+        const response = await fetch(`https://localhost:7067/GioHang/MaNguoiDung/${maNguoiDung}`);
+        if (!response.ok)
+            throw new Error("Lỗi khi lấy giỏ hàng");
+        cart = await response.json();
+        updateCartUI();
+    } catch (error) {
+        console.error(error);
+        cart = [];
+        updateCartUI();
+    }
+}
 
 // Current filters
 const currentFilters = {
@@ -29,10 +44,11 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 function initializeShop() {
+    const user = JSON.parse(localStorage.getItem("user"))
     currentProductList = products
     displayProducts(currentProductList)
     updateCartCount()
-
+    loadCart(user.maNguoiDung)
     loadFavoritesList()
 }
 
@@ -226,7 +242,7 @@ function createProductCard(product) {
                 <h3 class="product-name">${product.tenSanPham}</h3>
                 <p class="product-description">${product.moTa}</p>
                 <div class="product-price">
-                    <span class="current-price">${formatPrice(product.giaBan)}</span>
+                    <span class="current-price">${formatPrice(product.originalPrice)}</span>
                     ${originalPriceHtml}
                 </div>
                 ${stockStatus}
@@ -270,26 +286,15 @@ function formatPrice(price) {
     }).format(price)
 }
 
-function addToCart(productId) {
-    const product = products.find((p) => p.maSanPham === productId)
-    if (!product || !product.soLuongTon === 0) return
-
-    const existingItem = cart.find((item) => item.maSanPham === productId)
-
-    if (existingItem) {
-        existingItem.quantity += 1
-    } else {
-        cart.push({
-            id: product.maSanPham,
-            name: product.tenSanPham,
-            price: product.giaBan,
-            image: product.hinhAnh,
-            quantity: 1,
-        })
+async function addToCart(productId) {
+    const product = products.find(p => p.maSanPham === productId)
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user) {
+        alert("Bạn cần đăng nhập trước khi thêm hàng vào giỏ!");
+        return;
     }
-
-    saveCart()
-    updateCartUI()
+    await saveCart(user.maNguoiDung, productId, 1)
+    await loadCart(user.maNguoiDung)
     showAddToCartNotification(product.tenSanPham)
 
     // Update button text
@@ -302,28 +307,129 @@ function addToCart(productId) {
     }, 2000)
 }
 
-function removeFromCart(productId) {
-    cart = cart.filter((item) => item.id !== productId)
-    saveCart()
-    updateCartUI()
+//function removeFromCart(productId) {
+//    cart = cart.filter((item) => item.id !== productId)
+//    saveCart()
+//    updateCartUI()
+//}
+async function removeFromCart(productId) {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user)
+        return
+    await fetch("https://localhost:7067/GioHang/Delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            maNguoiDung: user.maNguoiDung,
+            maSanPham: productId
+        })
+    })
+    await loadCart(user.maNguoiDung)
 }
 
-function updateCartQuantity(productId, change) {
-    const item = cart.find((item) => item.id === productId)
+//function updateCartQuantity(productId, change) {
+//    const item = cart.find((item) => item.id === productId)
+//    if (!item) return
+
+//    item.quantity += change
+
+//    if (item.quantity <= 0) {
+//        removeFromCart(productId)
+//    } else {
+//        saveCart()
+//        updateCartUI()
+//    }
+//}
+async function updateCartQuantity(productId, change) {
+    const user = JSON.parse(localStorage.getItem("user"))
+    if (!user)
+        return
+    const item = cart.find((item) => item.maSanPham === productId)
     if (!item) return
 
-    item.quantity += change
+    const newQuantity = item.soLuong + change
 
-    if (item.quantity <= 0) {
-        removeFromCart(productId)
+    if (newQuantity <= 0) {
+        await removeFromCart(productId)
+    } else if (newQuantity > item.soLuongTon) {
+        showNotificationCenter("Không đủ số lượng","info")
+        return
     } else {
-        saveCart()
-        updateCartUI()
+        await saveCart(user.maNguoiDung, productId, change)
+        await loadCart(user.maNguoiDung)
     }
 }
+function showNotificationCenter(message, type = "info") {
+    const notification = document.createElement("div")
+    notification.className = `notification notification-${type}`
+    notification.innerHTML = `
+    <i class="fas ${type === "success" ? "fa-check-circle" : "fa-info-circle"}"></i>
+    <span>${message}</span>
+  `
 
-function saveCart() {
-    localStorage.setItem("pickleballCart", JSON.stringify(cart))
+    // Add notification styles if not already added
+    if (!document.querySelector("#notification-styles")) {
+        const styles = document.createElement("style")
+        styles.id = "notification-styles"
+        styles.textContent = `
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+        max-width: 300px;
+      }
+      .notification-success {
+        border-left: 4px solid #10b981;
+        color: #10b981;
+      }
+      .notification-info {
+        border-left: 4px solid #667eea;
+        color: #667eea;
+      }
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `
+        document.head.appendChild(styles)
+    }
+
+    document.body.appendChild(notification)
+
+    setTimeout(() => {
+        notification.style.animation = "slideInRight 0.3s ease reverse"
+        setTimeout(() => notification.remove(), 300)
+    }, 1000)
+}
+
+//function saveCart() {
+//    localStorage.setItem("pickleballCart", JSON.stringify(cart))
+//}
+async function saveCart(userId, prId, quantity) {
+    await fetch("https://localhost:7067/GioHang/Insert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            maNguoiDung: userId,
+            maSanPham: prId,
+            soLuong: quantity
+        })
+    })
 }
 
 function updateCartUI() {
@@ -333,7 +439,7 @@ function updateCartUI() {
 
 function updateCartCount() {
     const cartCount = document.getElementById("cart-count")
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
+    const totalItems = cart.length
     cartCount.textContent = totalItems
     cartCount.style.display = totalItems > 0 ? "flex" : "none"
 }
@@ -354,9 +460,31 @@ function updateCartSidebar() {
         return
     }
 
-    cartItems.innerHTML = cart.map((item) => ``).join("")
+    cartItems.innerHTML = cart.map((item) => `
+        <div class="cart-item">
+            <div class="cart-item-image">
+                <img src="${item.hinhAnh}" alt="${item.tenSanPham}">
+            </div>
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.tenSanPham}</div>
+                <div class="cart-item-price">${formatPrice(item.giaBan)}</div>
+            </div>
+            <div class="cart-item-controls">
+                <button class="quantity-btn" onclick="updateCartQuantity(${item.maSanPham}, -1)">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <span class="quantity">${item.soLuong}</span>
+                <button class="quantity-btn" onclick="updateCartQuantity(${item.maSanPham}, 1)">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="remove-btn" onclick="removeFromCart(${item.maSanPham})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join("")
 
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const total = cart.reduce((sum, item) => sum + item.giaBan * item.soLuong, 0)
     cartTotal.textContent = formatPrice(total)
 }
 

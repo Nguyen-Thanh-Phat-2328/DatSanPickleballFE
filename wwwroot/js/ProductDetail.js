@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //showLoading()
     //loadProduct()
     fetchProducts()
-    updateCartUI()
+    //updateCartUI()
     setupEventListeners()
     setupReviewForm()
 })
@@ -701,27 +701,51 @@ function updateQuantity(change) {
     }
 }
 
-function addToCart() {
-    if (!currentProduct.inStock) return
+//function addToCart() {
+//    if (!currentProduct.inStock) return
 
-    const existingItem = cart.find((item) => item.id === currentProduct.id)
+//    const existingItem = cart.find((item) => item.id === currentProduct.id)
 
-    if (existingItem) {
-        existingItem.quantity += currentQuantity
-    } else {
-        cart.push({
-            id: currentProduct.id,
-            name: currentProduct.name,
-            price: currentProduct.price,
-            image: currentProduct.image,
-            quantity: currentQuantity,
-        })
+//    if (existingItem) {
+//        existingItem.quantity += currentQuantity
+//    } else {
+//        cart.push({
+//            id: currentProduct.id,
+//            name: currentProduct.name,
+//            price: currentProduct.price,
+//            image: currentProduct.image,
+//            quantity: currentQuantity,
+//        })
+//    }
+
+//    saveCart()
+//    updateCartUI()
+//    showAddToCartNotification()
+
+//    // Update button temporarily
+//    const addButton = document.querySelector(".btn-primary")
+//    const originalText = addButton.innerHTML
+//    addButton.innerHTML = '<i class="fas fa-check"></i> Đã thêm vào giỏ'
+//    addButton.disabled = true
+
+//    setTimeout(() => {
+//        addButton.innerHTML = originalText
+//        addButton.disabled = false
+//    }, 2000)
+//}
+async function addToCart() {
+    const user = JSON.parse(localStorage.getItem("user"))
+    //lấy mã sản phẩm
+    const params = new URLSearchParams(window.location.search)
+    const maSanPham = parseInt(params.get("id"), 10)
+    if (!user) {
+        alert("Vui lòng đăng nhập để sử dụng chức năng này!");
+        return;
     }
-
-    saveCart()
-    updateCartUI()
+    
+    //lưu vào giỏ hàng
+    await saveCart(user.maNguoiDung, maSanPham, currentQuantity)
     showAddToCartNotification()
-
     // Update button temporarily
     const addButton = document.querySelector(".btn-primary")
     const originalText = addButton.innerHTML
@@ -733,13 +757,40 @@ function addToCart() {
         addButton.disabled = false
     }, 2000)
 }
+async function saveCart(userId, prId, quantity) {
+    try {
+        const res = await fetch("https://localhost:7067/GioHang/Insert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                maNguoiDung: userId,
+                maSanPham: prId,
+                soLuong: quantity
+            })
+        });
+        if (!res.ok) {
+            // Nếu backend trả lỗi (400, 500...)
+            const errText = await res.text();
+            console.error("API error:", res.status, errText);
+            return;
+        }
+
+        const data = await res.json();
+        console.log("Cart saved:", data);
+    } catch (err) {
+        console.error("Fetch failed:", err);
+    }
+}
 
 function toggleWishlist() {
     showNotification("Tính năng yêu thích sẽ được cập nhật!", "info")
 }
+function fullQuantity() {
+    showNotification("Không đủ số lượng!", "info")
+}
 
 function goToProduct(productId) {
-    window.location.href = `product-detail.html?id=${productId}`
+    window.location.href = `/Shop/ProductDetail?id=${productId}`
 }
 
 // Utility functions
@@ -800,9 +851,9 @@ function generateStars(rating) {
 }
 
 // Cart functions
-function saveCart() {
-    localStorage.setItem("pickleballCart", JSON.stringify(cart))
-}
+//function saveCart() {
+//    localStorage.setItem("pickleballCart", JSON.stringify(cart))
+//}
 
 function updateCartUI() {
     //updateCartCount()
