@@ -350,6 +350,12 @@ function updateBookingSummary() {
 
 // Confirm booking
 async function confirmBooking() {
+    let user = JSON.parse(localStorage.getItem("user") || "null")
+    if (!user || !user.maNguoiDung) {
+        alert("Vui lòng đăng nhập!")
+        return
+    }
+
     // kiểm tra chọn sân, ngày, giờ (tùy logic)
     if (!selectedCourt || !selectedDate || selectedMaLichSan.length === 0) {
         alert('Vui lòng chọn đầy đủ thông tin đặt sân!');
@@ -361,7 +367,7 @@ async function confirmBooking() {
         localStorage.setItem('maLichSanList', JSON.stringify(selectedMaLichSan));
 
         // gọi endpoint backend tạo payment (GET hoặc POST tuỳ bạn)
-        const res = await fetch('https://localhost:7067/api/VNPay/create-payment', {
+        const res = await fetch('https://localhost:7067/api/VNPay/create-payment?type=booking', {
             method: 'GET',
             // nếu POST: body: JSON.stringify({ ... })
         });
@@ -388,7 +394,7 @@ async function confirmBooking() {
 }
 document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
+    if (params.get('type') === 'booking' && params.get('payment') === 'success') {
         let maLichSanList = JSON.parse(localStorage.getItem('maLichSanList')) || [];
         const user = JSON.parse(localStorage.getItem('user'));
         const maNguoiDung = user?.maNguoiDung;
