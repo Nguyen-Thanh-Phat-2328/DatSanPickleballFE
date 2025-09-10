@@ -361,7 +361,7 @@ async function addToCart(productId) {
     const product = products.find(p => p.maSanPham === productId)
     const user = JSON.parse(localStorage.getItem("user"))
     if (!user) {
-        alert("Bạn cần đăng nhập trước khi thêm hàng vào giỏ!");
+        showNotificationCenter("Bạn cần đăng nhập trước khi thêm hàng vào giỏ!", "info");
         return;
     }
     await saveCart(user.maNguoiDung, productId, 1)
@@ -465,6 +465,10 @@ function showNotificationCenter(message, type = "info") {
       .notification-info {
         border-left: 4px solid #667eea;
         color: #667eea;
+      }
+      .notification-error {
+        border-left: 4px solid #ef4444;
+        color: #ef4444;
       }
       @keyframes slideInRight {
         from {
@@ -576,7 +580,7 @@ function toggleCart() {
 async function toggleWishlist(maSanPham, btn) {
     const user = JSON.parse(localStorage.getItem("user"))
     if (!user) {
-        alert("Bạn cần đăng nhập để dùng chức năng yêu thích!")
+        showNotificationCenter("Bạn cần đăng nhập để dùng chức năng yêu thích!", "info")
         return
     }
 
@@ -648,56 +652,9 @@ function showToast(message) {
 }
 
 function showAddToCartNotification(productName) {
-    showNotification(`Đã thêm "${productName}" vào giỏ hàng!`, "success")
+    showNotificationCenter(`Đã thêm "${productName}" vào giỏ hàng!`, "success")
 }
 
-function showNotification(message, type = "info") {
-    const notification = document.createElement("div")
-    notification.className = `notification notification-${type}`
-    notification.innerHTML = message
-    // Add notification styles if not already added
-    if (!document.querySelector("#notification-styles")) {
-        const styles = document.createElement("style")
-        styles.id = "notification-styles"
-        styles.textContent = `
-            .notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 10px 20px;
-                background-color: #3498db;
-                color: white;
-                border-radius: 5px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                animation: slideInRight 0.3s ease;
-            }
-            .notification-success {
-                background-color: #2ecc71;
-            }
-            .notification-info {
-                background-color: #3498db;
-            }
-            @keyframes slideInRight {
-                from {
-                    right: -300px;
-                    opacity: 0;
-                }
-                to {
-                    right: 20px;
-                    opacity: 1;
-                }
-            }
-        `
-        document.head.appendChild(styles)
-    }
-
-    document.body.appendChild(notification)
-
-    setTimeout(() => {
-        notification.style.animation = "slideInRight 0.3s ease reverse"
-        setTimeout(() => notification.remove(), 300)
-    }, 3000)
-}
 
 // Close cart when clicking outside
 document.addEventListener("click", (e) => {
@@ -859,7 +816,7 @@ function loadWishlist() {
     const maNguoiDung = user ? user.maNguoiDung : null
 
     if (!maNguoiDung) {
-        showNotification("Bạn cần đăng nhập để xem sản phẩm yêu thích!", "info")
+        showNotificationCenter("Bạn cần đăng nhập để xem sản phẩm yêu thích!", "info")
         return
     }
 

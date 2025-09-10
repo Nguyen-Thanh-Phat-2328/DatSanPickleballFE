@@ -573,7 +573,7 @@ function renderProduct() {
 async function toggleWishlist(maSanPham, btn) {
     const user = JSON.parse(localStorage.getItem("user"))
     if (!user) {
-        alert("Bạn cần đăng nhập để dùng chức năng yêu thích!")
+        showNotification("Bạn cần đăng nhập để dùng chức năng yêu thích!", "info")
         return
     }
 
@@ -951,7 +951,7 @@ async function addToCart() {
     const params = new URLSearchParams(window.location.search)
     const maSanPham = parseInt(params.get("id"), 10)
     if (!user) {
-        alert("Vui lòng đăng nhập để sử dụng chức năng này!");
+        showNotification("Vui lòng đăng nhập để sử dụng chức năng này!", "info");
         return;
     }
 
@@ -1141,6 +1141,10 @@ function showNotification(message, type = "info") {
       .notification-info {
         border-left: 4px solid #667eea;
         color: #667eea;
+      }
+      .notification-error {
+        border-left: 4px solid #ef4444; 
+        color: #ef4444;
       }
       @keyframes slideInRight {
         from {

@@ -45,6 +45,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadCartItems() {
     const user = JSON.parse(localStorage.getItem("user"))
+    if (!user) {
+        alert("Vui lòng đăng nhập để xem giỏ hàng!")
+        window.location.href = "/Shop/ShopIndex"
+    }
     await loadCart(user.maNguoiDung)
     const cartItemsContainer = document.getElementById("cart-items")
     const itemCount = document.getElementById("item-count")
