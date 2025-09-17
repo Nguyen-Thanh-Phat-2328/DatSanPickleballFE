@@ -10,8 +10,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập Pickleball - Sân Tuấn Phát</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/Auth.css">
 </head>
 <body>
+    <img src="/css/img/ball.png" alt="Pickleball" class="animated-ball">
         <div class="container">
             <div class="auth-container">
                 <div class="auth-card">
@@ -248,6 +250,77 @@
                 </div>
             </div>
         </div>
+    
+    <script>
+        const ball = document.querySelector(".animated-ball");
+        const ballSize = 100;
+
+        let x = Math.random() * (window.innerWidth - ballSize);
+        let y = Math.random() * (window.innerHeight - ballSize);
+
+        function getRandomDirection() {
+            const angle = Math.random() * 2 * Math.PI;
+            const speed = Math.random() * 2 + 2; // 2–4 px mỗi frame
+            return {
+                dx: Math.cos(angle) * speed,
+                dy: Math.sin(angle) * speed
+            };
+        }
+
+        let { dx, dy } = getRandomDirection();
+
+        function addRandomVariation(value) {
+            // thêm chút biến thiên ngẫu nhiên để hướng đa dạng
+            const variation = (Math.random() - 0.5) * 1; // từ -0.5 đến +0.5
+            return value + variation;
+        }
+
+        function moveBall() {
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            x += dx;
+            y += dy;
+
+            // Va chạm trái/phải
+            if (x <= 0 || x + ballSize >= screenWidth) {
+                dx = -dx;
+                dx = addRandomVariation(dx);
+                dy = addRandomVariation(dy);
+
+                if (x <= 0) x = 0;
+                if (x + ballSize >= screenWidth) x = screenWidth - ballSize;
+            }
+
+            // Va chạm trên/dưới
+            if (y <= 0 || y + ballSize >= screenHeight) {
+                dy = -dy;
+                dx = addRandomVariation(dx);
+                dy = addRandomVariation(dy);
+
+                if (y <= 0) y = 0;
+                if (y + ballSize >= screenHeight) y = screenHeight - ballSize;
+            }
+
+            // Giới hạn tốc độ để không bị quá nhanh
+            const speedLimit = 6;
+            dx = Math.max(Math.min(dx, speedLimit), -speedLimit);
+            dy = Math.max(Math.min(dy, speedLimit), -speedLimit);
+
+            // Render mượt
+            ball.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+            requestAnimationFrame(moveBall);
+        }
+
+        moveBall();
+
+        window.addEventListener("resize", () => {
+            if (x + ballSize > window.innerWidth) x = window.innerWidth - ballSize;
+            if (y + ballSize > window.innerHeight) y = window.innerHeight - ballSize;
+        });
+    </script>
+
     <script>
         const homeUrl = '@Url.Action("Index", "TrangChu")';           
     </script>

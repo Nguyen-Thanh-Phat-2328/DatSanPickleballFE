@@ -1004,6 +1004,9 @@ function updateUserUI() {
                         <i class="fas fa-history"></i>
                         <span>Lịch sử đặt sân</span>
                     </a>
+                    <a href="/Order/OrderIndex" class="menu-item">
+                        <i class="fas fa-box"></i>
+                        <span>Đơn hàng của tôi</span>
                     </a>
                     <a href="#" class="menu-item" onclick="openLoveProductModal()">
                         <i class="fas fa-heart"></i>

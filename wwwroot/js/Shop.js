@@ -316,11 +316,16 @@ function createProductCard(product) {
                     <span class="current-price">${formatPrice(product.originalPrice)}</span>
                     ${originalPriceHtml}
                 </div>
-                ${stockStatus}
+                
                 <div class="product-actions">
-                    <button class="btn btn-primary" onclick="addToCart(${product.maSanPham})" ${product.soLuongTon === 0 ? "disabled" : ""}>
+                    <button class="btn ${product.soLuongTon > 0 ? "btn-primary" : "btn-outofstock"}" onclick="addToCart(${product.maSanPham})">
                         <i class="fas fa-shopping-cart"></i>
-                        ${isInCart ? "Đã thêm" : "Thêm vào giỏ"}
+                        ${isInCart
+                            ? "Đã thêm"
+                            : product.soLuongTon > 0
+                                ? "Thêm vào giỏ"
+                                : stockStatus
+                        }
                     </button>
                     <button class="btn btn-icon btn-secondary wishlist-btn" data-id="${product.maSanPham}" onclick="toggleWishlist(${product.maSanPham}, this)">
                         <i class="far fa-heart"></i>
@@ -364,6 +369,12 @@ async function addToCart(productId) {
         showNotificationCenter("Bạn cần đăng nhập trước khi thêm hàng vào giỏ!", "info");
         return;
     }
+
+    if (!product || product.soLuongTon === 0) {
+        showNotificationCenter("Sản phẩm đã hết hàng", "info")
+        return
+    }
+
     await saveCart(user.maNguoiDung, productId, 1)
     await loadCart(user.maNguoiDung)
     showAddToCartNotification(product.tenSanPham)

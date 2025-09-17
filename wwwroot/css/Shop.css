@@ -477,6 +477,18 @@ body {
         transform: translateY(-1px);
     }
 
+/* Css cho button Thêm giỏ hàng khi hết hàng */
+.btn-outofstock {
+    background-color: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
+    flex: 1;
+}
+
+    .btn-outofstock i {
+        color: #9ca3af; /* icon xám mờ */
+    }
+
 .btn-secondary {
     background: #f8f9ff;
     color: #667eea;

@@ -571,9 +571,9 @@ body {
 }
 
 .auth-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     border-radius: 25px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     overflow: hidden;
     width: 100%;
     max-width: 450px;
