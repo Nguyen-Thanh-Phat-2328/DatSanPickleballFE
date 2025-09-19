@@ -1001,7 +1001,7 @@ function updateUserUI() {
                         <i class="fas fa-user-edit"></i>
                         <span>Chỉnh sửa thông tin</span>
                     </a>
-                    <a href="#" class="menu-item">
+                    <a href="/TrangChu/ChangePassword" class="menu-item">
                         <i class="fas fa-key"></i>
                         <span>Đổi mật khẩu</span>
                     </a>

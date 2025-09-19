@@ -28,5 +28,9 @@ namespace Frontend.Controllers
            
             return View(thongTinChungView);
         }
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
     }
 }
