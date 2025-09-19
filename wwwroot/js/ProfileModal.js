@@ -40,7 +40,6 @@ async function saveProfile() {
         tenNguoiDung: tenNguoiDung,
         email: email,
         soDienThoai: soDienThoai,
-        matKhau: userData.matKhau,
         role: ""       // Không đổi vai trò
     };
 
@@ -60,7 +59,6 @@ async function saveProfile() {
                 name: tenNguoiDung,
                 email: email,
                 phone: soDienThoai,
-                matKhau: userData.matKhau,
                 role: userData.role
             }));
             closeProfileModal(); // Đóng modal

@@ -675,16 +675,21 @@ async function handleLogin(event) {
     const password = document.getElementById("login-password").value;
 
     try {
-        const response = await fetch(`https://localhost:7067/User/TenNguoiDung/${email}`, {
-            method: "GET"
+        const response = await fetch("https://localhost:7067/User/Login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, password })
         });
 
-        if (!response.ok) throw new Error("Không kết nối được đến API");
+        if (!response.ok) {
+            const errorMsg = await response.text();
+            throw new Error(errorMsg);
+        }
 
         const user = await response.json();
 
-        if (user.matKhau === password) {
-            //sessionStorage.setItem("user", JSON.stringify(user));
             setTimeout(() => {
                 // Mock successful login
                 localStorage.setItem('user', JSON.stringify({
@@ -693,7 +698,6 @@ async function handleLogin(event) {
                     phone: user.soDienThoai,
                     role: user.role,
                     maNguoiDung: user.maNguoiDung,
-                    matKhau: user.matKhau,
                     loginTime: new Date().toISOString()
                 }));
 
@@ -705,13 +709,10 @@ async function handleLogin(event) {
                     updateUserUI();
                 }, 1000);
             }, 1500);
-        } else {
-            alert("Sai mật khẩu");
-        }
 
     } catch (error) {
         console.error("Lỗi đăng nhập:", error);
-        alert("Lỗi đăng nhập: Không thể kết nối tới máy chủ.");
+        alert("Đăng nhập thất bại: " + error.message);
     }
 }
 
@@ -999,6 +1000,10 @@ function updateUserUI() {
                     <a href="#" class="menu-item" onclick="showProfile()">
                         <i class="fas fa-user-edit"></i>
                         <span>Chỉnh sửa thông tin</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-key"></i>
+                        <span>Đổi mật khẩu</span>
                     </a>
                     <a href="#" class="menu-item" onclick="showBookingHistory()">
                         <i class="fas fa-history"></i>
