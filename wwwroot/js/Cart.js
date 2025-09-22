@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 })
 
 async function loadCartItems() {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user) {
         alert("Vui lòng đăng nhập để xem giỏ hàng!")
         window.location.href = "/Shop/ShopIndex"
@@ -122,7 +122,7 @@ function formatPrice(price) {
 }
 
 async function updateQuantity(productId, change) {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user)
         return
     const item = cart.find((item) => item.maSanPham === productId)
@@ -201,7 +201,7 @@ function showNotificationCenter(message, type = "info") {
 }
 
 async function removeItem(productId) {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user)
         return
     await fetch("https://localhost:7067/GioHang/Delete", {

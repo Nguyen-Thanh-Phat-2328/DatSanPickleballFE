@@ -4,7 +4,7 @@
     let ngayHienTai = new Date();
     ngayHienTai.setHours(0, 0, 0, 0); // bỏ giờ phút giây để so sánh thuần ngày
 
-    const userData = JSON.parse(localStorage.getItem('user')); // Lấy thông tin người dùng từ localStorage
+    const userData = JSON.parse(sessionStorage.getItem('user')); // Lấy thông tin người dùng từ sessionStorage
 
     if (!userData) {
         showInfoMessage('Không tìm thấy thông tin người dùng!');
@@ -50,7 +50,7 @@
 }
 
 function filterBookingByDate() {
-    const userData = JSON.parse(localStorage.getItem('user'));
+    const userData = JSON.parse(sessionStorage.getItem('user'));
     const ngay = document.getElementById("filterDate").value;
     const maNguoiDung = userData.maNguoiDung;
 

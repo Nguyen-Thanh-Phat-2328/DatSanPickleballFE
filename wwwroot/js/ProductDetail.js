@@ -310,8 +310,8 @@ async function handleReviewSubmit(e) {
         return
     }
 
-    // Lấy user từ localStorage
-    const user = JSON.parse(localStorage.getItem("user"))
+    // Lấy user từ sessionStorage
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user) {
         showNotification("Bạn cần đăng nhập trước khi đánh giá!", "error")
         return
@@ -571,7 +571,7 @@ function renderProduct() {
 }
 
 async function toggleWishlist(maSanPham, btn) {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user) {
         showNotification("Bạn cần đăng nhập để dùng chức năng yêu thích!", "info")
         return
@@ -946,7 +946,7 @@ function changeMainImage(imageSrc, thumbnailElement) {
 //    }, 2000)
 //}
 async function addToCart() {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     //lấy mã sản phẩm
     const params = new URLSearchParams(window.location.search)
     const maSanPham = parseInt(params.get("id"), 10)
@@ -1303,7 +1303,7 @@ function updateWishlistButtonState(productId) {
 }
 
 async function loadUserFavorites() {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user) return
 
     try {
