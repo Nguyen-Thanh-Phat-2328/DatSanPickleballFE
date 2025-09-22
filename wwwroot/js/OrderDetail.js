@@ -599,7 +599,7 @@ async function reorderItems() {
         return
     }
 
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user || !user.maNguoiDung) {
         alert("Không tìm thấy thông tin người dùng")
         return

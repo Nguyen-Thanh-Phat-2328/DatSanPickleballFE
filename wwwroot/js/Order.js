@@ -206,9 +206,9 @@ function normalizeOrder(o) {
 
 async function loadOrdersFromAPI() {
     try {
-        const userData = localStorage.getItem("user")
+        const userData = sessionStorage.getItem("user")
         if (!userData) {
-            console.error("No user data found in localStorage")
+            console.error("No user data found in sessionStorage")
             showNoOrdersMessage("Vui lòng đăng nhập để xem đơn hàng")
             return
         }

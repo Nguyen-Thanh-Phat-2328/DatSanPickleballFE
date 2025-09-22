@@ -1,5 +1,5 @@
 ﻿function getUserEmail() {
-    const user = localStorage.getItem("user")
+    const user = sessionStorage.getItem("user")
     if (user) {
         const userData = JSON.parse(user)
         return userData.email
