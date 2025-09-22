@@ -3,7 +3,7 @@ class LoveProductModal {
     constructor() {
         this.modal = null
         this.favoriteProducts = []
-        this.maNguoiDung = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).maNguoiDung : null
+        this.maNguoiDung = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")).maNguoiDung : null
         this.init()
     }
 

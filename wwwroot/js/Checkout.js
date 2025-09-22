@@ -77,7 +77,7 @@ async function loadDistricts(maTp) {
 document.addEventListener("DOMContentLoaded", async () => {
     let user
     try {
-        user = JSON.parse(localStorage.getItem("user") || "null")
+        user = JSON.parse(sessionStorage.getItem("user") || "null")
     } catch (error) {
         console.error("Lỗi parse user data:", error)
         user = null
@@ -128,7 +128,7 @@ function setupEventListeners() {
 function loadUserData() {
     let user
     try {
-        user = JSON.parse(localStorage.getItem("user") || "null")
+        user = JSON.parse(sessionStorage.getItem("user") || "null")
     } catch (error) {
         console.error("Lỗi parse user data:", error)
         alert("Vui lòng đăng nhập lại!")
@@ -471,7 +471,7 @@ async function handleCheckout(e) {
 
     let user
     try {
-        user = JSON.parse(localStorage.getItem("user") || "null")
+        user = JSON.parse(sessionStorage.getItem("user") || "null")
     } catch (error) {
         console.error("Lỗi parse user data:", error)
         alert("Vui lòng đăng nhập lại!")
@@ -589,7 +589,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let user, donHangData
 
         try {
-            user = JSON.parse(localStorage.getItem("user") || "null")
+            user = JSON.parse(sessionStorage.getItem("user") || "null")
             donHangData = JSON.parse(localStorage.getItem("donHangData") || "null")
         } catch (error) {
             console.error("Lỗi parse dữ liệu:", error)

@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 function initializeShop() {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     currentProductList = products
     filteredProducts = products
 
@@ -71,7 +71,7 @@ function initializeShop() {
 }
 
 function loadFavoritesList() {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (user && user.maNguoiDung) {
         fetch(`https://localhost:7067/SanPham/DoYeuThich/${user.maNguoiDung}`)
             .then((res) => res.json())
@@ -364,7 +364,7 @@ function formatPrice(price) {
 
 async function addToCart(productId) {
     const product = products.find(p => p.maSanPham === productId)
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user) {
         showNotificationCenter("Bạn cần đăng nhập trước khi thêm hàng vào giỏ!", "info");
         return;
@@ -395,7 +395,7 @@ async function addToCart(productId) {
 //    updateCartUI()
 //}
 async function removeFromCart(productId) {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user)
         return
     await fetch("https://localhost:7067/GioHang/Delete", {
@@ -423,7 +423,7 @@ async function removeFromCart(productId) {
 //    }
 //}
 async function updateCartQuantity(productId, change) {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user)
         return
     const item = cart.find((item) => item.maSanPham === productId)
@@ -589,7 +589,7 @@ function toggleCart() {
 }
 
 async function toggleWishlist(maSanPham, btn) {
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(sessionStorage.getItem("user"))
     if (!user) {
         showNotificationCenter("Bạn cần đăng nhập để dùng chức năng yêu thích!", "info")
         return
@@ -823,7 +823,7 @@ function goToLastPage() {
 }
 
 function loadWishlist() {
-    const user = JSON.parse(localStorage.getItem("user")) // lấy object user
+    const user = JSON.parse(sessionStorage.getItem("user")) // lấy object user
     const maNguoiDung = user ? user.maNguoiDung : null
 
     if (!maNguoiDung) {

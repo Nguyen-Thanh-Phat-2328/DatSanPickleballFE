@@ -350,7 +350,7 @@ function updateBookingSummary() {
 
 // Confirm booking
 async function confirmBooking() {
-    let user = JSON.parse(localStorage.getItem("user") || "null")
+    let user = JSON.parse(sessionStorage.getItem("user") || "null")
     if (!user || !user.maNguoiDung) {
         alert("Vui lòng đăng nhập!")
         return
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('type') === 'booking' && params.get('payment') === 'success') {
         let maLichSanList = JSON.parse(localStorage.getItem('maLichSanList')) || [];
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(sessionStorage.getItem('user'));
         const maNguoiDung = user?.maNguoiDung;
 
         if (!maNguoiDung || maLichSanList.length === 0) {
@@ -692,7 +692,7 @@ async function handleLogin(event) {
 
             setTimeout(() => {
                 // Mock successful login
-                localStorage.setItem('user', JSON.stringify({
+                sessionStorage.setItem('user', JSON.stringify({
                     email: email,
                     name: user.tenNguoiDung,
                     phone: user.soDienThoai,
@@ -972,7 +972,7 @@ function createToast(message, type) {
 }
 
 function updateUserUI() {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const user = JSON.parse(sessionStorage.getItem('user') || 'null');
     if (user) {
         // Update header to show user dropdown
         const nav = document.querySelector('.nav');
@@ -1017,6 +1017,12 @@ function updateUserUI() {
                         <i class="fas fa-heart"></i>
                         <span>Đồ yêu thích</span>
                     </a>
+                    ${user.role == "Admin" ? `
+                    <a href="#" class="menu-item" onclick="gotoAdminPage()">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        <span>Quản trị viên</span>
+                    </a>
+                    `: ``}      
                     <div class="menu-divider"></div>
                     <a href="#" class="menu-item logout" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i>
@@ -1029,8 +1035,12 @@ function updateUserUI() {
 }
 
 function logout() {
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
     location.reload();
+}
+
+function gotoAdminPage() {
+    window.location.href = window.appUrls.admin;
 }
 
 // Check if user is logged in on page load

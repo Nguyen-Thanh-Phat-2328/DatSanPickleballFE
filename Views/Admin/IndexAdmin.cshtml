@@ -1,0 +1,402 @@
+﻿@{
+    Layout = "_Layout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Pickleball Court</title>
+    <link rel="stylesheet" href="/css/Admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-chart-line"></i> Admin Panel</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#revenue" class="nav-link" data-section="revenue">
+                            <i class="fas fa-chart-bar"></i> Thống kê doanh thu
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#courts" class="nav-link" data-section="courts">
+                            <i class="fas fa-table-tennis"></i> Quản lý sân
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#shop" class="nav-link" data-section="shop">
+                            <i class="fas fa-store"></i> Quản lý shop
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#coupons" class="nav-link" data-section="coupons">
+                            <i class="fas fa-tags"></i> Mã giảm giá
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <span class="admin-name">Admin</span>
+                    <button class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-revenue">0 VNĐ</h3>
+                            <p>Tổng doanh thu</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-bookings">0</h3>
+                            <p>Lượt đặt sân</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-table-tennis"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-courts">0</h3>
+                            <p>Số sân</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-products">0</h3>
+                            <p>Sản phẩm</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-charts">
+                    <div class="chart-container">
+                        <h3>Doanh thu 7 ngày gần đây</h3>
+                        <canvas id="revenueChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Revenue Section -->
+            <section id="revenue-section" class="content-section">
+                <div class="section-header">
+                    <h2>Thống kê doanh thu</h2>
+                    <div class="filter-controls">
+                        <select id="revenue-filter">
+                            <option value="month">Theo tháng</option>
+                            <option value="quarter">Theo quý</option>
+                            <option value="year">Theo năm</option>
+                        </select>
+                        <input type="month" id="month-picker" value="2024-01">
+                        <input type="number" id="year-picker" value="2024" min="2020" max="2030">
+                    </div>
+                </div>
+
+                <div class="revenue-stats">
+                    <div class="revenue-card">
+                        <h3>Doanh thu đặt sân</h3>
+                        <p class="revenue-amount" id="court-revenue">0 VNĐ</p>
+                    </div>
+                    <div class="revenue-card">
+                        <h3>Doanh thu shop</h3>
+                        <p class="revenue-amount" id="shop-revenue">0 VNĐ</p>
+                    </div>
+                    <div class="revenue-card">
+                        <h3>Tổng doanh thu</h3>
+                        <p class="revenue-amount total" id="filtered-total-revenue">0 VNĐ</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="detailedRevenueChart" width="800" height="400"></canvas>
+                </div>
+            </section>
+
+            <!-- Courts Management Section -->
+            <section id="courts-section" class="content-section">
+                <div class="section-header">
+                    <h2>Quản lý sân</h2>
+                    <button class="btn btn-primary" id="add-court-btn">
+                        <i class="fas fa-plus"></i> Thêm sân mới
+                    </button>
+                </div>
+
+                <div class="courts-grid" id="courts-grid">
+                    <!-- Courts will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Shop Management Section -->
+            <section id="shop-section" class="content-section">
+                <div class="section-header">
+                    <h2>Quản lý sản phẩm</h2>
+                    <button class="btn btn-primary" id="add-product-btn">
+                        <i class="fas fa-plus"></i> Thêm sản phẩm
+                    </button>
+                </div>
+
+                <div class="products-table-container">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Giá</th>
+                                <th>Tồn kho</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Coupons Management Section -->
+            <section id="coupons-section" class="content-section">
+                <div class="section-header">
+                    <h2>Quản lý mã giảm giá</h2>
+                    <button class="btn btn-primary" id="add-coupon-btn">
+                        <i class="fas fa-plus"></i> Thêm mã giảm giá
+                    </button>
+                </div>
+
+                <div class="coupons-table-container">
+                    <table class="coupons-table">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Mô tả</th>
+                                <th>Loại</th>
+                                <th>Giá trị</th>
+                                <th>Ngày hết hạn</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coupons-table-body">
+                            <!-- Coupons will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Court Modal -->
+    <div id="court-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="court-modal-title">Thêm sân mới</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="court-form">
+                <div class="form-group" hidden>
+                    <label for="court-name">Mã sân:</label>
+                    <input type="text" id="court-id">
+                </div>
+                <div class="form-group">
+                    <label for="court-name">Tên sân:</label>
+                    <input type="text" id="court-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="court-type">Kiểu sân:</label>
+                    <select id="court-type" required>
+                        <option value="">Chọn kiểu sân</option>
+                        <option value="Sân trong nhà">Sân trong nhà</option>
+                        <option value="Sân ngoài trời">Sân ngoài trời</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="court-status">Trạng thái:</label>
+                    <select id="court-status" required>
+                        <option value="">Chọn trạng thái</option>
+                        <option value="Đang hoạt động">Đang hoạt động</option>
+                        <option value="Bảo trì">Bảo trì</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="court-image">Hình ảnh:</label>
+                    <div class="profile-image">
+                        <img id="previewHinhAnh" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0iZmVhdGhlciBmZWF0aGVyLXVzZXIiPjxwYXRoIGQ9Ik0yMCAyMXYtMmE0IDQgMCAwIDAtNC00SDhhNCA0IDAgMCAwLTQgNHYyIj48L3BhdGg+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ij48L2NpcmNsZT48L3N2Zz4=" alt="Profile">
+                    </div>
+                    <input type="file" id="court-image" accept="image/*" onchange="xuLyHinhAnh()" hidden>
+                    <button type="button" class="upload-button" onclick="document.getElementById('court-image').click()">Thêm ảnh</button>
+                </div>
+                <div class="form-group">
+                    <label for="court-price">Giá sân (VNĐ/giờ):</label>
+                    <input type="number" id="court-price" required min="0" step="1000">
+                </div>
+                <div class="form-group">
+                    <label for="court-description">Vị trí:</label>
+                    <textarea id="court-description" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-court">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Court Schedule Modal -->
+    <div id="schedule-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="schedule-modal-title">Quản lý giờ hoạt động</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="schedule-content">
+                <div class="schedule-header">
+                    <p>Chọn các khung giờ hoạt động cho sân:</p>
+                </div>
+
+                <div class="time-slots-grid" id="time-slots-grid">
+                    <!-- Time slots will be generated here -->
+                </div>
+
+                <div class="schedule-actions">
+                    <button class="btn btn-primary" id="save-schedule-btn">
+                        <i class="fas fa-save"></i> Lưu khung giờ
+                    </button>
+                    <button class="btn btn-secondary" id="cancel-schedule-btn">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                </div>
+
+                <div class="current-schedule">
+                    <h4>Khung giờ hiện tại:</h4>
+                    <div class="schedule-list" id="schedule-list">
+                        <!-- Current schedule will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title">Thêm sản phẩm</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="product-form">
+                <div class="form-group">
+                    <label for="product-name">Tên sản phẩm:</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-category">Danh mục:</label>
+                    <select id="product-category" required>
+                        <option value="">Chọn danh mục</option>
+                        <option value="rackets">Vợt</option>
+                        <option value="balls">Bóng</option>
+                        <option value="shoes">Giày</option>
+                        <option value="apparel">Trang phục</option>
+                        <option value="accessories">Phụ kiện</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="product-price">Giá (VNĐ):</label>
+                    <input type="number" id="product-price" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="product-stock">Tồn kho:</label>
+                    <input type="number" id="product-stock" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="product-description">Mô tả:</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="product-image">URL hình ảnh:</label>
+                    <input type="url" id="product-image">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-product">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Coupon Modal -->
+    <div id="coupon-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="coupon-modal-title">Thêm mã giảm giá</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="coupon-form">
+                <div class="form-group">
+                    <label for="coupon-code">Mã giảm giá:</label>
+                    <input type="text" id="coupon-code" required>
+                </div>
+                <div class="form-group">
+                    <label for="coupon-description">Mô tả:</label>
+                    <input type="text" id="coupon-description" required>
+                </div>
+                <div class="form-group">
+                    <label for="coupon-type">Loại giảm giá:</label>
+                    <select id="coupon-type" required>
+                        <option value="percentage">Phần trăm (%)</option>
+                        <option value="fixed">Số tiền cố định (VNĐ)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="coupon-value">Giá trị:</label>
+                    <input type="number" id="coupon-value" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="coupon-expiry">Ngày hết hạn:</label>
+                    <input type="date" id="coupon-expiry" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-coupon">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/admin-dashboard.js"></script>
+
+</body>
+</html>

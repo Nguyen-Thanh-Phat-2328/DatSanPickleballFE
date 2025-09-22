@@ -1,7 +1,7 @@
 ﻿function showProfile() {
     toggleUserMenu(); // Ẩn menu
 
-    const userData = JSON.parse(localStorage.getItem('user')); // Lấy thông tin người dùng từ localStorage
+    const userData = JSON.parse(sessionStorage.getItem('user')); // Lấy thông tin người dùng từ sessionStorage
 
     if (!userData) {
         showInfoMessage('Không tìm thấy thông tin người dùng!');
@@ -21,12 +21,12 @@ function closeProfileModal() {
 }
 
 async function saveProfile() {
-    const userData = JSON.parse(localStorage.getItem('user'));
+    const userData = JSON.parse(sessionStorage.getItem('user'));
 
     const maNguoiDung = userData.maNguoiDung;
 
     if (!maNguoiDung) {
-        alert("Không tìm thấy mã người dùng trong localStorage.");
+        alert("Không tìm thấy mã người dùng trong sessionStorage.");
         return;
     }
 
@@ -54,7 +54,7 @@ async function saveProfile() {
 
         if (response.ok) {
             alert("Cập nhật thông tin thành công!");
-            localStorage.setItem('user', JSON.stringify({
+            sessionStorage.setItem('user', JSON.stringify({
                 maNguoiDung: maNguoiDung,
                 name: tenNguoiDung,
                 email: email,
