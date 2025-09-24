@@ -1036,7 +1036,8 @@ function updateUserUI() {
 
 function logout() {
     sessionStorage.removeItem('user');
-    location.reload();
+    
+    window.location.href = "/"
 }
 
 function gotoAdminPage() {

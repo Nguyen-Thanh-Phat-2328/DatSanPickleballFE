@@ -1,9 +1,17 @@
 ﻿// Admin Dashboard JavaScript
+fetch("https://localhost:7067/SanPham/ListAll")
+    .then((response) => response.json())
+    .then((data) => {
+        products = data
+
+        localStorage.setItem("products", JSON.stringify(products))
+    })
+    .catch((error) => console.error("Lỗi khi lấy sản phẩm: ", error))
 class AdminDashboard {
     constructor() {
         this.currentSection = "dashboard"
         this.courts = []
-        this.products = JSON.parse(localStorage.getItem("products")) || this.getDefaultProducts()
+        this.products = JSON.parse(localStorage.getItem("products")) || []
         this.coupons = JSON.parse(localStorage.getItem("coupons")) || this.getDefaultCoupons()
         this.bookings = JSON.parse(localStorage.getItem("bookings")) || []
         this.orders = JSON.parse(localStorage.getItem("orders")) || []
@@ -22,6 +30,7 @@ class AdminDashboard {
             console.log("Danh sách sân đã load xong");
         });
         this.loadProducts()
+        this.loadCategories()
         this.loadCoupons()
         this.setupCharts()
     }
@@ -523,41 +532,42 @@ class AdminDashboard {
     }
 
     // Product Management
-    getDefaultProducts() {
-        return [
-            {
-                id: 1,
-                name: "Vợt Pickleball Pro X1",
-                category: "rackets",
-                price: 2500000,
-                stock: 15,
-                description: "Vợt pickleball chuyên nghiệp với công nghệ carbon fiber",
-                image: "/pickleball-racket.jpg",
-            },
-            {
-                id: 2,
-                name: "Bóng Pickleball Tournament",
-                category: "balls",
-                price: 150000,
-                stock: 50,
-                description: "Bóng pickleball chính thức cho giải đấu",
-                image: "/pickleball-ball.jpg",
-            },
-        ]
-    }
+    //getDefaultProducts() {
+    //    return [
+    //        {
+    //            id: 1,
+    //            name: "Vợt Pickleball Pro X1",
+    //            category: "rackets",
+    //            price: 2500000,
+    //            stock: 15,
+    //            description: "Vợt pickleball chuyên nghiệp với công nghệ carbon fiber",
+    //            image: "/pickleball-racket.jpg",
+    //        },
+    //        {
+    //            id: 2,
+    //            name: "Bóng Pickleball Tournament",
+    //            category: "balls",
+    //            price: 150000,
+    //            stock: 50,
+    //            description: "Bóng pickleball chính thức cho giải đấu",
+    //            image: "/pickleball-ball.jpg",
+    //        },
+    //    ]
+    //}
 
     loadProducts() {
         const tbody = document.getElementById("products-table-body")
         tbody.innerHTML = ""
-
+        
         this.products.forEach((product, index) => {
             const row = document.createElement("tr")
             row.innerHTML = `
-                <td><img src="${product.image}" alt="${product.name}" class="product-image"></td>
-                <td>${product.name}</td>
-                <td>${this.getCategoryName(product.category)}</td>
-                <td>${this.formatCurrency(product.price)}</td>
-                <td>${product.stock}</td>
+                <td><img src="${product.hinhAnh}" alt="${product.tenSanPham}" class="product-image"></td>
+                <td>${product.tenSanPham}</td>
+                <td>${product.tenDanhMuc}</td>
+                <td>${this.formatCurrency(product.giaNhap)}</td>
+                <td>${this.formatCurrency(product.giaBan)}</td>
+                <td>${product.soLuongTon}</td>
                 <td>
                     <button class="btn btn-warning" onclick="adminDashboard.editProduct(${index})">
                         <i class="fas fa-edit"></i>
@@ -571,15 +581,26 @@ class AdminDashboard {
         })
     }
 
-    getCategoryName(category) {
-        const categories = {
-            rackets: "Vợt",
-            balls: "Bóng",
-            shoes: "Giày",
-            apparel: "Trang phục",
-            accessories: "Phụ kiện",
+    async loadCategories() {
+        try {
+            const response = await fetch("https://localhost:7067/DanhMucSanPham/ListDanhMuc");
+            if (!response.ok) {
+                throw new Error("Không lấy được danh mục");
+            }
+            const categories = await response.json();
+
+            const select = document.getElementById("product-category");
+            select.innerHTML = '<option value="">Chọn danh mục</option>';
+
+            categories.forEach(c => {
+                const option = document.createElement("option");
+                option.value = c.maDanhMuc;   // field mã danh mục trong DB
+                option.textContent = c.tenDanhMuc; // field tên danh mục
+                select.appendChild(option);
+            });
+        } catch (err) {
+            console.error(err);
         }
-        return categories[category] || category
     }
 
     showProductModal(productIndex = null) {
@@ -587,62 +608,253 @@ class AdminDashboard {
         const title = document.getElementById("product-modal-title")
         const form = document.getElementById("product-form")
 
+        const imageList = document.getElementById("image-list")
+        const featureList = document.getElementById("feature-list")
+        const addImageBtn = document.getElementById("add-image")
+        const addFeatureBtn = document.getElementById("add-feature")
+
+        // Hàm tạo input-group chung
+        function createInputGroup(type = "text", placeholder = "", value = "", extraClass = "") {
+            const div = document.createElement("div");
+            div.className = "input-group mb-2";
+            div.innerHTML = `
+            <input type="${type}" class="form-control ${extraClass}" placeholder="${placeholder}" value="${value}">
+            <button type="button" class="btn btn-danger remove-item">X</button>
+        `;
+            return div;
+        }
+
+        imageList.innerHTML = ""
+        featureList.innerHTML = ""
+
         if (productIndex !== null) {
             title.textContent = "Sửa sản phẩm"
-            const product = this.products[productIndex]
-            document.getElementById("product-name").value = product.name
-            document.getElementById("product-category").value = product.category
-            document.getElementById("product-price").value = product.price
-            document.getElementById("product-stock").value = product.stock
-            document.getElementById("product-description").value = product.description || ""
-            document.getElementById("product-image").value = product.image || ""
-            form.dataset.editIndex = productIndex
+            const product = this.products[productIndex]            
+
+            // Gọi API chi tiết theo id sản phẩm
+            fetch(`https://localhost:7067/SanPham/Detail/${product.maSanPham}`)
+                .then((response) => response.json())
+                .then((detail) => {
+                    // Đổ dữ liệu chi tiết vào form
+                    document.getElementById("product-name").value = detail.tenSanPham
+                    document.getElementById("product-category").value = detail.maDanhMuc
+                    document.getElementById("product-Importprice").value = detail.giaNhap
+                    document.getElementById("product-Originalprice").value = detail.giaBan
+                    document.getElementById("product-stock").value = detail.soLuongTon
+                    document.getElementById("product-description").value = detail.moTa || ""
+                    document.getElementById("product-image").value = detail.hinhAnh || ""
+
+                    // Chắc chắn chuyển images thành mảng
+                    let images = []
+                    if (detail.images) {
+                        if (typeof detail.images === "string") {
+                            try {
+                                images = JSON.parse(detail.images) // nếu là JSON string
+                            } catch {
+                                images = detail.images.split(",")   // nếu là chuỗi CSV
+                            }
+                        } else {
+                            images = detail.images
+                        }
+                    }
+
+                    // Render danh sách ảnh phụ
+                    images.forEach((img) => {
+                        const div = document.createElement("div")
+                        div.className = "input-group mb-2"
+                        div.innerHTML = `
+                        <input type="url" class="form-control product-image-item" value="${img}">
+                        <button type="button" class="btn btn-danger remove-item">X</button>
+                    `
+                        imageList.appendChild(div)
+                    })
+
+                    // Chắc chắn chuyển features thành mảng
+                    let features = []
+                    if (detail.features) {
+                        if (typeof detail.features === "string") {
+                            try {
+                                features = JSON.parse(detail.features)
+                            } catch {
+                                features = detail.features.split("|") // fallback: ngăn cách bằng |
+                            }
+                        } else {
+                            features = detail.features
+                        }
+                    }
+
+                    // Render danh sách tính năng
+                    features.forEach((ft) => {
+                        const div = document.createElement("div")
+                        div.className = "input-group mb-2"
+                        div.innerHTML = `
+                        <input type="text" class="form-control product-feature-item" value="${ft}">
+                        <button type="button" class="btn btn-danger remove-item">X</button>
+                    `
+                        featureList.appendChild(div)
+                    })
+
+                    form.dataset.editIndex = productIndex
+                })
+                .catch((error) => {
+                    console.error("Lỗi khi lấy chi tiết sản phẩm:", error)
+                    alert("Không lấy được chi tiết sản phẩm")
+                })
         } else {
             title.textContent = "Thêm sản phẩm"
             form.reset()
             delete form.dataset.editIndex
         }
 
+        // Gắn sự kiện thêm ảnh
+        addImageBtn.onclick = () => {
+            imageList.appendChild(createInputGroup("url", "Nhập link ảnh...", "", "product-image-item"))
+        }
+
+        // Gắn sự kiện thêm tính năng
+        addFeatureBtn.onclick = () => {
+            featureList.appendChild(createInputGroup("text", "Nhập mô tả tính năng...", "", "product-feature-item"))
+        }
+
+        // --- Xác nhận xóa input ---
+        if (!this._deleteHandlerAttached) { 
+            let itemToDelete = null
+
+            document.addEventListener("click", (e) => {
+                if (e.target.classList.contains("remove-item")) {
+                    itemToDelete = e.target.parentElement
+                    const modal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"))
+                    modal.show()
+                }
+            })
+
+            document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
+                if (itemToDelete) {
+                    itemToDelete.remove()
+                    itemToDelete = null
+                }
+                const modalEl = document.getElementById("confirmDeleteModal")
+                const modal = bootstrap.Modal.getInstance(modalEl)
+                modal.hide()
+            })
+
+            this._deleteHandlerAttached = true
+        }
+
         modal.style.display = "block"
     }
 
-    saveProduct() {
+    async saveProduct() {
         const form = document.getElementById("product-form")
-        const productData = {
-            name: document.getElementById("product-name").value,
-            category: document.getElementById("product-category").value,
-            price: Number.parseInt(document.getElementById("product-price").value),
-            stock: Number.parseInt(document.getElementById("product-stock").value),
-            description: document.getElementById("product-description").value,
-            image: document.getElementById("product-image").value || "/diverse-products-still-life.png",
-        }
 
-        if (form.dataset.editIndex) {
-            // Edit existing product
-            const index = Number.parseInt(form.dataset.editIndex)
-            this.products[index] = { ...this.products[index], ...productData }
-        } else {
-            // Add new product
-            productData.id = Date.now()
-            this.products.push(productData)
-        }
+        try {
+            if (form.dataset.editIndex) {
+                // ==== UPDATE ====
+                const index = Number.parseInt(form.dataset.editIndex)
+                const product = this.products[index]
 
-        localStorage.setItem("products", JSON.stringify(this.products))
-        this.loadProducts()
-        this.loadDashboardStats()
-        document.getElementById("product-modal").style.display = "none"
+                const productData = {
+                    maSanPham: product.maSanPham,  
+                    tenSanPham: document.getElementById("product-name").value,
+                    maDanhMuc: parseInt(document.getElementById("product-category").value),
+                    giaNhap: parseFloat(document.getElementById("product-Importprice").value),
+                    giaBan: parseFloat(document.getElementById("product-Originalprice").value),
+                    soLuongTon: parseInt(document.getElementById("product-stock").value),
+                    moTa: document.getElementById("product-description").value,
+                    hinhAnh: document.getElementById("product-image").value || "/diverse-products-still-life.png",
+                    images: Array.from(document.querySelectorAll(".product-image-item")).map(i => i.value.trim()).filter(i => i !== ""),
+                    features: Array.from(document.querySelectorAll(".product-feature-item")).map(i => i.value.trim()).filter(i => i !== "")
+                }
+
+                const res = await fetch(`https://localhost:7067/SanPham/Update/${product.maSanPham}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(productData)
+                })
+
+                if (!res.ok) throw new Error("Cập nhật sản phẩm thất bại")
+
+                const updated = await res.json()
+                // Cập nhật vào mảng
+                this.products[index] = {
+                    ...this.products[index],
+                    ...productData,
+                    maSanPham: product.maSanPham // giữ nguyên id theo backend
+                };             
+            } else {
+                // ==== INSERT ====
+                const productData = {
+                    tenSanPham: document.getElementById("product-name").value,
+                    maDanhMuc: parseInt(document.getElementById("product-category").value),
+                    giaNhap: parseFloat(document.getElementById("product-Importprice").value),
+                    giaBan: parseFloat(document.getElementById("product-Originalprice").value),
+                    soLuongTon: parseInt(document.getElementById("product-stock").value),
+                    moTa: document.getElementById("product-description").value,
+                    hinhAnh: document.getElementById("product-image").value || "/diverse-products-still-life.png",
+                    images: Array.from(document.querySelectorAll(".product-image-item")).map(i => i.value.trim()).filter(i => i !== ""),
+                    features: Array.from(document.querySelectorAll(".product-feature-item")).map(i => i.value.trim()).filter(i => i !== "")
+                }
+
+                const res = await fetch(`https://localhost:7067/SanPham/Insert`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(productData)
+                })
+
+                if (!res.ok) throw new Error("Thêm sản phẩm thất bại")
+
+                const created = await res.json()
+
+                const categorySelect = document.getElementById("product-category");
+                const categoryName = categorySelect.options[categorySelect.selectedIndex].text;
+
+                this.products.push({
+                    ...productData,
+                    maSanPham: created.maSanPham,
+                    tenDanhMuc: categoryName 
+                });
+            }
+
+            // ==== Cập nhật lại UI ====
+            localStorage.setItem("products", JSON.stringify(this.products))
+            this.loadProducts()
+            this.loadDashboardStats()
+            document.getElementById("product-modal").style.display = "none"
+
+        } catch (err) {
+            console.error("Lỗi khi lưu sản phẩm:", err)
+            alert("Có lỗi xảy ra khi lưu sản phẩm")
+        }
     }
 
     editProduct(index) {
         this.showProductModal(index)
     }
 
-    deleteProduct(index) {
-        if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-            this.products.splice(index, 1)
-            localStorage.setItem("products", JSON.stringify(this.products))
-            this.loadProducts()
-            this.loadDashboardStats()
+    async deleteProduct(index) {
+        if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) return;
+
+        try {
+            const product = this.products[index];
+            const maSanPham = product.maSanPham;
+
+            const res = await fetch(`https://localhost:7067/SanPham/Delete/${maSanPham}`, {
+                method: "DELETE"
+            });
+
+            if (!res.ok) throw new Error("Xóa sản phẩm thất bại");
+
+            // Nếu backend xóa thành công thì mới xóa trong mảng + localStorage
+            this.products.splice(index, 1);
+            localStorage.setItem("products", JSON.stringify(this.products));
+
+            this.loadProducts();
+            this.loadDashboardStats();
+
+            alert("Đã xóa sản phẩm thành công!");
+        } catch (err) {
+            console.error("Lỗi khi xóa sản phẩm:", err);
+            alert("Có lỗi xảy ra khi xóa sản phẩm");
         }
     }
 

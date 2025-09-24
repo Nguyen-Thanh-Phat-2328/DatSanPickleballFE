@@ -516,6 +516,7 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
+    overflow-y: auto; /* 👈 cho phép cuộn toàn modal */
 }
 
 .modal-content {
@@ -527,6 +528,8 @@ body {
     max-width: 500px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     animation: modalSlideIn 0.3s ease;
+    max-height: 90vh; /* 👈 giới hạn chiều cao modal */
+    overflow-y: auto; /* 👈 nếu dài quá thì phần nội dung sẽ cuộn */
 }
 
     .modal-content.large {
@@ -969,4 +972,102 @@ body {
     font-size: 14px;
     width: 120px;
     text-align: center;
+}
+
+/* Set layout cho nút X nằm sau input */
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* khoảng cách giữa input và nút X */
+}
+
+    .input-group input {
+        flex: 1; /* input chiếm hết chiều rộng còn lại */
+    }
+
+    .input-group button {
+        flex-shrink: 0;
+    }
+
+
+/* Modal content tổng thể */
+#confirmDeleteModal .modal-content {
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    animation: scaleIn 0.25s ease-out;
+    overflow: hidden;
+}
+
+/* Header */
+#confirmDeleteModal .modal-header {
+    background: #f44336; /* đỏ cảnh báo */
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#confirmDeleteModal .modal-title {
+    font-weight: 600;
+    font-size: 18px;
+    margin: 0;
+}
+
+/* Body */
+#confirmDeleteModal .modal-body {
+    font-size: 15px;
+    color: #333;
+    padding: 20px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* Footer */
+#confirmDeleteModal .modal-footer {
+    border-top: none;
+    padding: 16px 20px;
+    justify-content: center;
+    gap: 12px; /* khoảng cách giữa các nút */
+}
+
+/* Nút */
+#confirmDeleteModal .btn-danger {
+    background: #e53935;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 22px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    #confirmDeleteModal .btn-danger:hover {
+        background: #c62828;
+    }
+
+#confirmDeleteModal .btn-secondary {
+    background: #9e9e9e;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 22px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    #confirmDeleteModal .btn-secondary:hover {
+        background: #757575;
+    }
+
+/* Hiệu ứng */
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

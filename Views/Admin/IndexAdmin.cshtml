@@ -55,7 +55,7 @@
                 <h1 id="page-title">Dashboard</h1>
                 <div class="header-actions">
                     <span class="admin-name">Admin</span>
-                    <button class="logout-btn">
+                    <button class="logout-btn" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i> Đăng xuất
                     </button>
                 </div>
@@ -175,7 +175,8 @@
                                 <th>Hình ảnh</th>
                                 <th>Tên sản phẩm</th>
                                 <th>Danh mục</th>
-                                <th>Giá</th>
+                                <th>Giá nhập</th>
+                                <th>Giá bán (gốc)</th>
                                 <th>Tồn kho</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -326,16 +327,15 @@
                     <label for="product-category">Danh mục:</label>
                     <select id="product-category" required>
                         <option value="">Chọn danh mục</option>
-                        <option value="rackets">Vợt</option>
-                        <option value="balls">Bóng</option>
-                        <option value="shoes">Giày</option>
-                        <option value="apparel">Trang phục</option>
-                        <option value="accessories">Phụ kiện</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="product-price">Giá (VNĐ):</label>
-                    <input type="number" id="product-price" required min="0">
+                    <label for="product-Importprice">Giá nhập (VNĐ):</label>
+                    <input type="number" id="product-Importprice" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="product-Originalprice">Giá bán (VNĐ):</label>
+                    <input type="number" id="product-Originalprice" required min="0">
                 </div>
                 <div class="form-group">
                     <label for="product-stock">Tồn kho:</label>
@@ -348,6 +348,16 @@
                 <div class="form-group">
                     <label for="product-image">URL hình ảnh:</label>
                     <input type="url" id="product-image">
+                </div>
+                <div class="form-group">
+                    <label>Danh sách ảnh sản phẩm:</label>
+                    <div id="image-list"></div>
+                    <button type="button" class="btn btn-sm btn-success" id="add-image">+ Thêm ảnh</button>
+                </div>
+                <div class="form-group">
+                    <label>Danh sách tính năng:</label>
+                    <div id="feature-list"></div>
+                    <button type="button" class="btn btn-sm btn-success" id="add-feature">+ Thêm tính năng</button>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" id="cancel-product">Hủy</button>
@@ -393,6 +403,24 @@
                     <button type="submit" class="btn btn-primary">Lưu</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận xóa -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa mục này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+                </div>
+            </div>
         </div>
     </div>
 
