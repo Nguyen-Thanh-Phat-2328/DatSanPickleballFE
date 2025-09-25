@@ -32,6 +32,7 @@ class AdminDashboard {
         this.loadProducts()
         this.loadCategories()
         this.loadCoupons()
+        this.loadOrders()
         this.setupCharts()
     }
 
@@ -54,6 +55,7 @@ class AdminDashboard {
                     courts: "Quản lý sân",
                     shop: "Quản lý sản phẩm",
                     coupons: "Mã giảm giá",
+                    orders: "Quản lý đơn hàng",
                 }
                 document.getElementById("page-title").textContent = titles[section]
             })
@@ -973,6 +975,256 @@ class AdminDashboard {
         }
     }
 
+    // Trong class AdminDashboard
+    async loadOrders() {
+        try {
+            const response = await fetch("https://localhost:7067/DonHang/all");
+            if (!response.ok) {
+                throw new Error("Không thể lấy danh sách đơn hàng");
+            }
+
+            this.orders = await response.json();
+            localStorage.setItem("orders", JSON.stringify(this.orders));
+
+            const tbody = document.getElementById("orders-table-body");
+            tbody.innerHTML = "";
+
+            this.orders.forEach((order, index) => {
+                const statusClass = (() => {
+                    switch (order.trangThai.toLowerCase()) {
+                        case "chờ xử lý":
+                            return "pending";
+                        case "đang vận chuyển":
+                            return "shipping";
+                        case "đã giao":
+                            return "success";
+                        case "đã hủy":
+                            return "cancel";
+                        default:
+                            return "";
+                    }
+                })();
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                <td>${order.maDonHang}</td>
+                <td>${order.maNguoiDung}</td>
+                <td>${order.tenNguoiDung}</td>
+                <td>${new Date(order.ngayDat).toLocaleDateString("vi-VN")}</td>
+                <td>${this.formatCurrency(order.tongTien)}</td>
+                <td><span class="status ${statusClass}">${order.trangThai}</span></td>               
+                <td>
+                    <button class="btn btn-info" onclick="adminDashboard.viewOrderDetail(${order.maDonHang})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <select class="status-dropdown" onchange="adminDashboard.changeOrderStatus(${order.maDonHang}, this.value)">
+                        <option value="">-- Đổi trạng thái --</option>
+                        <option value="huy">Hủy đơn hàng</option>
+                        <option value="vanchuyen">Vận chuyển đơn hàng</option>
+                        <option value="giaodon">Giao đơn hàng</option>
+                    </select>
+                </td>
+            `;
+                tbody.appendChild(row);
+            });
+        } catch (err) {
+            console.error("Lỗi khi tải đơn hàng:", err);
+        }
+    }
+
+    async changeOrderStatus(maDonHang, action) {
+        if (!action) return; // nếu chọn "-- Đổi trạng thái --" thì không làm gì
+
+        let url = "";
+        switch (action) {
+            case "huy":
+                url = `https://localhost:7067/DonHang/HuyDonHang/${maDonHang}`;
+                break;
+            case "vanchuyen":
+                url = `https://localhost:7067/DonHang/VanChuyenDonHang/${maDonHang}`;
+                break;
+            case "giaodon":
+                url = `https://localhost:7067/DonHang/GiaoDonHang/${maDonHang}`;
+                break;
+            default:
+                return;
+        }
+
+        try {
+            const response = await fetch(url, { method: "PUT" });
+
+            if (!response.ok) {
+                throw new Error("Cập nhật trạng thái thất bại!");
+            }
+
+            alert("Cập nhật trạng thái thành công!");
+            this.loadOrders(); // reload lại danh sách
+        } catch (err) {
+            console.error("Lỗi khi cập nhật trạng thái:", err);
+            alert("Có lỗi khi cập nhật trạng thái!");
+        }
+    }
+
+    async filterOrders() {
+        const maNguoiDung = document.getElementById("maNguoiDung").value.trim();
+        const orderDate = document.getElementById("order-date").value;
+        const orderMonth = document.getElementById("order-month").value;
+
+        let filteredOrders = [];
+
+        try {
+            if (maNguoiDung) {
+                // Nếu có nhập mã người dùng -> gọi API
+                const response = await fetch(`https://localhost:7067/DonHang/nguoidung/${maNguoiDung}`);
+                if (!response.ok) throw new Error("Không thể lấy đơn hàng theo người dùng");
+                filteredOrders = await response.json();
+            } else {
+                // Nếu không nhập mã người dùng thì lấy dữ liệu từ localStorage
+                filteredOrders = JSON.parse(localStorage.getItem("orders")) || this.orders || [];
+            }
+
+            // Lọc theo ngày
+            if (orderDate) {
+                const selectedDate = new Date(orderDate).toDateString();
+                filteredOrders = filteredOrders.filter(o => new Date(o.ngayDat).toDateString() === selectedDate);
+            }
+
+            // Lọc theo tháng
+            if (orderMonth) {
+                const [year, month] = orderMonth.split("-");
+                filteredOrders = filteredOrders.filter(o => {
+                    const d = new Date(o.ngayDat);
+                    return d.getFullYear() === parseInt(year) && (d.getMonth() + 1) === parseInt(month);
+                });
+            }
+
+            this.renderOrders(filteredOrders);
+        } catch (err) {
+            console.error("Lỗi khi lọc đơn hàng:", err);
+        }
+    }
+
+    renderOrders(orders) {
+        const tbody = document.getElementById("orders-table-body");
+        tbody.innerHTML = "";
+
+        orders.forEach((order, index) => {
+            const statusClass = (() => {
+                switch (order.trangThai.toLowerCase()) {
+                    case "chờ xử lý": return "pending";
+                    case "đang vận chuyển": return "shipping";
+                    case "đã giao": return "success";
+                    case "đã hủy": return "cancel";
+                    default: return "";
+                }
+            })();
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${order.maDonHang}</td>
+                <td>${order.maNguoiDung}</td>
+                <td>${order.tenNguoiDung}</td>
+                <td>${new Date(order.ngayDat).toLocaleDateString("vi-VN")}</td>
+                <td>${this.formatCurrency(order.tongTien)}</td>
+                <td><span class="status ${statusClass}">${order.trangThai}</span></td>               
+                <td>
+                    <button class="btn btn-info" onclick="adminDashboard.viewOrderDetail(${order.maDonHang})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <select class="status-dropdown" onchange="adminDashboard.changeOrderStatus(${order.maDonHang}, this.value)">
+                        <option value="">-- Đổi trạng thái --</option>
+                        <option value="huy">Hủy đơn hàng</option>
+                        <option value="vanchuyen">Vận chuyển đơn hàng</option>
+                        <option value="giaodon">Giao đơn hàng</option>
+                    </select>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    async viewOrderDetail(maDonHang) {
+        try {
+            const res = await fetch(`https://localhost:7067/DonHang/chitietdonhang/${maDonHang}`);
+            if (!res.ok) {
+                throw new Error(`Không lấy được chi tiết đơn hàng (status ${res.status})`);
+            }
+
+            const data = await res.json();
+
+            const statusClass = (() => {
+                switch (data.trangThai.toLowerCase()) {
+                    case "chờ xử lý":
+                        return "pending";
+                    case "đang vận chuyển":
+                        return "shipping";
+                    case "đã giao":
+                        return "success";
+                    case "đã hủy":
+                        return "cancel";
+                    default:
+                        return "";
+                }
+            })();
+            const statusElement = document.getElementById("detail-trangThai");
+            statusElement.className = "status " + statusClass;
+
+            // Thông tin chung
+            document.getElementById("detail-maDonHang").textContent = data.maDonHang;
+            document.getElementById("detail-tenNguoiDung").textContent = data.tenNguoiDung;
+            document.getElementById("detail-ngayDat").textContent = new Date(data.ngayDat).toLocaleString("vi-VN");
+            document.getElementById("detail-tongTien").textContent = this.formatCurrency(data.tongTien);
+            document.getElementById("detail-trangThai").textContent = data.trangThai;
+            document.getElementById("detail-diaChi").textContent =
+                `${data.diaChi || ""}${data.tenQH ? ", " + data.tenQH : ""}${data.tenTP ? ", " + data.tenTP : ""}`.trim() || "Không có";
+
+
+            // Chi tiết sản phẩm
+            const tbody = document.getElementById("order-detail-body");
+            tbody.innerHTML = "";
+
+            if (!data.donHangDetails || data.donHangDetails.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Không có sản phẩm trong đơn hàng</td></tr>`;
+            } else {
+                data.donHangDetails.forEach(sp => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                    <td>${sp.hinhAnh ? `<img src="${sp.hinhAnh}" alt="${sp.tenSanPham}" width="60">` : "-"}</td>
+                    <td style="text-align:left; padding-left:10px;">${sp.tenSanPham}</td>
+                    <td>${sp.soLuong}</td>
+                    <td>${this.formatCurrency(sp.donGia)}</td>
+                    <td>${this.formatCurrency(sp.thanhTien)}</td>
+                `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Mở modal
+            const modal = document.getElementById("order-details-modal");
+            modal.style.display = "block";
+
+            // Đóng modal
+            const closeBtn = modal.querySelector(".close");
+            if (closeBtn) {
+                closeBtn.onclick = () => { modal.style.display = "none"; };
+            }
+
+            const outsideClickHandler = (e) => {
+                if (e.target === modal) {
+                    modal.style.display = "none";
+                    modal.removeEventListener("click", outsideClickHandler);
+                }
+            };
+            modal.addEventListener("click", outsideClickHandler);
+
+        } catch (err) {
+            console.error("Lỗi khi load chi tiết đơn hàng:", err);
+            alert("Có lỗi khi tải chi tiết đơn hàng.");
+        }
+    }
+
+
+
     // Charts
     setupCharts() {
         this.createRevenueChart()
@@ -1099,3 +1351,21 @@ function xuLyHinhAnh() {
     };
     reader.readAsDataURL(file);
 }
+document.addEventListener("DOMContentLoaded", () => {
+    adminDashboard = new AdminDashboard();
+
+    // Nút lọc
+    document.getElementById("filter-orders-btn").addEventListener("click", () => {
+        adminDashboard.filterOrders();
+    });
+
+    // Nút xóa lọc (reset input + load lại toàn bộ)
+    const resetBtn = document.querySelector(".filter-controls a");
+    resetBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById("maNguoiDung").value = "";
+        document.getElementById("order-date").value = "";
+        document.getElementById("order-month").value = "";
+        adminDashboard.loadOrders();
+    });
+});

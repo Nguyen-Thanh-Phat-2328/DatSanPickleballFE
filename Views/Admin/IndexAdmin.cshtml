@@ -45,6 +45,11 @@
                             <i class="fas fa-tags"></i> Mã giảm giá
                         </a>
                     </li>
+                    <li>
+                        <a href="#orders" class="nav-link" data-section="orders">
+                            <i class="fas fa-receipt"></i> Quản lý đơn hàng
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </aside>
@@ -212,6 +217,48 @@
                         </thead>
                         <tbody id="coupons-table-body">
                             <!-- Coupons will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Orders Management Section -->
+            <section id="orders-section" class="content-section">
+                <div class="section-header">
+                    <h2>Quản lý đơn hàng</h2>
+                    <div class="filter-controls">
+                        <!-- Lọc theo mã người dùng -->
+                        <label for="maNguoiDung">Mã người dùng:</label>
+                        <input type="text" name="maNguoiDung" id="maNguoiDung">
+
+                        <label for="order-date">Lọc theo ngày:</label>
+                        <input type="date" id="order-date">
+
+                        <label for="order-month">Tháng:</label>
+                        <input type="month" id="order-month">
+
+                        <button class="btn btn-primary" id="filter-orders-btn">
+                            <i class="fas fa-filter"></i> Lọc
+                        </button>
+                        <a asp-action="Index">Xóa lọc</a>
+                    </div>
+                </div>
+
+                <div class="orders-table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Mã đơn hàng</th>
+                                <th>Mã người dùng</th>
+                                <th>Tên người dùng</th>
+                                <th>Ngày đặt</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <!-- Orders will be loaded here -->
                         </tbody>
                     </table>
                 </div>
@@ -423,6 +470,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Order Details Modal -->
+    <div id="order-details-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Chi tiết đơn hàng</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Mã đơn hàng:</strong> <span id="detail-maDonHang"></span></p>
+                <p><strong>Người đặt:</strong> <span id="detail-tenNguoiDung"></span></p>
+                <p><strong>Ngày đặt:</strong> <span id="detail-ngayDat"></span></p>
+                <p><strong>Tổng tiền:</strong> <span id="detail-tongTien"></span></p>
+                <p><strong>Trạng thái:</strong> <span id="detail-trangThai"></span></p>
+                <p><strong>Địa chỉ:</strong> <span id="detail-diaChi"></span></p>
+
+                <h4>Danh sách sản phẩm</h4>
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody id="order-detail-body">
+                        <!-- Chi tiết sản phẩm sẽ load vào -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 
     <script src="/js/admin-dashboard.js"></script>
 

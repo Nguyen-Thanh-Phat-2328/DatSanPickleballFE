@@ -1071,3 +1071,489 @@ body {
         opacity: 1;
     }
 }
+
+
+/* ================= FILTER BUTTONS ================= */
+#orders-section .filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+    #orders-section .filter-controls button,
+    #orders-section .filter-controls a {
+        padding: 8px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    #orders-section .filter-controls a {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        color: #555;
+    }
+
+        #orders-section .filter-controls a:hover {
+            background: #e0e0e0;
+            color: #000;
+        }
+
+/* ================= SIMPLE ORDERS TABLE ================= */
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+    .orders-table th {
+        background: #f8fafc;
+        color: #374151;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .orders-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        vertical-align: middle;
+    }
+
+    .orders-table tr:hover {
+        background-color: #f8fafc;
+    }
+
+
+    /* Trạng thái */
+    .orders-table .status {
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        display: inline-block;
+        text-align: center;
+        min-width: 100px;
+    }
+
+        /* Chờ xử lý */
+        .orders-table .status.pending {
+            background: #ffeeba; /* vàng nhạt */
+            color: #856404; /* vàng nâu */
+            border: 1px solid #f0ad4e;
+        }
+
+        /* Đang giao */
+        .orders-table .status.shipping {
+            background: #cce5ff; /* xanh dương nhạt */
+            color: #004085; /* xanh đậm */
+            border: 1px solid #80bdff;
+        }
+
+        /* Đã giao */
+        .orders-table .status.success {
+            background: #d4edda; /* xanh lá nhạt */
+            color: #155724; /* xanh lá đậm */
+            border: 1px solid #28a745;
+        }
+
+        /* Đã hủy */
+        .orders-table .status.cancel {
+            background: #f8d7da; /* đỏ nhạt */
+            color: #721c24; /* đỏ đậm */
+            border: 1px solid #dc3545;
+        }
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.status-dropdown {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+    /* Khi hover */
+    .status-dropdown:hover {
+        border-color: #888;
+        background-color: #fff;
+    }
+
+    /* Khi focus (đang chọn) */
+    .status-dropdown:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+    }
+
+    /* Các option bên trong */
+    .status-dropdown option {
+        padding: 6px;
+    }
+
+
+/* ================= ORDER DETAILS MODAL ================= */
+/* Modal Overlay */
+#order-details-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    animation: orderFadeIn 0.3s ease-out;
+}
+
+    #order-details-modal.modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+/* Modal Content */
+#order-details-modal .modal-content {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: orderSlideIn 0.3s ease-out;
+    position: relative;
+}
+
+    #order-details-modal .modal-content.large {
+        max-width: 900px;
+    }
+
+/* Modal Header */
+#order-details-modal .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+    #order-details-modal .modal-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+    }
+
+/* Close Button */
+#order-details-modal .close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+    #order-details-modal .close:hover,
+    #order-details-modal .close:focus {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+/* Modal Body */
+#order-details-modal .modal-body {
+    padding: 24px;
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+}
+
+    #order-details-modal .modal-body p {
+        margin: 12px 0;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #374151;
+    }
+
+        #order-details-modal .modal-body p strong {
+            color: #1f2937;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 120px;
+        }
+
+    #order-details-modal .modal-body h4 {
+        margin: 32px 0 16px 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 8px;
+    }
+
+/* Details Table */
+#order-details-modal .details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+    #order-details-modal .details-table thead {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    #order-details-modal .details-table th {
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    #order-details-modal .details-table td {
+        padding: 16px 12px;
+        border-bottom: 1px solid #f3f4f6;
+        color: #6b7280;
+        vertical-align: middle;
+    }
+
+    #order-details-modal .details-table tbody tr:hover {
+        background-color: #f9fafb;
+        transition: background-color 0.2s ease;
+    }
+
+    #order-details-modal .details-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Chờ xử lý */
+    #order-details-modal .status.pending {
+        background: #ffeeba; /* vàng nhạt */
+        color: #856404; /* vàng nâu */
+        border: 1px solid #f0ad4e;
+    }
+
+    /* Đang giao */
+    #order-details-modal .status.shipping {
+        background: #cce5ff; /* xanh dương nhạt */
+        color: #004085; /* xanh đậm */
+        border: 1px solid #80bdff;
+    }
+
+    /* Đã giao */
+    #order-details-modal .status.success {
+        background: #d4edda; /* xanh lá nhạt */
+        color: #155724; /* xanh lá đậm */
+        border: 1px solid #28a745;
+    }
+
+    /* Đã hủy */
+    #order-details-modal .status.cancel {
+        background: #f8d7da; /* đỏ nhạt */
+        color: #721c24; /* đỏ đậm */
+        border: 1px solid #dc3545;
+    }
+
+
+    /* Product Image in Table */
+    #order-details-modal .details-table img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+
+/* Status Styling */
+#order-details-modal #detail-trangThai {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+/* Price Styling */
+#order-details-modal #detail-tongTien,
+#order-details-modal .details-table td:nth-child(4),
+#order-details-modal .details-table td:nth-child(5) {
+    font-weight: 600;
+    color: #059669;
+}
+
+/* Animations (scoped) */
+@keyframes orderFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes orderSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #order-details-modal .modal-content {
+        width: 95%;
+        margin: 20px;
+        max-height: calc(100vh - 40px);
+    }
+
+        #order-details-modal .modal-content.large {
+            max-width: none;
+        }
+
+    #order-details-modal .modal-header {
+        padding: 16px 20px;
+    }
+
+        #order-details-modal .modal-header h3 {
+            font-size: 1.25rem;
+        }
+
+    #order-details-modal .modal-body {
+        padding: 20px;
+        max-height: calc(100vh - 140px);
+    }
+
+    #order-details-modal .details-table {
+        font-size: 0.875rem;
+    }
+
+        #order-details-modal .details-table th,
+        #order-details-modal .details-table td {
+            padding: 12px 8px;
+        }
+
+        #order-details-modal .details-table img {
+            width: 40px;
+            height: 40px;
+        }
+
+    #order-details-modal .modal-body p strong {
+        min-width: 100px;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #order-details-modal .details-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+        #order-details-modal .details-table thead,
+        #order-details-modal .details-table tbody,
+        #order-details-modal .details-table th,
+        #order-details-modal .details-table td,
+        #order-details-modal .details-table tr {
+            display: block;
+        }
+
+            #order-details-modal .details-table thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+        #order-details-modal .details-table tr {
+            border: 1px solid #e5e7eb;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+
+        #order-details-modal .details-table td {
+            border: none;
+            position: relative;
+            padding: 8px 0;
+            padding-left: 50%;
+            white-space: normal;
+        }
+
+            #order-details-modal .details-table td:before {
+                content: attr(data-label) ": ";
+                position: absolute;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 600;
+                color: #374151;
+            }
+}
+
+/* Custom Scrollbar */
+#order-details-modal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#order-details-modal .modal-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+#order-details-modal .modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+    #order-details-modal .modal-body::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
