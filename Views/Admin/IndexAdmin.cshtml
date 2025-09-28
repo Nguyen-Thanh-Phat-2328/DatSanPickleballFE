@@ -196,7 +196,7 @@
                     </button>
                 </div>
 
-                <div class="coupons-table-container">
+                <div class="coupons-table-container" id="coupons-table-container">
                     <table class="coupons-table">
                         <thead>
                             <tr>
@@ -204,7 +204,10 @@
                                 <th>Mô tả</th>
                                 <th>Loại</th>
                                 <th>Giá trị</th>
-                                <th>Ngày hết hạn</th>
+                                <th>Ngày bắt đầu</th>
+                                <th>Ngày kết thúc</th>
+                                <th>Số lần tối đa</th>
+                                <th>Đã sử dụng</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -213,6 +216,83 @@
                             <!-- Coupons will be loaded here -->
                         </tbody>
                     </table>
+                </div>
+                <!-- Product Selection Interface (hidden by default) -->
+                <div class="product-selection-container" id="product-selection-container" style="display: none;">
+                    <div class="selection-header">
+                        <h3 id="selection-title">Chọn sản phẩm áp dụng mã giảm giá</h3>
+                        <button class="btn btn-secondary" id="back-to-coupons">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </button>
+                    </div>
+
+                    <div class="selection-filters">
+                        <div class="filter-group">
+                            <input type="text" id="product-search" placeholder="Tìm kiếm theo tên sản phẩm...">
+                        </div>
+                        <div class="filter-group">
+                            <select id="category-filter">
+                                <option value="">Lọc theo danh mục</option>
+                                <option value="rackets">Vợt</option>
+                                <option value="balls">Bóng</option>
+                                <option value="shoes">Giày</option>
+                                <option value="apparel">Trang phục</option>
+                                <option value="accessories">Phụ kiện</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-selection-table-container">
+                        <table class="product-selection-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all-products"> Chọn tất cả
+                                    </th>
+                                    <th>Hình ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Danh mục</th>
+                                    <th>Giá</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-selection-body">
+                                <!-- Products for selection will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="selection-actions">
+                        <button class="btn btn-primary" id="apply-coupon-to-products">
+                            <i class="fas fa-check"></i> Áp dụng mã giảm giá
+                        </button>
+                        <span id="selected-count">0 sản phẩm được chọn</span>
+                    </div>
+                    <br /><br /><hr /><br />
+                    <h3>Các sản phẩm đã được áp mã giảm giá</h3><br />
+                    <div class="product-selection-table-container">
+                        <table class="product-selection-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all-products2"> Chọn tất cả
+                                    </th>
+                                    <th>Hình ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Danh mục</th>
+                                    <th>Giá</th>
+                                </tr>
+                            </thead>
+                            <tbody id="noproduct-selection-body">
+                                <!-- Products for selection will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="selection-actions">
+                        <button class="btn btn-primary" id="unapply-coupon-to-products">
+                            <i class="fa-solid fa-x"></i> Hủy áp dụng
+                        </button>
+                        <span id="selected-count2">0 sản phẩm được chọn</span>
+                    </div>
                 </div>
             </section>
         </main>
@@ -365,8 +445,12 @@
                 <span class="close">&times;</span>
             </div>
             <form id="coupon-form">
+                <div class="form-group" hidden>
+                    <label for="coupon-id">Mã giảm giá:</label>
+                    <input type="text" id="coupon-id">
+                </div>
                 <div class="form-group">
-                    <label for="coupon-code">Mã giảm giá:</label>
+                    <label for="coupon-code">Code giảm giá:</label>
                     <input type="text" id="coupon-code" required>
                 </div>
                 <div class="form-group">
@@ -376,8 +460,8 @@
                 <div class="form-group">
                     <label for="coupon-type">Loại giảm giá:</label>
                     <select id="coupon-type" required>
-                        <option value="percentage">Phần trăm (%)</option>
-                        <option value="fixed">Số tiền cố định (VNĐ)</option>
+                        <option value="phantram">Phần trăm (%)</option>
+                        <option value="sotien">Số tiền cố định (VNĐ)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -385,8 +469,16 @@
                     <input type="number" id="coupon-value" required min="0">
                 </div>
                 <div class="form-group">
+                    <label for="coupon-start">Ngày bắt đầu:</label>
+                    <input type="date" id="coupon-start" required>
+                </div>
+                <div class="form-group">
                     <label for="coupon-expiry">Ngày hết hạn:</label>
                     <input type="date" id="coupon-expiry" required>
+                </div>
+                <div class="form-group">
+                    <label for="coupon-numberMax">Số lần tối đa:</label>
+                    <input type="text" id="coupon-numberMax" required>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" id="cancel-coupon">Hủy</button>

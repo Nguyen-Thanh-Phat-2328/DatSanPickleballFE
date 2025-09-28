@@ -4,10 +4,16 @@ class AdminDashboard {
         this.currentSection = "dashboard"
         this.courts = []
         this.products = JSON.parse(localStorage.getItem("products")) || this.getDefaultProducts()
-        this.coupons = JSON.parse(localStorage.getItem("coupons")) || this.getDefaultCoupons()
+        this.coupons = []
         this.bookings = JSON.parse(localStorage.getItem("bookings")) || []
         this.orders = JSON.parse(localStorage.getItem("orders")) || []
         this.selectedTimeSlots = []
+        this.currentCouponIndex = null
+        this.filteredProducts = []
+        this.selectedProductIds = []
+        this.productsCoApMa = []
+        this.filteredProductsCoApMa = []
+        this.selectedProductIdsCoApMa = []
 
         this.init()
     }
@@ -303,7 +309,7 @@ class AdminDashboard {
                 "gia": gia
             };
             const response = await fetch(`https://localhost:7067/San/Insert`, {
-                method: "PUT",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -647,46 +653,60 @@ class AdminDashboard {
     }
 
     // Coupon Management
-    getDefaultCoupons() {
-        return [
-            {
-                id: 1,
-                code: "WELCOME10",
-                description: "Giảm giá 10% cho khách hàng mới",
-                type: "percentage",
-                value: 10,
-                expiry: "2024-12-31",
-                active: true,
-            },
-            {
-                id: 2,
-                code: "FREESHIP",
-                description: "Miễn phí vận chuyển",
-                type: "fixed",
-                value: 30000,
-                expiry: "2024-12-31",
-                active: true,
-            },
-        ]
-    }
+    //getDefaultCoupons() {
+    //    return [
+    //        {
+    //            id: 1,
+    //            code: "WELCOME10",
+    //            description: "Giảm giá 10% cho khách hàng mới",
+    //            type: "percentage",
+    //            value: 10,
+    //            expiry: "2024-12-31",
+    //            active: true,
+    //        },
+    //        {
+    //            id: 2,
+    //            code: "FREESHIP",
+    //            description: "Miễn phí vận chuyển",
+    //            type: "fixed",
+    //            value: 30000,
+    //            expiry: "2024-12-31",
+    //            active: true,
+    //        },
+    //    ]
+    //}
 
-    loadCoupons() {
+    async loadCoupons() {
+        //call api 
+        const response = await fetch(`https://localhost:7067/GiamGia/List`);
+        this.coupons = await response.json();
         const tbody = document.getElementById("coupons-table-body")
         tbody.innerHTML = ""
 
         this.coupons.forEach((coupon, index) => {
-            const isExpired = new Date(coupon.expiry) < new Date()
+            const isExpired = new Date(coupon.ngayKetThuc) < new Date()
             const status = isExpired ? "expired" : "active"
-            const statusText = isExpired ? "Hết hạn" : "Hoạt động"
+            let test;
+            if (isExpired) {
+                test = "Hết hạn";
+            } else if (coupon.trangThai === "TamDung") {
+                test = "Tạm dừng";
+            } else {
+                test = "Hoạt động";
+            }
+            //const statusText = isExpired ? "Hết hạn" : "Hoạt động"
 
             const row = document.createElement("tr")
             row.innerHTML = `
-                <td><strong>${coupon.code}</strong></td>
-                <td>${coupon.description}</td>
-                <td>${coupon.type === "percentage" ? "Phần trăm" : "Số tiền cố định"}</td>
-                <td>${coupon.type === "percentage" ? coupon.value + "%" : this.formatCurrency(coupon.value)}</td>
-                <td>${new Date(coupon.expiry).toLocaleDateString("vi-VN")}</td>
-                <td><span class="status-badge status-${status}">${statusText}</span></td>
+                <td><strong>${coupon.maCode}</strong></td>
+                <td>${coupon.moTa}</td>
+                <td>${coupon.loaiGiamGia === "phantram" ? "Phần trăm" : "Số tiền cố định"}</td>
+                <td>${coupon.loaiGiamGia === "phantram" ? coupon.giaTri + "%" : this.formatCurrency(coupon.giaTri)}</td>
+                <td>${new Date(coupon.ngayBatDau).toLocaleDateString("vi-VN")}</td>
+                <td>${new Date(coupon.ngayKetThuc).toLocaleDateString("vi-VN")}</td>
+                <td>${coupon.soLanSuDungMax}</td>
+                <td>${coupon.soLanDaSuDung}</td>
+                <td><span class="status-badge status-${status}">${test}</span></td>
                 <td>
                     <button class="btn btn-warning" onclick="adminDashboard.editCoupon(${index})">
                         <i class="fas fa-edit"></i>
@@ -694,8 +714,28 @@ class AdminDashboard {
                     <button class="btn btn-danger" onclick="adminDashboard.deleteCoupon(${index})">
                         <i class="fas fa-trash"></i>
                     </button>
+                    <button class="btn-pause" onclick="adminDashboard.pauseCoupon(this, ${index})">
+                        <i class="fa-solid fa-circle-pause"></i>
+                    </button>
+                    <button class="btn-apply" onclick="adminDashboard.showProductSelection(${index})">
+                        <span>Áp dụng</span>
+                    </button>
                 </td>
-            `
+            `                                                   
+            if (test === "Hết hạn") {
+                const applyBtn = row.querySelector(".btn-apply");
+                applyBtn.hidden = true;
+
+                const pauseBtn = row.querySelector(".btn-pause");
+                pauseBtn.hidden = true;
+            } else if (test === "Tạm dừng") {
+                const applyBtn = row.querySelector(".btn-apply");
+                applyBtn.hidden = true;
+                const btn = row.querySelector(".btn-pause");
+                btn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
+                btn.classList.add("paused");
+            }  
+
             tbody.appendChild(row)
         })
     }
@@ -708,11 +748,14 @@ class AdminDashboard {
         if (couponIndex !== null) {
             title.textContent = "Sửa mã giảm giá"
             const coupon = this.coupons[couponIndex]
-            document.getElementById("coupon-code").value = coupon.code
-            document.getElementById("coupon-description").value = coupon.description
-            document.getElementById("coupon-type").value = coupon.type
-            document.getElementById("coupon-value").value = coupon.value
-            document.getElementById("coupon-expiry").value = coupon.expiry
+            document.getElementById("coupon-id").value = coupon.maGiamGia
+            document.getElementById("coupon-code").value = coupon.maCode
+            document.getElementById("coupon-description").value = coupon.moTa
+            document.getElementById("coupon-type").value = coupon.loaiGiamGia
+            document.getElementById("coupon-value").value = coupon.giaTri
+            document.getElementById("coupon-start").value =  coupon.ngayBatDau
+            document.getElementById("coupon-expiry").value = coupon.ngayKetThuc
+            document.getElementById("coupon-numberMax").value = coupon.soLanSuDungMax
             form.dataset.editIndex = couponIndex
         } else {
             title.textContent = "Thêm mã giảm giá"
@@ -723,40 +766,433 @@ class AdminDashboard {
         modal.style.display = "block"
     }
 
-    saveCoupon() {
-        const form = document.getElementById("coupon-form")
-        const couponData = {
-            code: document.getElementById("coupon-code").value.toUpperCase(),
-            description: document.getElementById("coupon-description").value,
-            type: document.getElementById("coupon-type").value,
-            value: Number.parseFloat(document.getElementById("coupon-value").value),
-            expiry: document.getElementById("coupon-expiry").value,
-            active: true,
-        }
+    async saveCoupon() {
+        const maGiamGia = document.getElementById("coupon-id").value;
+        const title = document.getElementById("coupon-modal-title");
 
-        if (form.dataset.editIndex) {
-            // Edit existing coupon
-            const index = Number.parseInt(form.dataset.editIndex)
-            this.coupons[index] = { ...this.coupons[index], ...couponData }
-        } else {
-            // Add new coupon
-            couponData.id = Date.now()
-            this.coupons.push(couponData)
-        }
+        const maCode = document.getElementById("coupon-code").value;
+        const moTa = document.getElementById("coupon-description").value;
+        const loaiGiamGia = document.getElementById("coupon-type").value;
+        const giaTri = document.getElementById("coupon-value").value;
+        const ngayBatDau = document.getElementById("coupon-start").value;
+        const ngayKetThuc = document.getElementById("coupon-expiry").value;
+        const soLanSuDungMax = document.getElementById("coupon-numberMax").value;
 
-        localStorage.setItem("coupons", JSON.stringify(this.coupons))
-        this.loadCoupons()
-        document.getElementById("coupon-modal").style.display = "none"
+        const newData = {
+            "maCode": maCode,
+            "moTa": moTa,
+            "loaiGiamGia": loaiGiamGia,
+            "giaTri": giaTri,
+            "ngayBatDau": ngayBatDau,
+            "ngayKetThuc": ngayKetThuc,
+            "soLanSuDungMax": soLanSuDungMax
+        };
+        try {
+            if (title.textContent.trim() === "Thêm mã giảm giá") {
+                const response = await fetch(`https://localhost:7067/GiamGia/Insert`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newData)
+                });
+                if (!response.ok) {
+                    const error = await response.text();
+                    showNotificationCenter(error, "info");
+                    return;
+                }
+
+            } else if (title.textContent.trim() === "Sửa mã giảm giá") {
+                if (confirm("Lưu sửa đổi")) {
+                    const newData = {
+                        "maCode": maCode,
+                        "moTa": moTa,
+                        "loaiGiamGia": loaiGiamGia,
+                        "giaTri": giaTri,
+                        "ngayBatDau": ngayBatDau,
+                        "ngayKetThuc": ngayKetThuc,
+                        "soLanSuDungMax": soLanSuDungMax
+                    };
+                    const response = await fetch(`https://localhost:7067/GiamGia/Update/${maGiamGia}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(newData)
+                    });
+                    if (!response.ok) {
+                        const error = await response.text();
+                        showNotificationCenter(error, "info");
+                        return;
+                    }
+                }
+            }
+            this.loadCoupons()
+            document.getElementById("coupon-modal").style.display = "none"
+        } catch (err) {
+            alert("có lỗi xảy ra: " + err.message);
+        }
+        
     }
 
     editCoupon(index) {
         this.showCouponModal(index)
     }
 
-    deleteCoupon(index) {
-        if (confirm("Bạn có chắc chắn muốn xóa mã giảm giá này?")) {
-            this.coupons.splice(index, 1)
-            localStorage.setItem("coupons", JSON.stringify(this.coupons))
+    showProductSelection(index) {
+        const coupon = this.coupons[index]
+
+        // Hide coupons table and show product selection
+        document.getElementById("coupons-table-container").style.display = "none"
+        document.getElementById("product-selection-container").style.display = "block"
+
+        // Update title
+        document.getElementById("selection-title").textContent = `Chọn sản phẩm áp dụng mã "${coupon.maCode}"`
+
+        // Store current coupon index
+        this.currentCouponIndex = index
+
+        // Load products for selection
+        this.loadProductsForSelection(coupon.maGiamGia)
+
+        // Setup event listeners
+        this.setupProductSelectionListeners(coupon.maGiamGia)
+    }
+
+    async loadProductsForSelection(maGiamGia) {
+        const tbody = document.getElementById("product-selection-body")
+        tbody.innerHTML = ""
+        const response = await fetch(`https://localhost:7067/SanPham/List/NoMaGiamGia/${maGiamGia}`);
+        this.products = await response.json();
+        this.filteredProducts = [...this.products]
+        this.selectedProductIds = []
+
+
+        const tbody1 = document.getElementById("noproduct-selection-body")
+        tbody1.innerHTML = ""
+        const response1 = await fetch(`https://localhost:7067/SanPham/List/MaGiamGia/${maGiamGia}`);
+        this.productsCoApMa = await response1.json();
+        this.filteredProductsCoApMa = [...this.productsCoApMa]
+        this.selectedProductIdsCoApMa = []
+
+        this.renderProductSelection()
+    }
+
+    renderProductSelection() {
+        const tbody = document.getElementById("product-selection-body")
+        tbody.innerHTML = ""
+
+        this.filteredProducts.forEach((product, index) => {
+            const row = document.createElement("tr")
+            row.innerHTML = `
+        <td>
+          <input type="checkbox" class="product-checkbox" data-product-id="${product.maSanPham}" 
+                 onchange="adminDashboard.toggleProductSelection(${product.maSanPham})">
+        </td>
+        <td><img src="${product.hinhAnh}" alt="${product.tenSanPham}" class="product-image"></td>
+        <td>${product.tenSanPham}</td>
+        <td>${this.getCategoryName(product.tenDanhMuc)}</td>
+        <td>${this.formatCurrency(product.originalPrice ?? product.giaBan)}</td>
+      `
+            tbody.appendChild(row)
+        })
+
+        const tbody1 = document.getElementById("noproduct-selection-body")
+        tbody1.innerHTML = ""
+
+        this.filteredProductsCoApMa.forEach((product, index) => {
+            const row = document.createElement("tr")
+            row.innerHTML = `
+        <td>
+          <input type="checkbox" class="product-checkbox-two" data-product-id="${product.maSanPham}" 
+                 onchange="adminDashboard.toggleProductSelection2(${product.maSanPham})">
+        </td>
+        <td><img src="${product.hinhAnh}" alt="${product.tenSanPham}" class="product-image"></td>
+        <td>${product.tenSanPham}</td>
+        <td>${this.getCategoryName(product.tenDanhMuc)}</td>
+        <td>${this.formatCurrency(product.originalPrice ?? product.giaBan)}</td>
+      `
+            tbody1.appendChild(row)
+        })
+
+        this.updateSelectedCount()
+    }
+
+    setupProductSelectionListeners(maGiamGia) {
+        // Back button
+        document.getElementById("back-to-coupons").onclick = () => {
+            this.hideProductSelection()
+        }
+
+        // Search functionality
+        document.getElementById("product-search").oninput = (e) => {
+            this.filterProducts(e.target.value, document.getElementById("category-filter").value)
+        }
+
+        // Category filter
+        document.getElementById("category-filter").onchange = (e) => {
+            this.filterProducts(document.getElementById("product-search").value, e.target.value)
+        }
+
+        // Select all checkbox
+        document.getElementById("select-all-products").onchange = (e) => {
+            this.toggleSelectAll(e.target.checked)
+        }
+
+        document.getElementById("select-all-products2").onchange = (e) => {
+            this.toggleSelectAll2(e.target.checked)
+        }
+
+        // Apply coupon button
+        document.getElementById("apply-coupon-to-products").onclick = () => {
+            this.applyCouponToProducts(maGiamGia)
+        }
+
+        // UnApply coupon button
+        document.getElementById("unapply-coupon-to-products").onclick = () => {
+            this.unApplyCouponToProducts(maGiamGia)
+        }
+    }
+
+    filterProducts(searchTerm, category) {
+        this.filteredProducts = this.products.filter((product) => {
+            const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            const matchesCategory = !category || product.category === category
+            return matchesSearch && matchesCategory
+        })
+
+        this.renderProductSelection()
+    }
+
+    toggleProductSelection(productId) {
+        const index = this.selectedProductIds.indexOf(productId)
+        if (index > -1) {
+            this.selectedProductIds.splice(index, 1)
+        } else {
+            this.selectedProductIds.push(productId)
+        }
+
+        this.updateSelectedCount()
+        this.updateSelectAllCheckbox()
+    }
+    toggleProductSelection2(productId) {
+        const index = this.selectedProductIdsCoApMa.indexOf(productId)
+        if (index > -1) {
+            this.selectedProductIdsCoApMa.splice(index, 1)
+        } else {
+            this.selectedProductIdsCoApMa.push(productId)
+        }
+
+        this.updateSelectedCount()
+        this.updateSelectAllCheckbox2()
+    }
+
+    toggleSelectAll(checked) {
+        if (checked) {
+            this.selectedProductIds = this.filteredProducts.map((p) => p.id)
+        } else {
+            this.selectedProductIds = []
+        }
+
+        // Update all checkboxes
+        document.querySelectorAll(".product-checkbox").forEach((checkbox) => {
+            checkbox.checked = checked
+        })
+
+        this.updateSelectedCount()
+    }
+
+    toggleSelectAll2(checked) {
+        if (checked) {
+            this.selectedProductIdsCoApMa = this.filteredProducts.map((p) => p.id)
+        } else {
+            this.selectedProductIdsCoApMa = []
+        }
+
+        // Update all checkboxes
+        document.querySelectorAll(".product-checkbox-two").forEach((checkbox) => {
+            checkbox.checked = checked
+        })
+
+        this.updateSelectedCount()
+    }
+
+    updateSelectAllCheckbox() {
+        const selectAllCheckbox = document.getElementById("select-all-products")
+        const totalVisible = this.filteredProducts.length
+        const selectedVisible = this.filteredProducts.filter((p) => this.selectedProductIds.includes(p.id)).length
+
+        selectAllCheckbox.checked = totalVisible > 0 && selectedVisible === totalVisible
+        selectAllCheckbox.indeterminate = selectedVisible > 0 && selectedVisible < totalVisible
+    }
+
+    updateSelectAllCheckbox2() {
+        const selectAllCheckbox = document.getElementById("select-all-products2")
+        const totalVisible = this.filteredProductsCoApMa.length
+        const selectedVisible = this.filteredProductsCoApMa.filter((p) => this.selectedProductIdsCoApMa.includes(p.id)).length
+
+        selectAllCheckbox.checked = totalVisible > 0 && selectedVisible === totalVisible
+        selectAllCheckbox.indeterminate = selectedVisible > 0 && selectedVisible < totalVisible
+    }
+
+    updateSelectedCount() {
+        document.getElementById("selected-count").textContent = `${this.selectedProductIds.length} sản phẩm được chọn`
+        document.getElementById("selected-count2").textContent = `${this.selectedProductIdsCoApMa.length} sản phẩm được chọn`
+    }
+
+    async applyCouponToProducts(maGiamGia) {
+        if (this.selectedProductIds.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm!")
+            return
+        }
+
+        const coupon = this.coupons[this.currentCouponIndex]
+        const selectedProducts = this.products.filter((p) => this.selectedProductIds.includes(p.maSanPham))
+
+        // Create the list of selected product codes/IDs
+        const productCodes = selectedProducts.map((p) => p.maSanPham)
+
+        const newData = {
+            "maGiamGia": maGiamGia,
+            "danhSachSanPham": productCodes
+        }
+
+        const response = await fetch(`https://localhost:7067/GiamGia/ApDung`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newData)
+        });
+
+        // Store the coupon-product relationship
+        //if (!coupon.appliedProducts) {
+        //    coupon.appliedProducts = []
+        //}
+        //coupon.appliedProducts = productCodes
+
+        // Save to localStorage
+        //localStorage.setItem("coupons", JSON.stringify(this.coupons))
+
+        // Show success message
+        alert(`Đã áp dụng mã "${coupon.maCode}" cho ${this.selectedProductIds.length} sản phẩm!`)
+
+        // Log the result for user to use later
+        console.log("Danh sách sản phẩm được áp dụng mã giảm giá:", productCodes)
+
+        // Hide product selection and show coupons table
+        this.hideProductSelection()
+    }
+
+    async unApplyCouponToProducts(maGiamGia) {
+        if (this.selectedProductIdsCoApMa.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm!")
+            return
+        }
+
+        const coupon = this.coupons[this.currentCouponIndex]
+        const selectedProducts = this.productsCoApMa.filter((p) => this.selectedProductIdsCoApMa.includes(p.maSanPham))
+
+        // Create the list of selected product codes/IDs
+        const productCodes = selectedProducts.map((p) => p.maSanPham)
+
+        const newData = {
+            "maGiamGia": maGiamGia,
+            "danhSachSanPham": productCodes
+        }
+
+        const response = await fetch(`https://localhost:7067/GiamGia/DeleteApDung`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newData)
+        });
+
+        // Store the coupon-product relationship
+        //if (!coupon.appliedProducts) {
+        //    coupon.appliedProducts = []
+        //}
+        //coupon.appliedProducts = productCodes
+
+        // Save to localStorage
+        //localStorage.setItem("coupons", JSON.stringify(this.coupons))
+
+        // Show success message
+        alert(`Đã bỏ áp dụng mã "${coupon.maCode}" cho ${this.selectedProductIdsCoApMa.length} sản phẩm!`)
+
+        // Log the result for user to use later
+        console.log("Danh sách sản phẩm bỏ áp dụng mã giảm giá:", newData)
+
+        // Hide product selection and show coupons table
+        this.hideProductSelection()
+    }
+
+    hideProductSelection() {
+        document.getElementById("product-selection-container").style.display = "none"
+        document.getElementById("coupons-table-container").style.display = "block"
+
+        // Reset filters
+        document.getElementById("product-search").value = ""
+        document.getElementById("category-filter").value = ""
+        document.getElementById("select-all-products").checked = false
+
+        // Clear selections
+        this.selectedProductIds = []
+        this.currentCouponIndex = null
+    }
+
+    async pauseCoupon(btn, index) {
+        const coupon = this.coupons[index]
+        const maGiamGia = coupon.maGiamGia;
+
+        const isPause = btn.classList.contains("paused");
+
+        try {
+            if (isPause) {
+                const response1 = await fetch(`https://localhost:7067/GiamGia/Update/TrangThai/${maGiamGia}/HoatDong`, {
+                    method: "PUT"
+                });
+                if (response1.ok) {
+                    btn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
+                    btn.classList.remove("paused");
+                    this.loadCoupons()
+                } else {
+                    alert("Không cập nhật được trạng thái");
+                }
+            } else {
+                const response2 = await fetch(`https://localhost:7067/GiamGia/Update/TrangThai/${maGiamGia}/TamDung`, {
+                    method: "PUT"
+                });
+                if (response2.ok) {
+                    btn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
+                    btn.classList.add("paused");
+                    this.loadCoupons()
+                } else {
+                    alert("Không cập nhật được trạng thái");
+                }
+            }
+        } catch (err) {
+            alert("Lỗi: " + err.message);
+        }
+
+        
+        
+    }
+
+    async deleteCoupon(index) {
+        if (confirm("Bạn có chắc chắn muốn xóa giảm giá này?")) {
+            //this.courts.splice(index, 1)
+            //localStorage.setItem("courts", JSON.stringify(this.courts))
+            const coupon = this.coupons[index]
+            const maGiamGia = coupon.maGiamGia;
+            const response = await fetch(`https://localhost:7067/GiamGia/Delete/${maGiamGia}`, {
+                method: "DELETE"
+            });
+            if (!response.ok) {
+                console.error("Lỗi: ", response.statusText);
+                return;
+            }
             this.loadCoupons()
         }
     }
@@ -886,4 +1322,67 @@ function xuLyHinhAnh() {
         document.getElementById("previewHinhAnh").src = e.target.result; // Hiển thị ảnh xem trước
     };
     reader.readAsDataURL(file);
+}
+
+
+function showNotificationCenter(message, type = "info") {
+    const notification = document.createElement("div")
+    notification.className = `notification notification-${type}`
+    notification.innerHTML = `
+    <i class="fas ${type === "success" ? "fa-check-circle" : "fa-info-circle"}"></i>
+    <span>${message}</span>
+  `
+
+    // Add notification styles if not already added
+    if (!document.querySelector("#notification-styles")) {
+        const styles = document.createElement("style")
+        styles.id = "notification-styles"
+        styles.textContent = `
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+        max-width: 300px;
+      }
+      .notification-success {
+        border-left: 4px solid #10b981;
+        color: #10b981;
+      }
+      .notification-info {
+        border-left: 4px solid #667eea;
+        color: #667eea;
+      }
+      .notification-error {
+        border-left: 4px solid #ef4444;
+        color: #ef4444;
+      }
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `
+        document.head.appendChild(styles)
+    }
+
+    document.body.appendChild(notification)
+
+    setTimeout(() => {
+        notification.style.animation = "slideInRight 0.3s ease reverse"
+        setTimeout(() => notification.remove(), 300)
+    }, 3000)
 }
