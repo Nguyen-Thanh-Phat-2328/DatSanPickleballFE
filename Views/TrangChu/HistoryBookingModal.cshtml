@@ -1,0 +1,48 @@
+﻿<link rel="stylesheet" href="~/css/HistoryBookingModal.css" />
+@{
+    <!-- Modal Lịch sử đặt sân -->
+    <div class="modal fade" id="bookingHistoryModal" tabindex="-1" aria-labelledby="bookingHistoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingHistoryLabel">Lịch sử đặt sân</h5>                   
+                </div>
+                <div class="modal-body">
+
+                    <!-- Bộ lọc ngày -->
+                    <div class="d-flex mb-3">
+                        <input type="date" id="filterDate" class="form-control me-2" />
+                        <button class="btn btn-primary" onclick="filterBookingByDate()">Lọc</button>
+                    </div>
+
+                    <div id="bookingHistoryWrapper" style="max-height: 250px; overflow-y: auto;">
+                        <!-- bọc toàn bộ table -->
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã Booking</th>
+                                    <th>Tên Sân</th>
+                                    <th>Ngày</th>
+                                    <th>Giờ Bắt Đầu</th>
+                                    <th>Giờ Kết Thúc</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingHistoryTable">
+                                <!-- Sẽ được fill bằng JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-custom" data-bs-dismiss="modal" onclick="closeHistoryBookingModal()">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/HistoryBookingModal.js"></script>
+}

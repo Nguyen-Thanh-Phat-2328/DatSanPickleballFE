@@ -1,0 +1,189 @@
+﻿@using Frontend.DataAdmin
+@model ShopView
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Shop";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Pickleball - Sân Tuấn Phát</title>
+    <link rel="stylesheet" href="/css/Shop.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="headerShop">
+
+        <div class="search-bar" id="search-bar">
+            <div class="container">
+                <div class="search-input-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm...">
+                </div>
+            </div>
+        </div>
+        <div class="cart-icon" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cart-count">0</span>
+        </div>
+
+    </header>
+
+    <!--Search Bar-->
+
+
+    <!--Main Content-->
+    <main class="main">
+        <div class="container">
+            <!--Hero Section-->
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>Shop Đồ Thể Thao Pickleball</h2>
+                    <p>Trang thiết bị chuyên nghiệp cho người chơi pickleball</p>
+                </div>
+            </section>
+
+            <!--Filters & Controls-->
+            <section class="controls">
+                <div class="menu-actions">
+                    <button class="view-btn active" id="all-products-btn">
+                        <i class="fas fa-store"></i> Tất cả
+                    </button>
+                    <button class="view-btn" id="wishlist-btn">
+                        <i class="fas fa-heart"></i> Yêu thích
+                    </button>
+                </div>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Danh mục:</label>
+                        <select id="category-filter">
+                            <option value="">Tất cả</option>
+                            @foreach(var c in Model.DanhMucSanPhamList)
+                            {
+                                <option value="@c.MaDanhMuc">@c.TenDanhMuc</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Giá:</label>
+                        <select id="price-filter">
+                            <option value="">Tất cả</option>
+                            <option value="0-500000">Dưới 500k</option>
+                            <option value="500000-1000000">500k - 1tr</option>
+                            <option value="1000000-2000000">1tr - 2tr</option>
+                            <option value="2000000-999999999">Trên 2tr</option>
+                        </select>
+                    </div>                   
+                    <div class="filter-group">
+                        <label>Sắp xếp:</label>
+                        <select id="sort-filter">
+                            <option value="name">Tên A-Z</option>
+                            <option value="price-low">Giá thấp đến cao</option>
+                            <option value="price-high">Giá cao đến thấp</option>
+                            <option value="newest">Mới nhất</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="view-controls">
+                    <button class="layout-btn active" data-view="grid">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="layout-btn" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!--Products Grid-->
+            <section class="products">
+                <div class="products-grid" id="products-grid">
+                    Products will be loaded here by JavaScript
+                </div>
+
+                <!-- Thêm phần pagination controls -->
+                <div class="pagination-container" id="pagination-container" style="display: none;">
+                    <div class="pagination">
+                        <button class="pagination-btn" id="first-page-btn" onclick="goToPage(1)">
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button class="pagination-btn" id="prev-page-btn" onclick="goToPreviousPage()">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+
+                        <div class="pagination-numbers" id="pagination-numbers">
+                            <!-- Page numbers will be generated by JavaScript -->
+                        </div>
+
+                        <button class="pagination-btn" id="next-page-btn" onclick="goToNextPage()">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button class="pagination-btn" id="last-page-btn" onclick="goToLastPage()">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!--Cart Sidebar-->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Giỏ hàng</h3>
+            <button class="cart-close" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            Cart items will be loaded here
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <strong>Tổng: <span id="cart-total">0đ</span></strong>
+            </div>
+            <div class="cart-actions">
+                <a href="@Url.Action("CartIndex", "Shop")" class="btn btn-secondary">Xem giỏ hàng</a>
+                <a href="@Url.Action("CheckoutIndex", "Shop")" class="btn btn-primary">Thanh toán</a>
+            </div>
+        </div>
+    </div>
+
+    <!--Cart Overlay-->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+
+    <!--Footer-->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sân Pickleball Tuấn Phát</h4>
+                    <p>Địa chỉ: Đà Nẵng</p>
+                    <p>Liên hệ: 0xxxxx</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Dịch vụ</h4>
+                    <ul>
+                        <li><a href="#">Đặt sân</a></li>
+                        <li><a href="#">Shop</a></li>
+                        <li><a href="#">Huấn luyện</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Hỗ trợ</h4>
+                    <ul>
+                        <li><a href="#">Liên hệ</a></li>
+                        <li><a href="#">Chính sách</a></li>
+                        <li><a href="#">Hướng dẫn</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/Shop.js"></script>
+</body>
+</html>

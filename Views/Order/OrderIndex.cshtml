@@ -1,0 +1,47 @@
+﻿@using Frontend.DataAdmin
+@model MyOrderView
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Hóa đơn";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <link rel="stylesheet" href="/css/Order.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <main class="main-container">
+        <div class="container">
+            <div class="titleheader">
+                <h1 class="title">Đơn hàng của tôi</h1>
+                <p class="subtitle">Theo dõi và quản lý tất cả đơn hàng của bạn</p>
+            </div>
+
+            <div class="controls">
+                <div class="search-container">
+                    <input type="text"
+                           id="searchInput"
+                           placeholder="Tìm kiếm theo mã đơn hàng, địa chỉ..."
+                           class="search-input">
+                </div>
+
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-status="">Tất cả</button>
+                    <button class="filter-btn" data-status="Đã giao">Đã giao</button>
+                    <button class="filter-btn" data-status="Đang vận chuyển">Đang vận chuyển</button>
+                    <button class="filter-btn" data-status="Chờ xử lý">Chờ xử lý</button>
+                    <button class="filter-btn" data-status="Đã hủy">Đã hủy</button>
+                </div>
+            </div>
+
+            <div id="ordersContainer" class="orders-grid">
+                <!-- Orders will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/Order.js"></script>
+</body>
+</html>

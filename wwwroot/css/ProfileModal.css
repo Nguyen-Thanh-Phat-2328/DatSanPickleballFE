@@ -1,0 +1,137 @@
+﻿/* Nền mờ toàn màn hình */
+#profileModal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+    /* Modal chính */
+    #profileModal .modal-content {
+        background: #fff;
+        border-radius: 20px;
+        max-width: 420px;
+        margin: 5% auto;
+        padding: 30px 24px;
+        position: relative;
+        font-family: 'Segoe UI', sans-serif;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+        /* Header gradient */
+        #profileModal .modal-content h2 {
+            background: linear-gradient(135deg, #6f00ff, #9e00ff);
+            color: white;
+            padding: 20px 24px;
+            border-radius: 18px 18px 0 0;
+            margin: -30px -24px 20px;
+            font-size: 20px;
+            position: relative;
+        }
+
+            #profileModal .modal-content h2::after {
+                content: "Quản lý thông tin của bạn";
+                display: block;
+                font-size: 13px;
+                font-weight: normal;
+                color: rgba(255, 255, 255, 0.9);
+                margin-top: 4px;
+            }
+
+    /* Form-group */
+    #profileModal .form-group {
+        margin-bottom: 20px;
+    }
+
+    #profileModal label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #555;
+        font-size: 14px;
+        position: relative;
+        padding-left: 22px;
+    }
+
+        /* Icon giả lập bằng emoji – có thể thay bằng FontAwesome */
+        #profileModal label[for="profileId"]::before {
+            content: "🆔";
+            position: absolute;
+            left: 0;
+        }
+
+        #profileModal label[for="profileFullName"]::before {
+            content: "👤";
+            position: absolute;
+            left: 0;
+        }
+
+        #profileModal label[for="profileEmail"]::before {
+            content: "✉️";
+            position: absolute;
+            left: 0;
+        }
+
+        #profileModal label[for="profilePhone"]::before {
+            content: "📞";
+            position: absolute;
+            left: 0;
+        }
+
+    /* Input bo tròn đẹp */
+    #profileModal input[type="text"],
+    #profileModal input[type="email"] {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+    #profileModal input:focus {
+        outline: none;
+        border-color: #9b4dff;
+    }
+
+    /* Modal button layout */
+    #profileModal .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    #profileModal .btn {
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    /* Nút Huỷ */
+    #profileModal .btn-close {
+        background: #f1f1f1;
+        color: #333;
+    }
+
+        #profileModal .btn-close:hover {
+            background: #ddd;
+        }
+
+    /* Nút Lưu */
+    #profileModal .btn-save {
+        background: linear-gradient(135deg, #6f00ff, #9e00ff);
+        color: white;
+    }
+
+        #profileModal .btn-save:hover {
+            opacity: 0.9;
+        }

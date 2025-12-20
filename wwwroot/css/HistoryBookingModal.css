@@ -1,0 +1,454 @@
+﻿/* ===== MODAL CONTAINER ===== */
+.modal-dialog {
+    max-width: 1200px;
+    width: 90vw;
+    margin: 2rem auto;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+/* ===== MODAL HEADER ===== */
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: none;
+    padding: 1.5rem 2rem;
+    position: relative;
+}
+
+.modal-title {
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+    .modal-title::before {
+        content: "📅";
+        font-size: 1.2rem;
+    }
+
+/* ===== MODAL BODY ===== */
+.modal-body {
+    padding: 2rem;
+    background-color: #ffffff;
+}
+
+.d-flex.mb-3 {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    align-items: center;
+}
+
+/* Input date styling */
+#filterDate.form-control {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    font-family: inherit;
+    min-width: 200px;
+}
+
+    #filterDate.form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background-color: #fefefe;
+    }
+
+    #filterDate.form-control:hover {
+        border-color: #cbd5e1;
+    }
+
+    /* Custom date picker icon */
+    #filterDate.form-control::-webkit-calendar-picker-indicator {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23667eea'%3e%3cpath fill-rule='evenodd' d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z' clip-rule='evenodd'/%3e%3c/svg%3e");
+        background-size: 1.25rem;
+        cursor: pointer;
+        padding: 0.25rem;
+    }
+
+
+/* ===== TABLE CONTAINER WITH SCROLL ===== */
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+}
+
+/* ===== TABLE STYLING ===== */
+.booking-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+#bookingHistoryModal .modal-dialog {
+    max-width: 1400px; 
+    width: 95vw; 
+    margin: 1rem auto;
+}
+
+#bookingHistoryModal .modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    width: 100%;
+    min-width: 1200px;  
+}
+
+/* ===== MODAL BODY - KHÔNG SCROLL NGANG ===== */
+#bookingHistoryModal .modal-body {
+    padding: 1.5rem;
+    background-color: #f8fafc;
+    overflow: visible;  
+    max-height: 70vh;  
+    overflow-y: auto;  
+}
+
+/* ===== TABLE STYLING - GIỮ NGUYÊN KÍCH THƯỚC ===== */
+#bookingHistoryModal .table {
+    margin: 0;
+    background-color: white;
+    border-radius: 12px;
+    font-size: 14px;
+    width: 100%;   
+    min-width: 800px;  
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;  
+}
+
+    #bookingHistoryModal .table thead {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+
+        #bookingHistoryModal .table thead th {
+            border: none;
+            padding: 1rem 0.75rem;   
+            font-weight: 600;
+            color: #334155;
+            text-transform: uppercase;
+            font-size: 0.75rem;  
+            letter-spacing: 0.05em;
+            text-align: center;
+            vertical-align: middle;
+            position: relative;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+/*             Giữ nguyên phân bổ width các cột */
+            #bookingHistoryModal .table thead th:nth-child(1) {
+                width: 10%;
+            }
+             Mã Booking 
+            #bookingHistoryModal .table thead th:nth-child(2) {
+                width: 15%;
+            }
+             Tên Sân 
+            #bookingHistoryModal .table thead th:nth-child(3) {
+                width: 12%;
+            }
+             Ngày 
+            #bookingHistoryModal .table thead th:nth-child(4) {
+                width: 12%;
+            }
+             Giờ Bắt Đầu 
+            #bookingHistoryModal .table thead th:nth-child(5) {
+                width: 12%;
+            }
+             Giờ Kết Thúc 
+            #bookingHistoryModal .table thead th:nth-child(6) {
+                width: 15%;
+            }
+             Trạng Thái 
+            #bookingHistoryModal .table thead th:nth-child(7) {
+                width: 24%;
+            }
+             Hành Động 
+
+            #bookingHistoryModal .table thead th:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 20%;
+                height: 60%;
+                width: 1px;
+                background-color: #cbd5e1;
+            }
+
+    #bookingHistoryModal .table tbody td {
+        padding: 1rem 0.75rem;  
+        text-align: center;
+        vertical-align: middle;
+        border-top: 1px solid #f1f5f9;
+        white-space: nowrap;
+        font-size: 13px;  
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+/*         Đặc biệt cho các cột thời gian */
+        #bookingHistoryModal .table tbody td:nth-child(4),
+        #bookingHistoryModal .table tbody td:nth-child(5) {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #1e40af;
+            background-color: #f0f9ff;
+        }
+
+    #bookingHistoryModal .table tbody tr {
+        transition: all 0.2s ease-in-out;
+        height: 60px;  
+    }
+
+        #bookingHistoryModal .table tbody tr:hover {
+            background-color: #f0f9ff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+            #bookingHistoryModal .table tbody tr:hover td:nth-child(4),
+            #bookingHistoryModal .table tbody tr:hover td:nth-child(5) {
+                background-color: #dbeafe;
+            }
+
+
+
+
+/* ===== STATUS BADGES ===== */
+.status-badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.status-completed {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.status-cancelled {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.action-btn {
+    border: none;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    min-width: 80px;
+}
+
+/* ===== BUTTONS - GIỮ NGUYÊN ===== */
+.cancel-btn, .view-btn {
+    border: none;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    justify-content: center;
+    min-width: 70px;
+    margin: 0 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.cancel-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+    .cancel-btn::before {
+        content: "🚫";
+        font-size: 0.7rem;
+    }
+
+    .cancel-btn:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+    }
+/* ===== MODAL FOOTER ===== */
+.modal-footer {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+
+
+/* ===== CUSTOM SCROLLBAR ===== */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .modal-dialog {
+        width: 95vw;
+        margin: 1rem auto;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+        .filter-section input[type="date"] {
+            min-width: auto;
+        }
+
+    .filter-btn {
+        width: 100%;
+    }
+
+    .table-container {
+        max-height: 300px;
+    }
+
+    .booking-table {
+        font-size: 12px;
+    }
+
+        .booking-table thead th,
+        .booking-table tbody td {
+            padding: 0.5rem 0.25rem;
+        }
+}
+/* ===== NÚT ĐÓNG - GIỮ NGUYÊN ===== */
+.btn-custom {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    box-shadow: 0 2px 4px rgba(107, 114, 128, 0.2);
+}
+
+    .btn-custom:hover {
+        background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(107, 114, 128, 0.3);
+        color: white;
+    }
+
+    .btn-custom::before {
+        content: "✕";
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+/* Button styling */
+.btn.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 120px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+    .btn.btn-primary::before {
+        content: "🔍";
+        font-size: 0.875rem;
+    }
+
+    .btn.btn-primary:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn.btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+    }
+
+    .btn.btn-primary:focus {
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        outline: none;
+    }

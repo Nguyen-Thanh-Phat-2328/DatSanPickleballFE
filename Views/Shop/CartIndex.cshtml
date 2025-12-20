@@ -1,0 +1,132 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Cart";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - Sân Pickleball Tuấn Phát</title>
+    <link rel="stylesheet" href="/css/Cart.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="main">
+        <div class="container">
+
+            <nav class="breadcrumb">
+                <a href="@Url.Action("ShopIndex", "Shop")">Shop</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Giỏ hàng</span>
+            </nav>
+
+
+            <div class="cart-content">
+                <div class="cart-main">
+                    <div class="cart-header">
+                        <h2>Giỏ hàng của bạn</h2>
+                        <span class="item-count" id="item-count">0 sản phẩm</span>
+                    </div>
+
+
+                    <div class="cart-items" id="cart-items">
+                        Items will be loaded here
+                    </div>
+
+
+                    <div class="continue-shopping">
+                        <a href="@Url.Action("ShopIndex", "Shop")" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            Tiếp tục mua sắm
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="cart-summary">
+                    <div class="summary-card">
+                        <h3>Tóm tắt đơn hàng</h3>
+
+                        <div class="summary-row">
+                            <span>Tạm tính:</span>
+                            <span id="subtotal">0đ</span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span>Phí vận chuyển:</span>
+                            <span id="shipping-fee">30.000đ</span>
+                        </div>
+
+                        <div class="summary-row discount-row" id="discount-row" style="display: none;">
+                            <span>Giảm giá:</span>
+                            <span id="discount-amount">-0đ</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="summary-row total-row">
+                            <span>Tổng cộng:</span>
+                            <span id="total-amount">0đ</span>
+                        </div>
+
+                        <!--Coupon Code-->
+                        <div class="coupon-section">
+                            <div class="coupon-input">
+                                <input type="text" id="coupon-code" placeholder="Mã giảm giá">
+                                <button class="btn btn-secondary" onclick="applyCoupon()">Áp dụng</button>
+                            </div>
+                        </div>
+
+                        <a href="@Url.Action("CheckoutIndex", "Shop")" class="btn btn-primary btn-checkout" id="checkout-btn">
+                            <i class="fas fa-credit-card"></i>
+                            Thanh toán
+                        </a>
+
+                        <div class="payment-methods">
+                            <p>Phương thức thanh toán:</p>
+                            <div class="payment-icons">
+                                <i class="fab fa-cc-visa"></i>
+                                <i class="fab fa-cc-mastercard"></i>
+                                <i class="fas fa-money-bill-wave"></i>
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Sân Pickleball Tuấn Phát</h4>
+                    <p>Địa chỉ: Đà Nẵng</p>
+                    <p>Liên hệ: 0xxxxx</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Dịch vụ</h4>
+                    <ul>
+                        <li><a href="#">Đặt sân</a></li>
+                        <li><a href="#">Shop</a></li>
+                        <li><a href="#">Huấn luyện</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Hỗ trợ</h4>
+                    <ul>
+                        <li><a href="#">Liên hệ</a></li>
+                        <li><a href="#">Chính sách</a></li>
+                        <li><a href="#">Hướng dẫn</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/Cart.js"></script>
+</body>
+</html>
